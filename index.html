@@ -2,21 +2,26 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Núcleo Insight | Diagnóstico Comportamental</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Núcleo Insight | App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         .blur-secret { filter: blur(8px); user-select: none; pointer-events: none; }
         .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .modal-open { display: flex !important; }
+        
+        /* Menu Fixo tipo App */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid #334155; padding: 10px 20px; display: flex; justify-content: space-around; z-index: 50; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+        .nav-item { display: flex; flex-direction: column; items-align: center; justify-content: center; font-size: 10px; color: #94a3b8; gap: 4px; }
+        .nav-item.active { color: #34d399; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950">
+<body class="min-h-screen flex flex-col p-4 bg-gradient-to-b from-slate-900 to-slate-950 pb-24">
 
-    <div id="quiz-container" class="w-full max-w-md bg-slate-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-slate-700 fade-in">
+    <div id="quiz-container" class="w-full max-w-md mx-auto bg-slate-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-slate-700 fade-in mt-10">
         <div class="mb-6 flex items-center justify-between">
             <span class="text-xs font-mono text-emerald-400">ANÁLISE EM TEMPO REAL</span>
             <div class="h-1.5 w-24 bg-slate-700 rounded-full overflow-hidden">
@@ -27,7 +32,7 @@
         <div id="answers-box" class="space-y-3"></div>
     </div>
 
-    <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
+    <div id="processing-container" class="hidden w-full max-w-md mx-auto text-center fade-in mt-20">
         <div class="relative w-20 h-20 mx-auto mb-6">
             <div class="absolute inset-0 rounded-full border-4 border-slate-700"></div>
             <div class="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
@@ -37,7 +42,7 @@
         <p id="process-text" class="text-sm text-slate-400">Cruzando dados comportamentais...</p>
     </div>
 
-    <div id="auth-container" class="hidden w-full max-w-md bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-center fade-in">
+    <div id="auth-container" class="hidden w-full max-w-md mx-auto bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-center fade-in mt-10">
         <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
@@ -50,18 +55,18 @@
         <p class="text-xs text-slate-500 mt-4">Ambiente Seguro e Criptografado</p>
     </div>
 
-    <div id="dashboard-container" class="hidden w-full max-w-md fade-in pb-20">
-        <div class="flex items-center justify-between mb-6 px-2">
+    <div id="dashboard-container" class="hidden w-full max-w-md mx-auto fade-in">
+        <div class="flex items-center justify-between mb-6 px-2 pt-4">
             <div class="flex items-center gap-2">
                 <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="text-xs font-mono text-emerald-400">SISTEMA ONLINE</span>
+                <span class="text-xs font-mono text-emerald-400">ONLINE</span>
             </div>
-            <button onclick="logout()" class="text-xs text-slate-500 hover:text-white underline">Sair</button>
+            <button onclick="logout()" class="text-xs text-slate-500 hover:text-white">Sair</button>
         </div>
 
         <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl relative mb-6">
             <div class="bg-slate-900/50 p-4 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="font-bold text-white">Diagnóstico Final</h3>
+                <h3 class="font-bold text-white">Diagnóstico</h3>
                 <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded font-mono">CRÍTICO</span>
             </div>
             
@@ -70,19 +75,15 @@
                 
                 <div id="premium-content" class="text-slate-300 space-y-4 blur-secret transition-all duration-700 text-sm leading-relaxed">
                     <p><strong class="text-white">A Verdade Brutal:</strong> Você ensinou a ele que o seu tempo não vale nada.</p>
-                    <p>Nossos dados mostram que em 90% das suas interações, você respondeu em menos de 5 minutos, enquanto ele demorava horas. Isso criou um desequilíbrio químico no cérebro dele: <span class="text-emerald-300">falta de dopamina por esforço.</span></p>
-                    <p>Ele não se afastou porque parou de gostar. Ele se afastou porque a conquista acabou rápido demais. Homens com o perfil dele precisam sentir que estão "ganhando" sua atenção aos poucos.</p>
-                    
+                    <p>Nossos dados mostram que em 90% das suas interações, você respondeu em menos de 5 minutos. Isso criou um desequilíbrio químico: <span class="text-emerald-300">falta de dopamina por esforço.</span></p>
                     <div class="bg-slate-900/50 p-4 rounded-lg border-l-2 border-amber-500 my-4">
                         <p class="text-amber-400 font-bold text-xs mb-1">PREVISÃO DO SISTEMA:</p>
                         <p class="italic text-slate-400">"Se você mandar mais uma mensagem cobrando atenção hoje, as chances de bloqueio definitivo sobem para 94%."</p>
                     </div>
-
                     <p><strong class="text-white">O Plano de Resgate:</strong></p>
                     <ul class="list-disc pl-4 space-y-2 text-slate-400">
                         <li>Interromper iniciação de conversa por 72h.</li>
-                        <li>Usar a técnica do "Espelho Atrasado" (explicada no simulador).</li>
-                        <li>Postar "Gatilhos de Curiosidade" nos stories (sem indiretas).</li>
+                        <li>Usar a técnica do "Espelho Atrasado" (no simulador).</li>
                     </ul>
                 </div>
 
@@ -99,55 +100,85 @@
                     </a>
 
                     <button id="admin-btn" onclick="simularCompraDev()" class="hidden mt-6 text-[10px] text-slate-700 uppercase hover:text-white border border-slate-800 px-2 py-1 rounded">
-                        [ADMIN MODE: Simular Pagamento]
+                        [ADMIN: Simular Pagamento]
                     </button>
                 </div>
             </div>
         </div>
         
-        <div id="simulator-card" class="bg-slate-800 p-1 rounded-xl border border-slate-700 opacity-50 pointer-events-none transition-all duration-500">
+        <div id="simulator-card" class="bg-slate-800 p-1 rounded-xl border border-slate-700 opacity-50 pointer-events-none transition-all duration-500 mb-4">
             <button onclick="openSimulator()" class="w-full bg-slate-800 hover:bg-slate-750 p-4 rounded-lg flex items-center justify-between group">
                 <div class="text-left">
                     <h4 class="font-bold text-white text-sm flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         Simulador de Mensagens
                     </h4>
-                    <p class="text-xs text-slate-400 mt-1">Gere a resposta perfeita para cada situação.</p>
+                    <p class="text-xs text-slate-400 mt-1">Gere a resposta perfeita.</p>
                 </div>
-                <div id="lock-icon">
-                    <svg class="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                </div>
+                <div id="lock-icon">🔒</div>
             </button>
         </div>
+        
+        <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-center">
+            <p class="text-xs text-slate-400 mb-3">Para não perder seu acesso:</p>
+            <button onclick="openSaveModal()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg flex items-center justify-center gap-2 mx-auto transition">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Salvar App no Celular
+            </button>
+        </div>
+    </div>
+
+    <div id="bottom-nav" class="hidden bottom-nav">
+        <button onclick="window.scrollTo(0,0)" class="nav-item active flex flex-col items-center">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Diagnóstico</span>
+        </button>
+        <button onclick="openSimulator()" class="nav-item flex flex-col items-center">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            <span>Simulador</span>
+        </button>
+        <button onclick="openSaveModal()" class="nav-item flex flex-col items-center">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Salvar</span>
+        </button>
     </div>
 
     <div id="simulator-modal" class="hidden fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm items-center justify-center p-4">
         <div class="bg-slate-800 w-full max-w-md rounded-2xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900">
-                <h3 class="font-bold text-white">Simulador Neural 2.0</h3>
+                <h3 class="font-bold text-white">Simulador Neural</h3>
                 <button onclick="closeSimulator()" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <div class="p-4 overflow-y-auto space-y-4">
-                <p class="text-xs text-slate-400 uppercase font-bold">Escolha o cenário atual:</p>
+                <p class="text-xs text-slate-400 uppercase font-bold">Escolha o cenário:</p>
                 <div class="space-y-3">
-                    <button onclick="showScript('ghosting')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
-                        <span class="block text-white font-bold text-sm">👻 Ele sumiu (Ghosting)</span>
-                        <span class="text-xs text-slate-400">Não responde há mais de 24h</span>
-                    </button>
-                    <button onclick="showScript('cold')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
-                        <span class="block text-white font-bold text-sm">❄️ Ele está frio/seco</span>
-                        <span class="text-xs text-slate-400">Responde monosílabos</span>
-                    </button>
-                    <button onclick="showScript('invite')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
-                        <span class="block text-white font-bold text-sm">📅 Cancelou em cima da hora</span>
-                        <span class="text-xs text-slate-400">Deu uma desculpa esfarrapada</span>
-                    </button>
+                    <button onclick="showScript('ghosting')" class="w-full text-left bg-slate-700 p-4 rounded-lg border border-slate-600">👻 Ele sumiu (Ghosting)</button>
+                    <button onclick="showScript('cold')" class="w-full text-left bg-slate-700 p-4 rounded-lg border border-slate-600">❄️ Ele está frio/seco</button>
+                    <button onclick="showScript('invite')" class="w-full text-left bg-slate-700 p-4 rounded-lg border border-slate-600">📅 Cancelou o encontro</button>
                 </div>
                 <div id="script-result" class="hidden mt-6 bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-lg">
-                    <p class="text-xs text-emerald-400 mb-2 font-bold uppercase">Copie e envie agora:</p>
+                    <p class="text-xs text-emerald-400 mb-2 font-bold uppercase">Copie e envie:</p>
                     <p id="script-text" class="text-white text-sm font-medium bg-slate-900 p-3 rounded select-all">...</p>
-                    <p class="text-[10px] text-slate-500 mt-2 text-center">Não adicione emojis. Mande e saia do WhatsApp.</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="save-modal" class="hidden fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl border-t sm:border border-slate-700 shadow-2xl overflow-hidden animate-[fadeIn_0.3s]">
+            <div class="p-6 text-center">
+                <h3 class="text-lg font-bold text-white mb-2">Não perca seu acesso</h3>
+                <p class="text-sm text-slate-400 mb-6">Escolha a melhor forma para entrar depois:</p>
+                
+                <button onclick="shareToWhatsapp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-4 rounded-xl mb-3 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    Salvar no WhatsApp
+                </button>
+                
+                <button onclick="closeSaveModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl">
+                    Fechar
+                </button>
+                <p class="text-[10px] text-slate-500 mt-4">Dica: Adicione este site aos favoritos do navegador.</p>
             </div>
         </div>
     </div>
@@ -172,12 +203,34 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // 🚨 LISTA VIP: Somente estes emails veem o botão de teste
+        // 🚨 LISTA VIP ADMIN (Seus e-mails)
         const adminEmails = [
             "contatogilvannborges@gmail.com",
             "gilvanxavierborges@gmail.com"
         ];
 
+        // --- FUNÇÕES DE UI ---
+        window.openSimulator = () => document.getElementById('simulator-modal').classList.add('modal-open');
+        window.closeSimulator = () => document.getElementById('simulator-modal').classList.remove('modal-open');
+        window.openSaveModal = () => document.getElementById('save-modal').classList.add('modal-open');
+        window.closeSaveModal = () => document.getElementById('save-modal').classList.remove('modal-open');
+
+        window.shareToWhatsapp = () => {
+            const url = window.location.href;
+            const text = `Guardar este link. Meu acesso ao Diagnóstico: ${url}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        };
+
+        window.showScript = (type) => {
+            const box = document.getElementById('script-result');
+            const text = document.getElementById('script-text');
+            box.classList.remove('hidden');
+            if(type === 'ghosting') text.innerText = "Vi algo hoje que me lembrou muito você. Espero que esteja tudo bem por aí.";
+            if(type === 'cold') text.innerText = "Parece que você está num dia corrido. A gente se fala quando estiver mais tranquilo.";
+            if(type === 'invite') text.innerText = "Tranquilo. Aproveite seu dia.";
+        };
+
+        // --- QUIZ & LOGIC ---
         const questions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
@@ -193,22 +246,11 @@
 
         let currentQ = 0;
         
-        window.openSimulator = () => document.getElementById('simulator-modal').classList.add('modal-open');
-        window.closeSimulator = () => document.getElementById('simulator-modal').classList.remove('modal-open');
-        
-        window.showScript = (type) => {
-            const box = document.getElementById('script-result');
-            const text = document.getElementById('script-text');
-            box.classList.remove('hidden');
-            if(type === 'ghosting') text.innerText = "Vi algo hoje que me lembrou muito você. Espero que esteja tudo bem por aí.";
-            if(type === 'cold') text.innerText = "Parece que você está num dia corrido. A gente se fala quando estiver mais tranquilo.";
-            if(type === 'invite') text.innerText = "Tranquilo. Aproveite seu dia.";
-        };
-
         const quizContainer = document.getElementById('quiz-container');
         const processingContainer = document.getElementById('processing-container');
         const authContainer = document.getElementById('auth-container');
         const dashboardContainer = document.getElementById('dashboard-container');
+        const bottomNav = document.getElementById('bottom-nav');
 
         function showQuestion() {
             const q = questions[currentQ];
@@ -269,10 +311,12 @@
                 processingContainer.classList.add('hidden');
                 authContainer.classList.add('hidden');
                 dashboardContainer.classList.remove('hidden');
+                bottomNav.classList.remove('hidden'); // Mostra menu
 
-                // 🔓 CHECAGEM VIP: Se for Admin, mostra o botão
+                // Admin check
                 if(adminEmails.includes(user.email)) {
-                    document.getElementById('admin-btn').classList.remove('hidden');
+                    const adminBtn = document.getElementById('admin-btn');
+                    if(adminBtn) adminBtn.classList.remove('hidden');
                 }
 
                 onSnapshot(doc(db, "users", user.email), (doc) => {
@@ -289,8 +333,7 @@
                 });
             }
         });
-        
-        // Função de Admin
+
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
             if(user) await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
