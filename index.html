@@ -11,8 +11,9 @@
         .blur-secret { filter: blur(8px); user-select: none; pointer-events: none; }
         .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        
+        /* Estilo do Modal do Simulador */
+        .modal-open { display: flex !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-slate-950">
@@ -24,9 +25,7 @@
                 <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 5%"></div>
             </div>
         </div>
-        
         <h2 id="question-text" class="text-xl md:text-2xl font-semibold mb-8 text-white leading-tight min-h-[80px]">...</h2>
-        
         <div id="answers-box" class="space-y-3"></div>
     </div>
 
@@ -41,26 +40,19 @@
     </div>
 
     <div id="auth-container" class="hidden w-full max-w-md bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-center fade-in">
-        <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6 pulse-ring">
+        <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
         <h2 class="text-2xl font-bold text-white mb-2">Padrão de Risco Identificado</h2>
-        <p class="text-slate-300 mb-8 text-sm leading-relaxed">
-            Detectamos um ciclo de **Autossabotagem Inconsciente**. Esse padrão é a causa raiz dos afastamentos recentes.
-            <br><br>
-            Para proteger a privacidade do diagnóstico, o acesso é restrito ao portador da conta.
-        </p>
+        <p class="text-slate-300 mb-8 text-sm leading-relaxed">Detectamos um ciclo de **Autossabotagem Inconsciente**. Para proteger a privacidade do diagnóstico, o acesso é restrito.</p>
         <button onclick="loginGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-4 px-6 rounded-xl transition transform hover:scale-[1.02] flex items-center justify-center gap-3 shadow-lg">
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="G">
             Liberar Meu Resultado Agora
         </button>
-        <p class="text-xs text-slate-500 mt-4 flex items-center justify-center gap-1">
-            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            Ambiente Seguro e Criptografado
-        </p>
+        <p class="text-xs text-slate-500 mt-4">Ambiente Seguro e Criptografado</p>
     </div>
 
-    <div id="dashboard-container" class="hidden w-full max-w-md fade-in pb-10">
+    <div id="dashboard-container" class="hidden w-full max-w-md fade-in pb-20">
         <div class="flex items-center justify-between mb-6 px-2">
             <div class="flex items-center gap-2">
                 <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
@@ -69,31 +61,31 @@
             <button onclick="logout()" class="text-xs text-slate-500 hover:text-white underline">Sair</button>
         </div>
 
-        <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl relative">
+        <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl relative mb-6">
             <div class="bg-slate-900/50 p-4 border-b border-slate-700 flex justify-between items-center">
                 <h3 class="font-bold text-white">Diagnóstico Final</h3>
                 <span class="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded font-mono">CRÍTICO</span>
             </div>
             
             <div class="p-6 relative">
-                <h2 class="text-2xl font-bold text-white mb-2">Arquétipo: <span class="text-emerald-400">Disponibilidade Assimétrica</span></h2>
+                <h2 class="text-2xl font-bold text-white mb-4">Arquétipo: <span class="text-emerald-400">Disponibilidade Assimétrica</span></h2>
                 
-                <div id="premium-content" class="text-slate-300 space-y-4 blur-secret transition-all duration-700">
-                    <p>Sua pontuação indica que você entrega 80% do esforço emocional no início, criando um "vácuo de interesse".</p>
-                    <p class="bg-slate-700/50 p-3 rounded border-l-4 border-emerald-500">
-                        <strong>O Erro Fatal:</strong> Ao responder rápido demais, você ativou o gatilho de "baixo valor percebido" no cérebro dele.
-                    </p>
-                    <p>Para reverter isso HOJE, você precisa aplicar o <strong>Protocolo de Escassez Tática</strong>.</p>
-                    <div class="grid grid-cols-2 gap-2 mt-4">
-                        <div class="bg-slate-900 p-3 rounded text-center">
-                            <span class="block text-xs text-slate-500">Probabilidade de volta</span>
-                            <span class="block text-xl font-bold text-white">87%</span>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded text-center">
-                            <span class="block text-xs text-slate-500">Tempo estimado</span>
-                            <span class="block text-xl font-bold text-white">3 Dias</span>
-                        </div>
+                <div id="premium-content" class="text-slate-300 space-y-4 blur-secret transition-all duration-700 text-sm leading-relaxed">
+                    <p><strong class="text-white">A Verdade Brutal:</strong> Você ensinou a ele que o seu tempo não vale nada.</p>
+                    <p>Nossos dados mostram que em 90% das suas interações, você respondeu em menos de 5 minutos, enquanto ele demorava horas. Isso criou um desequilíbrio químico no cérebro dele: <span class="text-emerald-300">falta de dopamina por esforço.</span></p>
+                    <p>Ele não se afastou porque parou de gostar. Ele se afastou porque a conquista acabou rápido demais. Homens com o perfil dele precisam sentir que estão "ganhando" sua atenção aos poucos.</p>
+                    
+                    <div class="bg-slate-900/50 p-4 rounded-lg border-l-2 border-amber-500 my-4">
+                        <p class="text-amber-400 font-bold text-xs mb-1">PREVISÃO DO SISTEMA:</p>
+                        <p class="italic text-slate-400">"Se você mandar mais uma mensagem cobrando atenção hoje, as chances de bloqueio definitivo sobem para 94%."</p>
                     </div>
+
+                    <p><strong class="text-white">O Plano de Resgate:</strong></p>
+                    <ul class="list-disc pl-4 space-y-2 text-slate-400">
+                        <li>Interromper iniciação de conversa por 72h.</li>
+                        <li>Usar a técnica do "Espelho Atrasado" (explicada no simulador).</li>
+                        <li>Postar "Gatilhos de Curiosidade" nos stories (sem indiretas).</li>
+                    </ul>
                 </div>
 
                 <div id="paywall-overlay" class="absolute inset-0 bg-slate-900/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10">
@@ -101,30 +93,63 @@
                         <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Relatório Bloqueado</h3>
-                    <p class="text-sm text-slate-300 mb-6">Você está cometendo 3 erros invisíveis agora. Destrave o diagnóstico completo e o plano de correção.</p>
+                    <p class="text-sm text-slate-300 mb-6">Você está a um passo de cometer um erro irreversível. Destrave o diagnóstico e o Simulador agora.</p>
                     
                     <a href="https://pay.kiwify.com.br/cAMh7az" target="_blank" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold py-4 px-4 rounded-xl transition shadow-lg shadow-emerald-500/25 mb-3 flex items-center justify-center gap-2 group">
                         <span>Desbloquear Tudo</span>
                         <span class="bg-emerald-800 text-emerald-100 text-xs px-2 py-0.5 rounded">R$ 27,00</span>
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                     
-                    <p class="text-[10px] text-slate-500">Acesso imediato • Compra segura</p>
-
-                    <button onclick="simularCompraDev()" class="mt-6 text-[10px] text-slate-700 hover:text-white uppercase tracking-widest border border-slate-800 px-3 py-1 rounded">
-                        [DEV: Simular Pagamento]
-                    </button>
+                    <button onclick="simularCompraDev()" class="mt-6 text-[10px] text-slate-700 uppercase">[DEV: Simular Pagamento]</button>
                 </div>
             </div>
         </div>
         
-        <div class="mt-4 opacity-50 pointer-events-none grayscale">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between">
-                <div>
-                    <h4 class="font-bold text-white text-sm">Simulador de Mensagens</h4>
-                    <p class="text-xs text-slate-400">Ferramenta Premium</p>
+        <div id="simulator-card" class="bg-slate-800 p-1 rounded-xl border border-slate-700 opacity-50 pointer-events-none transition-all duration-500">
+            <button onclick="openSimulator()" class="w-full bg-slate-800 hover:bg-slate-750 p-4 rounded-lg flex items-center justify-between group">
+                <div class="text-left">
+                    <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Simulador de Mensagens
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-1">Gere a resposta perfeita para cada situação.</p>
                 </div>
-                <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <div id="lock-icon">
+                    <svg class="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <div id="simulator-modal" class="hidden fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-slate-800 w-full max-w-md rounded-2xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900">
+                <h3 class="font-bold text-white">Simulador Neural 2.0</h3>
+                <button onclick="closeSimulator()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <div class="p-4 overflow-y-auto space-y-4">
+                <p class="text-xs text-slate-400 uppercase font-bold">Escolha o cenário atual:</p>
+                
+                <div class="space-y-3">
+                    <button onclick="showScript('ghosting')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
+                        <span class="block text-white font-bold text-sm">👻 Ele sumiu (Ghosting)</span>
+                        <span class="text-xs text-slate-400">Não responde há mais de 24h</span>
+                    </button>
+                    <button onclick="showScript('cold')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
+                        <span class="block text-white font-bold text-sm">❄️ Ele está frio/seco</span>
+                        <span class="text-xs text-slate-400">Responde monosílabos</span>
+                    </button>
+                    <button onclick="showScript('invite')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
+                        <span class="block text-white font-bold text-sm">📅 Cancelou em cima da hora</span>
+                        <span class="text-xs text-slate-400">Deu uma desculpa esfarrapada</span>
+                    </button>
+                </div>
+
+                <div id="script-result" class="hidden mt-6 bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-lg">
+                    <p class="text-xs text-emerald-400 mb-2 font-bold uppercase">Copie e envie agora:</p>
+                    <p id="script-text" class="text-white text-sm font-medium bg-slate-900 p-3 rounded select-all">...</p>
+                    <p class="text-[10px] text-slate-500 mt-2 text-center">Não adicione emojis. Mande e saia do WhatsApp.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -134,7 +159,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // SUA CONFIGURAÇÃO
+        // CONFIG (MANTER IGUAL)
         const firebaseConfig = {
             apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
             authDomain: "nucleoinsight-e4566.firebaseapp.com",
@@ -150,7 +175,6 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // Perguntas
         const questions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
@@ -165,6 +189,20 @@
         ];
 
         let currentQ = 0;
+        
+        // Funções Globais para o Simulador
+        window.openSimulator = () => document.getElementById('simulator-modal').classList.add('modal-open');
+        window.closeSimulator = () => document.getElementById('simulator-modal').classList.remove('modal-open');
+        
+        window.showScript = (type) => {
+            const box = document.getElementById('script-result');
+            const text = document.getElementById('script-text');
+            box.classList.remove('hidden');
+            
+            if(type === 'ghosting') text.innerText = "Vi algo hoje que me lembrou muito você. Espero que esteja tudo bem por aí.";
+            if(type === 'cold') text.innerText = "Parece que você está num dia corrido. A gente se fala quando estiver mais tranquilo.";
+            if(type === 'invite') text.innerText = "Tranquilo. Aproveite seu dia.";
+        };
 
         const quizContainer = document.getElementById('quiz-container');
         const processingContainer = document.getElementById('processing-container');
@@ -176,10 +214,8 @@
             document.getElementById('question-text').innerText = q.t;
             const box = document.getElementById('answers-box');
             box.innerHTML = '';
-            
             const pct = ((currentQ) / questions.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
-
             q.a.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "w-full text-left bg-slate-700/50 hover:bg-emerald-900/30 hover:border-emerald-500/50 text-slate-200 p-4 rounded-xl transition border border-slate-600 active:scale-[0.98]";
@@ -191,23 +227,17 @@
 
         function nextQuestion() {
             currentQ++;
-            if (currentQ < questions.length) {
-                showQuestion();
-            } else {
-                startProcessing();
-            }
+            if (currentQ < questions.length) { showQuestion(); } else { startProcessing(); }
         }
 
         function startProcessing() {
             quizContainer.classList.add('hidden');
             processingContainer.classList.remove('hidden');
-            
             let pct = 0;
             const interval = setInterval(() => {
                 pct += Math.floor(Math.random() * 15);
                 if(pct > 100) pct = 100;
                 document.getElementById('process-pct').innerText = pct + '%';
-                
                 if(pct === 100) {
                     clearInterval(interval);
                     setTimeout(() => {
@@ -222,21 +252,15 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                // CORREÇÃO CRÍTICA AQUI: Usando email como ID
                 await setDoc(doc(db, "users", user.email), {
                     email: user.email,
                     status: "free",
                     lastLogin: new Date()
                 }, { merge: true });
-            } catch (error) {
-                console.error(error);
-                alert("Erro no login. Tente novamente.");
-            }
+            } catch (error) { console.error(error); }
         };
 
-        window.logout = () => {
-            signOut(auth).then(() => window.location.reload());
-        };
+        window.logout = () => { signOut(auth).then(() => window.location.reload()); };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -245,18 +269,24 @@
                 authContainer.classList.add('hidden');
                 dashboardContainer.classList.remove('hidden');
 
-                // CORREÇÃO CRÍTICA AQUI: Ouvindo pelo email
+                // Listener de Pagamento
                 onSnapshot(doc(db, "users", user.email), (doc) => {
                     const data = doc.data();
                     if (data && data.status === "premium") {
+                        // 1. Libera o Texto
                         document.getElementById('premium-content').classList.remove('blur-secret');
                         document.getElementById('paywall-overlay').classList.add('hidden');
+                        
+                        // 2. Libera o Simulador
+                        const simCard = document.getElementById('simulator-card');
+                        simCard.classList.remove('opacity-50', 'pointer-events-none');
+                        simCard.classList.add('border-emerald-500', 'shadow-lg', 'shadow-emerald-900/50');
+                        document.getElementById('lock-icon').innerHTML = '✅';
                     }
                 });
             }
         });
 
-        // Simulação DEV atualizada
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
             if(user) await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
