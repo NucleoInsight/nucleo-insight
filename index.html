@@ -134,7 +134,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIG (MANTER IGUAL)
+        // SUA CONFIGURAÇÃO
         const firebaseConfig = {
             apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
             authDomain: "nucleoinsight-e4566.firebaseapp.com",
@@ -150,7 +150,7 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // --- PERGUNTAS DE ALTA CONVERSÃO ---
+        // Perguntas
         const questions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
@@ -166,13 +166,11 @@
 
         let currentQ = 0;
 
-        // UI References
         const quizContainer = document.getElementById('quiz-container');
         const processingContainer = document.getElementById('processing-container');
         const authContainer = document.getElementById('auth-container');
         const dashboardContainer = document.getElementById('dashboard-container');
 
-        // Render Question
         function showQuestion() {
             const q = questions[currentQ];
             document.getElementById('question-text').innerText = q.t;
@@ -224,13 +222,15 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                await setDoc(doc(db, "users", user.uid), {
+                // CORREÇÃO CRÍTICA AQUI: Usando email como ID
+                await setDoc(doc(db, "users", user.email), {
                     email: user.email,
                     status: "free",
                     lastLogin: new Date()
                 }, { merge: true });
             } catch (error) {
                 console.error(error);
+                alert("Erro no login. Tente novamente.");
             }
         };
 
@@ -238,7 +238,6 @@
             signOut(auth).then(() => window.location.reload());
         };
 
-        // Auth Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 quizContainer.classList.add('hidden');
@@ -246,8 +245,8 @@
                 authContainer.classList.add('hidden');
                 dashboardContainer.classList.remove('hidden');
 
-                // Real-time Paywall Listener
-                onSnapshot(doc(db, "users", user.uid), (doc) => {
+                // CORREÇÃO CRÍTICA AQUI: Ouvindo pelo email
+                onSnapshot(doc(db, "users", user.email), (doc) => {
                     const data = doc.data();
                     if (data && data.status === "premium") {
                         document.getElementById('premium-content').classList.remove('blur-secret');
@@ -257,9 +256,10 @@
             }
         });
 
+        // Simulação DEV atualizada
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
-            if(user) await setDoc(doc(db, "users", user.uid), { status: "premium" }, { merge: true });
+            if(user) await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
         };
 
         showQuestion();
