@@ -20,7 +20,11 @@
         
         /* Menu Fixo */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.05); padding: 12px 0; display: flex; justify-content: space-around; z-index: 50; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+        
+        /* CORREÇÃO DO CSS: Garante que itens ocultos fiquem ocultos */
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #64748b; gap: 5px; width: 33%; transition: all 0.3s; }
+        .nav-item.hidden { display: none !important; } 
+        
         .nav-item.active { color: #c084fc; transform: translateY(-2px); }
         .nav-item.active svg { stroke: #c084fc; filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6)); }
         
@@ -338,12 +342,13 @@
             }
         });
 
-        // --- SIMULADORES ADMIN ---
+        // --- SIMULADORES ADMIN (COM REFRESH AUTOMÁTICO) ---
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
             if(user) {
                 await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
                 alert("👑 Admin: Diagnóstico desbloqueado!");
+                window.location.reload(); 
             }
         };
         
@@ -352,8 +357,7 @@
             if(user) {
                 await setDoc(doc(db, "users", user.email), { protocol: "active", status: "premium" }, { merge: true });
                 alert("👑 Admin: Protocolo desbloqueado!");
-                document.getElementById('protocol-content').classList.remove('blur-secret');
-                document.getElementById('protocol-lock').classList.add('hidden');
+                window.location.reload();
             }
         };
 
