@@ -3,203 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Núcleo Insight | App</title>
+    <title>Núcleo Insight | Análise</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
-        /* NOVO VISUAL MÍSTICO/PREMIUM */
+        /* VISUAL MÍSTICO PREMIUM */
         .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         
-        .blur-secret { filter: blur(8px); user-select: none; pointer-events: none; }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .blur-secret { filter: blur(10px); user-select: none; pointer-events: none; }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .modal-open { display: flex !important; }
         
         /* Menu Fixo */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 0; display: flex; justify-content: space-around; z-index: 50; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8; gap: 5px; width: 33%; transition: all 0.3s; }
-        .nav-item.active { color: #c084fc; transform: translateY(-2px); } /* Roxo Neon */
-        .nav-item.active svg { stroke: #c084fc; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.5)); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.05); padding: 12px 0; display: flex; justify-content: space-around; z-index: 50; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #64748b; gap: 5px; width: 33%; transition: all 0.3s; }
+        .nav-item.active { color: #c084fc; transform: translateY(-2px); }
+        .nav-item.active svg { stroke: #c084fc; filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6)); }
         
-        /* Abas */
+        /* Elementos UI */
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-
-        /* Protocolo Style */
-        .phase-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-        .phase-title { color: #e879f9; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
-        .day-badge { background: #4c1d95; color: #e9d5ff; padding: 2px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s; }
+        .phase-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(192, 132, 252, 0.15); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+        .phase-title { color: #e879f9; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em; }
+        .day-badge { background: #4c1d95; color: #e9d5ff; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; display: inline-block; margin-bottom: 6px; }
+        
+        .pulse-soft { animation: pulse-soft 3s infinite; }
+        @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         
         .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gradient-mystic pb-24 text-slate-200">
+<body class="min-h-screen flex flex-col bg-gradient-mystic pb-24 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
 
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
-        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in">
-            <div class="mb-6 flex items-center justify-between">
-                <span class="text-[10px] font-bold tracking-widest text-purple-400">ANÁLISE EM TEMPO REAL</span>
-                <div class="h-1.5 w-24 bg-white/10 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-purple-500 transition-all duration-500" style="width: 5%"></div></div>
+        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
+            <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
+            
+            <div class="mb-8 flex items-center justify-between relative z-10">
+                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
+                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div></div>
             </div>
-            <h2 id="question-text" class="text-xl font-semibold mb-8 text-white leading-tight min-h-[80px]">...</h2>
-            <div id="answers-box" class="space-y-3"></div>
+            
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
+            <div id="answers-box" class="space-y-3 relative z-10"></div>
         </div>
 
         <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-24 h-24 mx-auto mb-6">
-                <div class="absolute inset-0 rounded-full border-4 border-white/10"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-purple-500 border-t-transparent animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm" id="process-pct">0%</div>
+            <div class="relative w-24 h-24 mx-auto mb-8">
+                <div class="absolute inset-0 rounded-full border-4 border-white/5"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm animate-pulse" id="process-pct">0%</div>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Analisando Padrões...</h3>
-            <p id="process-text" class="text-sm text-slate-400">Cruzando dados comportamentais...</p>
+            <h3 class="text-xl font-bold text-white mb-2">Processando Micro-expressões...</h3>
+            <p id="process-text" class="text-sm text-slate-400">Comparando com 12.000 padrões comportamentais...</p>
         </div>
 
-        <div id="auth-container" class="hidden w-full max-w-md glass-card p-8 rounded-3xl text-center fade-in">
-            <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
-                <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div id="auth-container" class="hidden w-full max-w-md glass-card p-8 rounded-3xl text-center fade-in border-t border-purple-500/20">
+            <div class="w-16 h-16 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6 pulse-soft shadow-lg shadow-purple-500/30">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-2">Padrão Identificado</h2>
-            <p class="text-slate-300 mb-8 text-sm leading-relaxed">Detectamos um ciclo de **Autossabotagem Inconsciente**. Para proteger seu diagnóstico, o acesso é restrito.</p>
-            <button onclick="loginGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 shadow-lg transition transform hover:scale-[1.02]">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="G"> Liberar Meu Resultado
+            <h2 class="text-2xl font-bold text-white mb-3">Ciclo de Risco Detectado</h2>
+            <p class="text-slate-300 mb-8 text-sm leading-relaxed">Identificamos um padrão grave de **Autossabotagem Inconsciente**. Para sua segurança, o relatório completo é protegido.</p>
+            <button onclick="loginGoogle()" class="w-full bg-white hover:bg-slate-50 text-slate-900 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 shadow-xl transition transform hover:scale-[1.02]">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="G"> Liberar Meu Diagnóstico
             </button>
-            <p class="text-[10px] text-slate-500 mt-4 uppercase tracking-widest">Ambiente Criptografado</p>
+            <div class="flex items-center justify-center gap-2 mt-6 opacity-60">
+                <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Ambiente Criptografado</p>
+            </div>
         </div>
     </div>
 
     <div id="app-container" class="hidden w-full max-w-md mx-auto fade-in p-4 pt-6">
         
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-2">
-                <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span class="text-[10px] font-bold tracking-widest text-purple-300">NÚCLEO INSIGHT</span>
+                <span class="text-[9px] font-bold tracking-widest text-emerald-300">ONLINE</span>
             </div>
-            <button onclick="logout()" class="text-xs text-slate-400 hover:text-white">Sair</button>
+            <button onclick="logout()" class="text-xs text-slate-400 hover:text-white underline decoration-slate-600 underline-offset-4">Sair</button>
         </div>
 
         <div id="tab-home" class="tab-content active">
-            <div class="glass-card rounded-3xl overflow-hidden shadow-2xl relative mb-6">
-                <div class="bg-black/20 p-5 border-b border-white/5 flex justify-between items-center">
-                    <h3 class="font-bold text-white text-lg">Seu Diagnóstico</h3>
-                    <span class="bg-red-500/20 text-red-300 text-[10px] font-bold px-2 py-1 rounded border border-red-500/30">CRÍTICO</span>
+            <div class="glass-card rounded-3xl overflow-hidden shadow-2xl relative mb-6 border-t border-purple-500/20">
+                <div class="bg-black/30 p-5 border-b border-white/5 flex justify-between items-center backdrop-blur-md">
+                    <h3 class="font-bold text-white">Seu Diagnóstico</h3>
+                    <span class="bg-red-500/10 text-red-400 text-[10px] font-extrabold px-3 py-1 rounded-full border border-red-500/20 tracking-wider">CRÍTICO</span>
                 </div>
+                
                 <div class="p-6 relative">
                     <h2 class="text-2xl font-bold text-white mb-4 leading-tight">Arquétipo: <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Disponibilidade Assimétrica</span></h2>
                     
-                    <div id="premium-content" class="text-slate-300 space-y-4 blur-secret transition-all duration-700 text-sm leading-relaxed">
-                        <p><strong class="text-white">A Verdade Brutal:</strong> Você ensinou a ele que o seu tempo não vale nada.</p>
-                        <p>Nossos dados mostram que em 90% das interações, você respondeu em menos de 5 minutos. Isso criou um desequilíbrio químico: <span class="text-purple-300">falta de dopamina por esforço.</span></p>
-                        <div class="bg-purple-900/30 p-4 rounded-xl border-l-4 border-purple-500 my-4">
-                            <p class="text-purple-300 font-bold text-xs mb-1 uppercase">Previsão do Algoritmo:</p>
-                            <p class="italic text-slate-300">"Se você mandar mais uma mensagem cobrando atenção hoje, as chances de bloqueio sobem para 94%."</p>
+                    <div id="premium-content" class="text-slate-300 space-y-5 blur-secret transition-all duration-700 text-sm leading-relaxed">
+                        <p><strong class="text-white">A Verdade Brutal:</strong> Você está ensinando a ele que o seu tempo não vale nada.</p>
+                        <p>Nossos dados mostram que em 90% das interações, você respondeu em menos de 5 minutos. Isso criou um desequilíbrio químico no cérebro dele: <span class="text-purple-300 font-semibold">falta de dopamina por esforço.</span></p>
+                        
+                        <div class="bg-purple-900/20 p-4 rounded-xl border-l-4 border-purple-500 my-2">
+                            <p class="text-purple-400 font-bold text-[10px] mb-1 uppercase tracking-wider">Previsão do Algoritmo:</p>
+                            <p class="italic text-slate-200">"Se você mandar mais uma mensagem cobrando atenção hoje, as chances de bloqueio definitivo sobem para 94%."</p>
                         </div>
-                        <p>Para reverter, você precisa aplicar o <strong>Protocolo de 30 Dias</strong> (Disponível na aba Protocolo).</p>
+                        
+                        <p>Para reverter isso, você precisa aplicar o <strong>Plano de Resgate de 30 Dias</strong> (Disponível na aba Protocolo).</p>
                     </div>
                     
-                    <div id="paywall-overlay" class="absolute inset-0 bg-[#0f0c29]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-10 rounded-b-3xl">
-                        <div class="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10"><svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
-                        <h3 class="text-xl font-bold text-white mb-2">Relatório Bloqueado</h3>
-                        <p class="text-sm text-slate-400 mb-6">Você está cometendo 3 erros invisíveis. Destrave o diagnóstico e o simulador agora.</p>
+                    <div id="paywall-overlay" class="absolute inset-0 bg-[#0f0c29]/95 backdrop-blur-[4px] flex flex-col items-center justify-center p-6 text-center z-10 rounded-b-3xl">
+                        <div class="w-14 h-14 bg-gradient-to-br from-slate-700 to-slate-800 rounded-full flex items-center justify-center mb-4 border border-white/10 shadow-lg">
+                            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
                         
-                        <a id="buy-btn-diag" href="https://pay.kiwify.com.br/cAMh7az" target="_blank" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_30px_rgba(192,132,252,0.4)] mb-4 flex items-center justify-center gap-2 transition transform active:scale-95">
-                            <span>Desbloquear Tudo</span>
-                            <span class="bg-black/30 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md">R$ 27,00</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Risco de Afastamento Permanente</h3>
+                        <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+                            Seus padrões atuais ativaram um "Gatilho de Repulsão".<br>
+                            O Simulador já gerou a mensagem de correção. Destrave antes que ele visualize e te ignore.
+                        </p>
+                        
+                        <a id="buy-btn-diag" href="https://pay.kiwify.com.br/cAMh7az" target="_blank" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_25px_rgba(192,132,252,0.3)] mb-4 flex items-center justify-center gap-2 transition transform active:scale-[0.98] group">
+                            <span>Destravar Meu Diagnóstico</span>
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
+                        <p class="text-[10px] text-slate-500">R$ 27,00 • Acesso Imediato</p>
                         
-                        <button onclick="simularCompraDev()" class="admin-only hidden mt-2 text-[10px] text-slate-600 border border-slate-800 px-3 py-1 rounded hover:text-white hover:border-white">[ADMIN: Simular Pagamento R$27]</button>
+                        <button onclick="simularCompraDev()" class="admin-only hidden mt-4 text-[9px] text-slate-600 border border-slate-800 px-3 py-1 rounded hover:text-white hover:border-white uppercase tracking-widest">[ADMIN: Desbloquear R$27]</button>
                     </div>
                 </div>
             </div>
             
-            <div class="glass-card p-4 rounded-xl text-center mb-20">
-                <p class="text-xs text-slate-400 mb-3">Não perca seu progresso:</p>
-                <button onclick="openSaveModal()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 mx-auto transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Salvar App
+            <div class="glass-card p-4 rounded-xl text-center mb-20 border-white/5">
+                <p class="text-xs text-slate-400 mb-3">Não perca o acesso à sua análise:</p>
+                <button onclick="openSaveModal()" class="text-xs bg-white/5 hover:bg-white/10 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 mx-auto transition border border-white/5">
+                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 
+                    Salvar App no Celular
                 </button>
             </div>
         </div>
 
         <div id="tab-simulador" class="tab-content">
             <h2 class="text-2xl font-bold text-white mb-2">Simulador Neural</h2>
-            <p class="text-sm text-slate-400 mb-6">Escolha a situação para gerar a mensagem exata.</p>
+            <p class="text-sm text-slate-400 mb-6">Qual a situação exata agora? O sistema vai gerar a resposta perfeita.</p>
             
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <button onclick="showScript('ghosting')" class="w-full text-left glass-card hover:bg-white/10 p-5 rounded-2xl transition group relative overflow-hidden">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-purple-500 opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-purple-500 opacity-50 group-hover:opacity-100 transition"></div>
                     <span class="block text-white font-bold text-sm mb-1">👻 Ele sumiu (Ghosting)</span>
-                    <span class="text-xs text-slate-400">Não responde há mais de 24h</span>
+                    <span class="text-xs text-slate-400 group-hover:text-slate-200">Não responde há mais de 24h</span>
                 </button>
                 <button onclick="showScript('cold')" class="w-full text-left glass-card hover:bg-white/10 p-5 rounded-2xl transition group relative overflow-hidden">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 opacity-50 group-hover:opacity-100 transition"></div>
                     <span class="block text-white font-bold text-sm mb-1">❄️ Ele está frio/seco</span>
-                    <span class="text-xs text-slate-400">Responde monosílabos</span>
+                    <span class="text-xs text-slate-400 group-hover:text-slate-200">Responde monosílabos ou demora</span>
                 </button>
                 <button onclick="showScript('invite')" class="w-full text-left glass-card hover:bg-white/10 p-5 rounded-2xl transition group relative overflow-hidden">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500 opacity-0 group-hover:opacity-100 transition"></div>
-                    <span class="block text-white font-bold text-sm mb-1">📅 Cancelou em cima da hora</span>
-                    <span class="text-xs text-slate-400">Deu uma desculpa esfarrapada</span>
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500 opacity-50 group-hover:opacity-100 transition"></div>
+                    <span class="block text-white font-bold text-sm mb-1">📅 Cancelou o encontro</span>
+                    <span class="text-xs text-slate-400 group-hover:text-slate-200">Deu uma desculpa esfarrapada</span>
                 </button>
             </div>
 
-            <div id="script-result" class="hidden mt-6 bg-gradient-to-r from-emerald-900/40 to-emerald-800/40 border border-emerald-500/30 p-5 rounded-2xl animate-[fadeIn_0.5s]">
-                <p class="text-xs text-emerald-400 mb-3 font-bold uppercase flex items-center gap-2"><div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> Resposta Gerada:</p>
-                <p id="script-text" class="text-white text-base font-medium bg-black/40 p-4 rounded-xl select-all border border-white/5 shadow-inner">...</p>
-                <p class="text-[10px] text-slate-500 mt-3 text-center">Toque no texto para copiar. Não adicione emojis.</p>
+            <div id="script-result" class="hidden mt-8 bg-gradient-to-b from-slate-800 to-slate-900 border border-purple-500/30 p-6 rounded-2xl animate-[fadeIn_0.5s] relative shadow-2xl">
+                <div class="absolute -top-3 left-6 bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg">RESPOSTA GERADA</div>
+                <p id="script-text" class="text-white text-base font-medium leading-relaxed select-all">...</p>
+                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-500">Probabilidade de Resposta: <span class="text-emerald-400 font-bold">89%</span></span>
+                    <span class="text-[10px] text-slate-500 uppercase tracking-wider">Não use emojis</span>
+                </div>
             </div>
         </div>
 
         <div id="tab-protocolo" class="tab-content relative min-h-[60vh]">
-            <h2 class="text-2xl font-bold text-white mb-2">Protocolo 30 Dias</h2>
-            <p class="text-sm text-slate-400 mb-6">O roteiro diário para reverter a rejeição.</p>
+            <h2 class="text-2xl font-bold text-white mb-2">Plano de Resgate</h2>
+            <p class="text-sm text-slate-400 mb-6">O cronograma exato de 30 dias para reverter a rejeição.</p>
             
-            <div id="protocol-content" class="blur-secret transition-all duration-700 pb-20">
+            <div id="protocol-content" class="blur-secret transition-all duration-700 pb-24">
                 <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg">🚫</span> Fase 1: Interrupção (Dias 1-7)</div>
+                    <div class="phase-title"><span class="text-lg mr-2">🚫</span> Fase 1: Interrupção (Dias 1-7)</div>
                     <div class="space-y-3">
-                        <div class="bg-black/30 p-3 rounded-lg border border-white/5">
+                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
                             <span class="day-badge">Dia 1-2</span>
-                            <p class="text-xs text-slate-300 leading-relaxed">Silêncio Absoluto. O cérebro dele só percebe ausência quando a presença era excessiva. Zero stories, zero mensagens.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed">Silêncio Absoluto. O cérebro dele só nota sua ausência quando a presença era excessiva.</p>
                         </div>
-                        <div class="bg-black/30 p-3 rounded-lg border border-white/5">
+                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
                             <span class="day-badge">Dia 3-4</span>
-                            <p class="text-xs text-slate-300 leading-relaxed">Neutralização. Se ele falar: Responda educado, curto e sem perguntas. Ex: "Entendi. Espero que esteja bem."</p>
+                            <p class="text-xs text-slate-300 leading-relaxed">Neutralização. Se ele falar: Responda educado, curto e sem perguntas.</p>
                         </div>
                     </div>
                 </div>
                 <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg">✨</span> Fase 2: Reposicionamento (8-15)</div>
-                    <div class="bg-black/30 p-3 rounded-lg border border-white/5 mb-2">
+                    <div class="phase-title"><span class="text-lg mr-2">✨</span> Fase 2: Reposicionamento (8-15)</div>
+                    <div class="bg-white/5 p-3 rounded-lg border border-white/5">
                         <span class="day-badge">Dia 8-10</span>
                         <p class="text-xs text-slate-300 leading-relaxed">Micro-presença: 1 reação leve a story. Sem texto emocional. Mostre que você está viva, mas não disponível.</p>
                     </div>
                 </div>
                 <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg">🎣</span> Fase 3: Reconexão (16-23)</div>
-                    <div class="bg-black/30 p-3 rounded-lg border border-white/5">
+                    <div class="phase-title"><span class="text-lg mr-2">🎣</span> Fase 3: A Isca (16-23)</div>
+                    <div class="bg-white/5 p-3 rounded-lg border border-white/5">
                         <span class="day-badge">Estratégia</span>
-                        <p class="text-xs text-slate-300 leading-relaxed">Convite Indireto: "Vou fazer X tal dia. Se animar, aparece." Sem cobrança, sem expectativa.</p>
+                        <p class="text-xs text-slate-300 leading-relaxed">Convite Indireto: "Vou fazer X tal dia. Se animar, aparece." Sem cobrança.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="protocol-lock" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-[#0f0c29]/95 backdrop-blur-sm rounded-xl mt-16">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-5 shadow-lg shadow-purple-500/20"><svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
-                <h3 class="text-2xl font-bold text-white mb-3">Protocolo Bloqueado</h3>
-                <p class="text-sm text-slate-400 mb-8 leading-relaxed max-w-[260px]">Você já tem o Diagnóstico. Agora você precisa do <strong>Plano de Ação de 30 Dias</strong> para virar o jogo.</p>
+            <div id="protocol-lock" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-[#0f0c29]/95 backdrop-blur-[6px] rounded-xl mt-12 border border-white/5">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(147,51,234,0.3)] pulse-soft">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
                 
-                <a href="https://pay.kiwify.com.br/7B4m9iI" target="_blank" class="w-full bg-white text-purple-900 font-bold py-4 px-4 rounded-xl shadow-xl mb-4 flex items-center justify-center gap-2 transition transform hover:scale-[1.02]">
-                    <span>Liberar Roteiro Completo</span>
-                    <span class="bg-purple-100 text-purple-900 text-xs px-2 py-0.5 rounded font-extrabold">R$ 47</span>
+                <h3 class="text-2xl font-bold text-white mb-3">Acesso Bloqueado</h3>
+                <p class="text-sm text-slate-400 mb-8 leading-relaxed max-w-[280px]">
+                    Saber o problema não basta. Você precisa do <strong>Mapa de 30 Dias</strong> para obrigar o cérebro dele a sentir sua falta.
+                </p>
+                
+                <a href="https://pay.kiwify.com.br/7B4m9iI" target="_blank" class="w-full bg-white text-purple-900 font-bold py-4 px-4 rounded-xl shadow-xl mb-4 flex items-center justify-center gap-2 transition transform hover:scale-[1.02] border-b-4 border-slate-200 active:border-b-0 active:translate-y-1">
+                    <span>Liberar Plano de Resgate</span>
+                    <span class="bg-purple-100 text-purple-900 text-[10px] px-2 py-0.5 rounded font-extrabold border border-purple-200">R$ 47</span>
                 </a>
-                <p class="text-[10px] text-slate-500">Conteúdo desbloqueado na tela imediatamente.</p>
-                <button onclick="simularCompraProtocoloDev()" class="admin-only hidden mt-8 text-[10px] text-slate-600 border border-slate-800 px-3 py-1 rounded hover:text-white hover:border-white">[ADMIN: Liberar Protocolo]</button>
+                
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Conteúdo desbloqueado na tela</p>
+                
+                <button onclick="simularCompraProtocoloDev()" class="admin-only hidden mt-8 text-[9px] text-slate-600 border border-slate-800 px-3 py-1 rounded hover:text-white hover:border-white uppercase tracking-widest">[ADMIN: Liberar R$47]</button>
             </div>
         </div>
 
@@ -208,14 +236,14 @@
     <div id="bottom-nav" class="hidden bottom-nav">
         <button onclick="switchTab('home')" class="nav-item active" id="nav-home">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            <span>Diagnóstico</span>
+            <span>Análise</span>
         </button>
         <button onclick="switchTab('simulador')" class="nav-item" id="nav-simulador">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
             <span>Simulador</span>
         </button>
         <button onclick="switchTab('protocolo')" class="nav-item relative" id="nav-protocolo">
-            <div class="absolute top-0 right-8 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#1e293b] animate-bounce"></div>
+            <div class="absolute top-0 right-8 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#1e293b] animate-bounce shadow-lg shadow-red-500/50"></div>
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             <span>Protocolo</span>
         </button>
@@ -223,13 +251,13 @@
 
     <div id="save-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-3xl border-t sm:border border-white/10 shadow-2xl p-6 text-center">
-            <h3 class="text-lg font-bold text-white mb-2">Não perca seu acesso</h3>
-            <p class="text-sm text-slate-400 mb-6">Salve o link seguro no seu WhatsApp:</p>
+            <h3 class="text-lg font-bold text-white mb-2">Salve seu Acesso</h3>
+            <p class="text-sm text-slate-400 mb-6">Envie o link para seu próprio WhatsApp para não perder.</p>
             <button onclick="shareToWhatsapp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 px-4 rounded-xl mb-3 flex items-center justify-center gap-2 transition">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                 Salvar no WhatsApp
             </button>
-            <button onclick="closeSaveModal()" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl transition">Fechar</button>
+            <button onclick="closeSaveModal()" class="w-full bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl transition">Fechar</button>
         </div>
     </div>
 
@@ -253,15 +281,15 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
         
-        // 🚨 COLOQUE SEUS EMAILS AQUI
+        // 🚨 LISTA VIP ADMIN - SEUS EMAILS AQUI
         const adminEmails = ["contatogilvannborges@gmail.com", "gilvanxavierborges@gmail.com"];
         
         let userStatus = 'free'; 
 
         // --- SISTEMA DE ABAS ---
         window.switchTab = (tabName) => {
-            // Segurança Simulador
-            if (tabName === 'simulador' && (userStatus === 'free')) {
+            // Segurança Simulador (Impede acesso se não for premium)
+            if (tabName === 'simulador' && userStatus === 'free') {
                 const btn = document.getElementById('buy-btn-diag');
                 btn.scrollIntoView({behavior: "smooth", block: "center"});
                 btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'), 500);
@@ -302,16 +330,16 @@
                 onSnapshot(doc(db, "users", user.email), (doc) => {
                     const data = doc.data();
                     
-                    // NÍVEL 1: DIAGNÓSTICO
+                    // NÍVEL 1: DIAGNÓSTICO (R$ 27)
                     if (data && data.status === "premium") {
                         userStatus = 'premium';
                         document.getElementById('premium-content').classList.remove('blur-secret');
                         document.getElementById('paywall-overlay').classList.add('hidden');
                     }
 
-                    // NÍVEL 2: PROTOCOLO
+                    // NÍVEL 2: PROTOCOLO (R$ 47)
                     if (data && data.protocol === "active") {
-                        userStatus = 'vip'; // Máximo acesso
+                        userStatus = 'vip';
                         document.getElementById('premium-content').classList.remove('blur-secret');
                         document.getElementById('paywall-overlay').classList.add('hidden');
                         
@@ -322,7 +350,7 @@
             }
         });
 
-        // --- SIMULADORES ADMIN (COM ALERTAS VISUAIS AGORA) ---
+        // --- SIMULADORES ADMIN (COM ALERTAS VISUAIS) ---
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
             if(user) {
@@ -336,7 +364,9 @@
             if(user) {
                 await setDoc(doc(db, "users", user.email), { protocol: "active", status: "premium" }, { merge: true });
                 alert("👑 Admin: Protocolo desbloqueado!");
-                window.location.reload(); // Recarrega para garantir visualização
+                // Força refresh visual se estiver na aba protocolo
+                document.getElementById('protocol-content').classList.remove('blur-secret');
+                document.getElementById('protocol-lock').classList.add('hidden');
             }
         };
 
@@ -355,36 +385,61 @@
             document.getElementById('script-text').innerText = msgs[type];
         };
 
-        // Quiz Logic
+        // --- QUIZ LOGIC COMPLETA (10 PERGUNTAS) ---
         const realQuestions = [
-            { t: "Quando você envia uma mensagem e ele demora...", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'"] },
-            { t: "Quem inicia a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)"] },
-            { t: "O que você MAIS quer agora?", a: ["Fazer ele correr atrás", "Ter paz de espírito"] }
+            { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
+            { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
+            { t: "Se ele postar um story agora, quanto tempo você leva para ver?", a: ["Imediatamente (tenho notificação)", "Em alguns minutos", "Só quando abro o app", "Evito ver pra não dar moral"] },
+            { t: "Você sente que precisa 'pisar em ovos' para não irritá-lo?", a: ["Sim, tenho medo de falar errado", "Às vezes", "Não, sou espontânea", "Sinto que ele que pisa em ovos"] },
+            { t: "Como foi o fim (ou afastamento) da última vez?", a: ["Do nada (Ghosting)", "Briga explosiva", "Esfriou aos poucos", "Ainda estamos nos falando, mas mal"] },
+            { t: "O quanto você sabe da rotina dele?", a: ["Sei tudo (stalkei/pergunto)", "Sei o básico", "Sei só o que ele conta", "Não sei quase nada"] },
+            { t: "Quando vocês saem, a química é...", a: ["Incrível, parece alma gêmea", "Boa, mas ele é fechado", "Normal", "Sinto ele distante pessoalmente"] },
+            { t: "Você já deixou de fazer algo seu para ficar disponível pra ele?", a: ["Várias vezes", "Raramente", "Nunca", "Sim, cancelei compromissos"] },
+            { t: "Ele já disse que você é 'intensa demais' ou 'dramática'?", a: ["Sim, já ouvi isso", "Disse que sou fechada", "Nunca disse", "Disse que sou a mulher da vida dele"] },
+            { t: "O que você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
         ];
         
         const qText = document.getElementById('question-text');
         const aBox = document.getElementById('answers-box');
         
         function runQuiz(idx) {
+            // Atualiza barra de progresso
+            const pct = ((idx) / realQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
             if(idx >= realQuestions.length) {
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('processing-container').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('processing-container').classList.add('hidden');
-                    document.getElementById('auth-container').classList.remove('hidden');
-                }, 2000);
+                
+                // Simula processamento
+                let p = 0;
+                const int = setInterval(() => {
+                    p += Math.floor(Math.random() * 15);
+                    if(p > 100) p = 100;
+                    document.getElementById('process-pct').innerText = p + '%';
+                    if(p === 100) {
+                        clearInterval(int);
+                        setTimeout(() => {
+                            document.getElementById('processing-container').classList.add('hidden');
+                            document.getElementById('auth-container').classList.remove('hidden');
+                        }, 800);
+                    }
+                }, 300);
                 return;
             }
+            
             qText.innerText = realQuestions[idx].t;
             aBox.innerHTML = '';
             realQuestions[idx].a.forEach(ans => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-white/5 hover:bg-white/10 text-slate-200 p-4 rounded-xl border border-white/5 active:scale-[0.98] transition";
+                btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 hover:border-purple-500/50 text-slate-200 p-4 rounded-xl border border-white/10 active:scale-[0.98] transition duration-200";
                 btn.innerText = ans;
                 btn.onclick = () => runQuiz(idx + 1);
                 aBox.appendChild(btn);
             });
         }
+        
+        // Inicia o Quiz
         runQuiz(0);
 
     </script>
