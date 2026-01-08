@@ -11,8 +11,6 @@
         .blur-secret { filter: blur(8px); user-select: none; pointer-events: none; }
         .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Estilo do Modal do Simulador */
         .modal-open { display: flex !important; }
     </style>
 </head>
@@ -99,8 +97,10 @@
                         <span>Desbloquear Tudo</span>
                         <span class="bg-emerald-800 text-emerald-100 text-xs px-2 py-0.5 rounded">R$ 27,00</span>
                     </a>
-                    
-                    <button onclick="simularCompraDev()" class="mt-6 text-[10px] text-slate-700 uppercase">[DEV: Simular Pagamento]</button>
+
+                    <button id="admin-btn" onclick="simularCompraDev()" class="hidden mt-6 text-[10px] text-slate-700 uppercase hover:text-white border border-slate-800 px-2 py-1 rounded">
+                        [ADMIN MODE: Simular Pagamento]
+                    </button>
                 </div>
             </div>
         </div>
@@ -129,7 +129,6 @@
             </div>
             <div class="p-4 overflow-y-auto space-y-4">
                 <p class="text-xs text-slate-400 uppercase font-bold">Escolha o cenário atual:</p>
-                
                 <div class="space-y-3">
                     <button onclick="showScript('ghosting')" class="w-full text-left bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition border border-slate-600">
                         <span class="block text-white font-bold text-sm">👻 Ele sumiu (Ghosting)</span>
@@ -144,7 +143,6 @@
                         <span class="text-xs text-slate-400">Deu uma desculpa esfarrapada</span>
                     </button>
                 </div>
-
                 <div id="script-result" class="hidden mt-6 bg-emerald-900/20 border border-emerald-500/30 p-4 rounded-lg">
                     <p class="text-xs text-emerald-400 mb-2 font-bold uppercase">Copie e envie agora:</p>
                     <p id="script-text" class="text-white text-sm font-medium bg-slate-900 p-3 rounded select-all">...</p>
@@ -159,7 +157,6 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIG (MANTER IGUAL)
         const firebaseConfig = {
             apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
             authDomain: "nucleoinsight-e4566.firebaseapp.com",
@@ -174,6 +171,12 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+
+        // 🚨 LISTA VIP: Somente estes emails veem o botão de teste
+        const adminEmails = [
+            "contatogilvannborges@gmail.com",
+            "gilvanxavierborges@gmail.com"
+        ];
 
         const questions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
@@ -190,7 +193,6 @@
 
         let currentQ = 0;
         
-        // Funções Globais para o Simulador
         window.openSimulator = () => document.getElementById('simulator-modal').classList.add('modal-open');
         window.closeSimulator = () => document.getElementById('simulator-modal').classList.remove('modal-open');
         
@@ -198,7 +200,6 @@
             const box = document.getElementById('script-result');
             const text = document.getElementById('script-text');
             box.classList.remove('hidden');
-            
             if(type === 'ghosting') text.innerText = "Vi algo hoje que me lembrou muito você. Espero que esteja tudo bem por aí.";
             if(type === 'cold') text.innerText = "Parece que você está num dia corrido. A gente se fala quando estiver mais tranquilo.";
             if(type === 'invite') text.innerText = "Tranquilo. Aproveite seu dia.";
@@ -269,15 +270,17 @@
                 authContainer.classList.add('hidden');
                 dashboardContainer.classList.remove('hidden');
 
-                // Listener de Pagamento
+                // 🔓 CHECAGEM VIP: Se for Admin, mostra o botão
+                if(adminEmails.includes(user.email)) {
+                    document.getElementById('admin-btn').classList.remove('hidden');
+                }
+
                 onSnapshot(doc(db, "users", user.email), (doc) => {
                     const data = doc.data();
                     if (data && data.status === "premium") {
-                        // 1. Libera o Texto
                         document.getElementById('premium-content').classList.remove('blur-secret');
                         document.getElementById('paywall-overlay').classList.add('hidden');
                         
-                        // 2. Libera o Simulador
                         const simCard = document.getElementById('simulator-card');
                         simCard.classList.remove('opacity-50', 'pointer-events-none');
                         simCard.classList.add('border-emerald-500', 'shadow-lg', 'shadow-emerald-900/50');
@@ -286,7 +289,8 @@
                 });
             }
         });
-
+        
+        // Função de Admin
         window.simularCompraDev = async () => {
             const user = auth.currentUser;
             if(user) await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
