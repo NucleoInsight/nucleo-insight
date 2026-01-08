@@ -21,7 +21,7 @@
         /* Menu Fixo */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.05); padding: 12px 0; display: flex; justify-content: space-around; z-index: 50; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
         
-        /* CORREÇÃO DO CSS: Garante que itens ocultos fiquem ocultos */
+        /* GARANTE QUE O BOTÃO FIQUE ESCONDIDO */
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #64748b; gap: 5px; width: 33%; transition: all 0.3s; }
         .nav-item.hidden { display: none !important; } 
         
@@ -175,33 +175,102 @@
             <p class="text-sm text-slate-400 mb-6">O cronograma exato de 30 dias para reverter a rejeição.</p>
             
             <div id="protocol-content" class="blur-secret transition-all duration-700 pb-24">
-                <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg mr-2">🚫</span> Fase 1: Interrupção (Dias 1-7)</div>
-                    <div class="space-y-3">
-                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
-                            <span class="day-badge">Dia 1-2</span>
-                            <p class="text-xs text-slate-300 leading-relaxed">Silêncio Absoluto. O cérebro dele só nota sua ausência quando a presença era excessiva.</p>
+                
+                <div class="mb-6 text-center border-b border-white/10 pb-4">
+                    <span class="bg-gradient-to-r from-amber-400 to-orange-500 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-amber-500/20">Acesso Vitalício Liberado</span>
+                    <p class="text-slate-300 text-xs mt-3 leading-relaxed">Este é o mapa cronológico para manipular a percepção de valor dele. <strong class="text-white">Siga sem pular etapas.</strong></p>
+                </div>
+
+                <div class="phase-card border-l-2 border-l-red-500 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-2 opacity-10"><span class="text-4xl">🚫</span></div>
+                    <div class="phase-title text-red-400">Fase 1: O Choque de Ausência (Dias 1-7)</div>
+                    <p class="text-[10px] text-slate-400 mb-4 uppercase tracking-widest font-bold">Objetivo: Quebrar a dependência de Dopamina dele.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-red-900/50 text-red-200 border border-red-500/30">Dias 1 a 3: Detox Radical</span>
+                            <ul class="text-xs text-slate-300 leading-relaxed list-disc pl-4 space-y-1 mt-2">
+                                <li><strong>Zero Visualizações:</strong> Não veja os stories dele. (Isso é crucial. Se você ver, ele sabe que você está orbitando).</li>
+                                <li><strong>Zero Postagens:</strong> Suma do Instagram. Nenhuma foto, nenhuma indireta, nenhuma música triste. Vire um fantasma.</li>
+                                <li><strong>O Efeito:</strong> O cérebro dele vai estranhar o silêncio. "Por que ela não está correndo atrás?". A dúvida gera atração.</li>
+                            </ul>
                         </div>
-                        <div class="bg-white/5 p-3 rounded-lg border border-white/5">
-                            <span class="day-badge">Dia 3-4</span>
-                            <p class="text-xs text-slate-300 leading-relaxed">Neutralização. Se ele falar: Responda educado, curto e sem perguntas.</p>
+
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-red-900/50 text-red-200 border border-red-500/30">Dias 4 a 7: A Muralha de Gelo</span>
+                            <p class="text-xs text-slate-300 mt-2 mb-2">Se ele mandar mensagem neste período (teste de ego), use a <strong>Regra do Espelho Frio</strong>:</p>
+                            <div class="bg-black/40 p-3 rounded border-l-2 border-slate-500">
+                                <p class="text-xs text-slate-400 italic">Ele: "Oi, sumida."</p>
+                                <p class="text-xs text-emerald-300 font-bold mt-1">Você: "Oi. Tudo bem por aí?"</p>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-2">Sem emojis. Sem perguntas sobre a vida dele. Demore 3x mais que ele para responder.</p>
                         </div>
                     </div>
                 </div>
-                <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg mr-2">✨</span> Fase 2: Reposicionamento (8-15)</div>
-                    <div class="bg-white/5 p-3 rounded-lg border border-white/5">
-                        <span class="day-badge">Dia 8-10</span>
-                        <p class="text-xs text-slate-300 leading-relaxed">Micro-presença: 1 reação leve a story. Sem texto emocional. Mostre que você está viva, mas não disponível.</p>
+
+                <div class="phase-card border-l-2 border-l-purple-500 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-2 opacity-10"><span class="text-4xl">✨</span></div>
+                    <div class="phase-title text-purple-400">Fase 2: Reposicionamento de Valor (Dias 8-15)</div>
+                    <p class="text-[10px] text-slate-400 mb-4 uppercase tracking-widest font-bold">Objetivo: Mostrar que sua vida está incrível sem ele.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-purple-900/50 text-purple-200 border border-purple-500/30">O Retorno Triunfal (Stories)</span>
+                            <p class="text-xs text-slate-300 mt-2">Volte a postar, mas com estratégia. Nada de fotos em casa de pijama.</p>
+                            <ul class="text-xs text-slate-300 list-disc pl-4 space-y-2 mt-2">
+                                <li><strong>Foto 1 (Estética):</strong> Uma foto onde você está arrumada, mas sozinha. Legenda curta ou sem legenda.</li>
+                                <li><strong>Foto 2 (Social):</strong> Um café, uma taça de vinho, um livro. Mostre que você tem "tempo de qualidade" com você mesma.</li>
+                                <li><strong>Segredo:</strong> Se ele curtir ou reagir, NÃO responda na hora. Apenas curta a reação no dia seguinte.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-purple-900/50 text-purple-200 border border-purple-500/30">Dia 12: A Micro-Validação</span>
+                            <p class="text-xs text-slate-300 mt-2">Reaja a UM story dele (apenas se for algo interessante, não selfie). Um emoji de "👏" ou "🔥" (se for algo de conquista dele).</p>
+                            <p class="text-xs text-slate-400 mt-1">Isso sinaliza: "Não te odeio, mas não preciso de você".</p>
+                        </div>
                     </div>
                 </div>
-                <div class="phase-card">
-                    <div class="phase-title"><span class="text-lg mr-2">🎣</span> Fase 3: A Isca (16-23)</div>
-                    <div class="bg-white/5 p-3 rounded-lg border border-white/5">
-                        <span class="day-badge">Estratégia</span>
-                        <p class="text-xs text-slate-300 leading-relaxed">Convite Indireto: "Vou fazer X tal dia. Se animar, aparece." Sem cobrança.</p>
+
+                <div class="phase-card border-l-2 border-l-emerald-500 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-2 opacity-10"><span class="text-4xl">🎣</span></div>
+                    <div class="phase-title text-emerald-400">Fase 3: A Isca da Curiosidade (Dias 16-23)</div>
+                    <p class="text-[10px] text-slate-400 mb-4 uppercase tracking-widest font-bold">Objetivo: Criar a oportunidade dele te ver.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-emerald-900/50 text-emerald-200 border border-emerald-500/30">A Mensagem de Reabertura</span>
+                            <p class="text-xs text-slate-300 mt-2">Se ele ainda não correu atrás (o que é raro se você fez a Fase 1 certa), você vai enviar a <strong>"Mensagem do Gatilho de Memória"</strong>.</p>
+                            <div class="bg-black/40 p-3 rounded border-l-2 border-emerald-500 mt-2">
+                                <p class="text-xs text-white font-medium">"Vi [algo que ele gosta] hoje e lembrei daquela vez que a gente [memória engraçada/leve]. Espero que esteja tudo bem."</p>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-2">Leve. Despretensiosa. Sem cobrar encontro.</p>
+                        </div>
+
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <span class="day-badge bg-emerald-900/50 text-emerald-200 border border-emerald-500/30">O Convite Indireto (A Cartada Final)</span>
+                            <p class="text-xs text-slate-300 mt-2">Quando a conversa fluir (e só se fluir), solte:</p>
+                            <p class="text-xs text-white bg-black/40 p-2 rounded mt-1">"Vou estar no [Lugar X] quinta-feira resolver umas coisas. Se tiver por perto e quiser tomar um café rapidinho, me avisa."</p>
+                            <p class="text-xs text-slate-400 mt-1">Isso tira a pressão de "encontro romântico" e coloca como "casualidade".</p>
+                        </div>
                     </div>
                 </div>
+
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-5 rounded-2xl border border-amber-500/30 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-black text-[9px] font-bold px-2 py-1 rounded-bl-lg">BÔNUS VIP</div>
+                    <h4 class="text-amber-400 font-bold text-sm mb-2 flex items-center gap-2">⚠️ Kit de Emergência</h4>
+                    <ul class="text-xs text-slate-300 space-y-2">
+                        <li class="flex gap-2">
+                            <span class="text-red-400 font-bold">❌</span> 
+                            <span><strong>Ele postou foto com outra?</strong> Silêncio total. Não bloqueie. A indiferença dói mais que o ódio.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-red-400 font-bold">❌</span> 
+                            <span><strong>Ele pediu para voltar de madrugada?</strong> "Amanhã a gente conversa." (Jamais aceite migalhas noturnas).</span>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
 
             <div id="protocol-lock" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-[#0f0c29]/95 backdrop-blur-[6px] rounded-xl mt-12 border border-white/5">
