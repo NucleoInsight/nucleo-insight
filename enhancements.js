@@ -1,149 +1,81 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Núcleo Insight | Diagnóstico</title>
-    
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '757989490676159');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
-    /></noscript>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
-        .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-soft { animation: pulse-soft 3s infinite; }
-        @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
+/*
+ * enhancements.js - Lógica de Revelação e Conversão
+ * Responsável por: Processamento final, Definição do Arquétipo e Exibição do Resultado.
+ */
 
-    <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
+// Mapeamento de Resultados (Copywriting Persuasivo)
+const RESULTS = {
+    // Padrão 1: A Ansiosa (A maioria cai aqui)
+    ansiosa: {
+        title: "A Ansiosa Disponível",
+        desc: "Você inconscientemente ensinou a ele que <strong>o seu tempo vale menos que o dele</strong>. Ao responder rápido demais e aceitar migalhas, você desligou o instinto de 'caça' no cérebro dele. A boa notícia? Esse é o padrão mais fácil de reverter com a técnica de Escassez Programada."
+    },
+    // Padrão 2: A Controladora (Para quem responde que 'Stalkea')
+    controladora: {
+        title: "A Investigadora Emocional",
+        desc: "Sua necessidade de saber tudo e controlar os passos dele está gerando um efeito de <strong>Sufocamento Silencioso</strong>. Ele sente que perdeu a liberdade e, por instinto, se afasta para respirar. Você precisa aprender a soltar a corda para ele vir até sua mão."
+    },
+    // Padrão 3: A Desvalorizada (Para quem 'cancelou compromissos')
+    desvalorizada: {
+        title: "A Doadora Excessiva",
+        desc: "Você dá 100% e recebe 20%. O desequilíbrio está óbvio. Ele gosta de você, mas <strong>não te respeita como desafio</strong>. Homens valorizam aquilo que custa caro (emocionalmente) para conquistar. Você entregou o prêmio antes da corrida acabar."
+    }
+};
+
+// Função principal chamada pelo HTML quando o quiz acaba
+window.finishQuizFlow = function(answers) {
+    const quizContainer = document.getElementById('quiz-container');
+    const processingContainer = document.getElementById('processing-container');
+    const resultContainer = document.getElementById('result-container');
+
+    // 1. Esconde Quiz e Mostra Processamento
+    quizContainer.classList.add('hidden');
+    processingContainer.classList.remove('hidden');
+
+    // 2. Animação de porcentagem (Engajamento Visual)
+    let p = 0;
+    const int = setInterval(() => {
+        p += Math.floor(Math.random() * 15);
+        if(p > 100) p = 100;
+        document.getElementById('process-pct').innerText = p + '%';
         
-        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
-            <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
+        if(p === 100) {
+            clearInterval(int);
             
-            <div class="mb-8 flex items-center justify-between relative z-10">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
-                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div></div>
-            </div>
+            // 3. Define o Perfil Baseado nas Respostas
+            const perfil = defineProfile(answers);
             
-            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
-            <div id="answers-box" class="space-y-3 relative z-10"></div>
-        </div>
+            // 4. Injeta o Texto Personalizado
+            document.getElementById('result-title').innerHTML = perfil.title;
+            document.getElementById('result-description').innerHTML = perfil.desc;
 
-        <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-24 h-24 mx-auto mb-8">
-                <div class="absolute inset-0 rounded-full border-4 border-white/5"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm animate-pulse" id="process-pct">0%</div>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Calculando Padrão...</h3>
-            <p id="process-text" class="text-sm text-slate-400">Cruzando suas respostas com o banco de dados...</p>
-        </div>
-
-        <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center fade-in border-t border-purple-500/20 overflow-hidden">
-            
-            <div class="bg-black/40 p-6 border-b border-white/5">
-                <p class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
-                <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
-            </div>
-
-            <div class="p-6">
-                <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">
-                    ...
-                </p>
-
-                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6">
-                    <h3 class="text-white font-bold text-sm mb-2 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Plano de Quebra de Ciclo
-                    </h3>
-                    <p class="text-[11px] text-slate-400 mb-4">Saber o padrão é o primeiro passo. Para fazer ele sentir sua falta e correr atrás, você precisa do <strong>Guia de Resgate Neural</strong>.</p>
-                    
-                    <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition transform active:scale-[0.98] pulse-soft">
-                        <span>Baixar Guia Completo</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
-                    <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through">R$ 97</span> por <span class="text-emerald-400 font-bold">R$ 27</span></p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script type="module" src="./enhancements.js"></script>
-    <script type="module" src="./tracker.js"></script>
-
-    <script>
-        const realQuestions = [
-            { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
-            { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
-            { t: "Se ele postar um story agora, quanto tempo você leva para ver?", a: ["Imediatamente (tenho notificação)", "Em alguns minutos", "Só quando abro o app", "Evito ver pra não dar moral"] },
-            { t: "Você sente que precisa 'pisar em ovos' para não irritá-lo?", a: ["Sim, tenho medo de falar errado", "Às vezes", "Não, sou espontânea", "Sinto que ele que pisa em ovos"] },
-            { t: "Como foi o fim (ou afastamento) da última vez?", a: ["Do nada (Ghosting)", "Briga explosiva", "Esfriou aos poucos", "Ainda estamos nos falando, mas mal"] },
-            { t: "O quanto você sabe da rotina dele?", a: ["Sei tudo (stalkei/pergunto)", "Sei o básico", "Sei só o que ele conta", "Não sei quase nada"] },
-            { t: "Quando vocês saem, a química é...", a: ["Incrível, parece alma gêmea", "Boa, mas ele é fechado", "Normal", "Sinto ele distante pessoalmente"] },
-            { t: "Você já deixou de fazer algo seu para ficar disponível pra ele?", a: ["Várias vezes", "Raramente", "Nunca", "Sim, cancelei compromissos"] },
-            { t: "Ele já disse que você é 'intensa demais' ou 'dramática'?", a: ["Sim, já ouvi isso", "Disse que sou fechada", "Nunca disse", "Disse que sou a mulher da vida dele"] },
-            { t: "O quanto você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
-        ];
-        
-        const qText = document.getElementById('question-text');
-        const aBox = document.getElementById('answers-box');
-        
-        // Váriável global para armazenar respostas para o enhancements.js usar
-        window.userAnswers = []; 
-
-        function runQuiz(idx) {
-            const pct = ((idx) / realQuestions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${pct}%`;
-
-            if(window.customTrack) {
-                window.customTrack("quiz_step", { step: idx + 1 });
-            }
-
-            if(idx >= realQuestions.length) {
-                // FIM DO QUIZ - Chama o novo arquivo de melhorias
-                if(window.finishQuizFlow) {
-                    window.finishQuizFlow(window.userAnswers);
-                } else {
-                    console.error("Enhancements.js não carregou");
-                }
-                return;
-            }
-            
-            qText.innerText = realQuestions[idx].t;
-            aBox.innerHTML = '';
-            realQuestions[idx].a.forEach(ans => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 hover:border-purple-500/50 text-slate-200 p-4 rounded-xl border border-white/10 active:scale-[0.98] transition duration-200";
-                btn.innerText = ans;
-                btn.onclick = () => {
-                    window.userAnswers.push(ans); // Salva a resposta
-                    runQuiz(idx + 1);
-                };
-                aBox.appendChild(btn);
-            });
+            // 5. Troca para a Tela de Resultado
+            setTimeout(() => {
+                processingContainer.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+                
+                // Trackeia o evento de "Visualizou Resultado"
+                if(window.fbq) window.fbq('track', 'ViewContent', { content_name: perfil.title });
+            }, 800);
         }
-        
-        runQuiz(0);
-    </script>
-</body>
-</html>
+    }, 250);
+};
+
+// Lógica simples para definir o perfil (pode ser refinada)
+function defineProfile(answers) {
+    // Verifica palavras-chave nas respostas
+    const textAnswers = answers.join(" ").toLowerCase();
+
+    if (textAnswers.includes("imediatamente") || textAnswers.includes("medo")) {
+        return RESULTS.ansiosa;
+    }
+    if (textAnswers.includes("sei tudo") || textAnswers.includes("stalkei")) {
+        return RESULTS.controladora;
+    }
+    if (textAnswers.includes("cancelei") || textAnswers.includes("deixei de fazer")) {
+        return RESULTS.desvalorizada;
+    }
+
+    // Padrão (Fallback) - O mais comum
+    return RESULTS.ansiosa;
+}
