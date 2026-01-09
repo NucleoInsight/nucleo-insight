@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Tracker | Insight Core</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 20px; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold text-emerald-400">SYSTEM_TRACKER v1.0</h1>
+                <p class="text-sm text-slate-500">Real-time User Telemetry</p>
+            </div>
+            <div class="flex gap-4">
+                <select id="project-filter" class="bg-slate-800 border border-slate-600 rounded p-2 text-xs">
+                    <option value="all">All Projects</option>
+                </select>
+                <button onclick="loadData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded text-xs font-bold">REFRESH DATA</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="card border-l-4 border-l-blue-500">
+                <h3 class="text-xs text-slate-400 uppercase">Total Page Views</h3>
+                <p id="kpi-views" class="text-2xl font-bold text-white mt-1">0</p>
+            </div>
+            <div class="card border-l-4 border-l-purple-500">
+                <h3 class="text-xs text-slate-400 uppercase">Quiz Completions</h3>
+                <p id="kpi-quiz" class="text-2xl font-bold text-white mt-1">0</p>
+            </div>
+            <div class="card border-l-4 border-l-emerald-500">
+                <h3 class="text-xs text-slate-400 uppercase">Checkout Clicks</h3>
+                <p id="kpi-clicks" class="text-2xl font-bold text-white mt-1">0</p>
+            </div>
+            <div class="card border-l-4 border-l-red-500">
+                <h3 class="text-xs text-slate-400 uppercase">Active Sessions (30m)</h3>
+                <p id="kpi-active" class="text-2xl font-bold text-white mt-1">0</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="md:col-span-2 card h-[500px] overflow-y-auto">
+                <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LIVE EVENT STREAM
+                </h3>
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400">
+                            <th class="pb-2">Time</th>
+                            <th class="pb-2">Event</th>
+                            <th class="pb-2">Label/Data</th>
+                            <th class="pb-2">Device</th>
+                        </tr>
+                    </thead>
+                    <tbody id="event-feed" class="divide-y divide-slate-800">
+                        <tr><td colspan="4" class="py-4 text-center text-slate-600">Loading stream...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="space-y-6">
+                <div class="card">
+                    <h3 class="text-xs font-bold text-white mb-2">Events Distribution</h3>
+                    <canvas id="chart-events"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
+            authDomain: "nucleoinsight-e4566.firebaseapp.com",
+            projectId: "nucleoinsight-e4566",
+            storageBucket: "nucleoinsight-e4566.firebasestorage.app",
+            messagingSenderId: "650150743348",
+            appId: "1:650150743348:web:f62f3cc95a38a5e90ca961",
+            measurementId: "G-M24P3TBP5J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.loadData = async () => {
+            console.log("Fetching data...");
+            const eventsRef = collection(db, "analytics_events");
+            
+            // Get last 50 events
+            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(50));
+            const snapshot = await getDocs(q);
+            
+            const tbody = document.getElementById('event-feed');
+            tbody.innerHTML = '';
+
+            let views = 0;
+            let clicks = 0;
+            let quiz = 0;
+            
+            const eventCounts = {};
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : 'N/A';
+                
+                // KPIs logic (Simplified for demo)
+                if(data.eventName === 'page_view') views++;
+                if(data.eventName === 'click' && (data.data.label.includes('Destravar') || data.data.label.includes('Liberar'))) clicks++;
+                if(data.eventName === 'click' && data.data.label.includes('Login')) quiz++; // Assuming login is end of quiz
+                
+                // Chart Data
+                eventCounts[data.eventName] = (eventCounts[data.eventName] || 0) + 1;
+
+                // Render Row
+                const row = `
+                    <tr class="hover:bg-slate-800 transition">
+                        <td class="py-2 text-slate-500">${time}</td>
+                        <td class="py-2 font-bold ${getColor(data.eventName)}">${data.eventName}</td>
+                        <td class="py-2 text-slate-300">${formatData(data.data)}</td>
+                        <td class="py-2 text-slate-500 text-[10px]">${data.device.platform}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Update KPIs
+            document.getElementById('kpi-views').innerText = views + "+"; // Since query is limited
+            document.getElementById('kpi-clicks').innerText = clicks;
+            document.getElementById('kpi-quiz').innerText = quiz;
+
+            // Update Chart
+            renderChart(eventCounts);
+        };
+
+        function formatData(data) {
+            if (data.label) return data.label;
+            if (data.step) return `Step ${data.step}`;
+            if (data.video) return `${data.video} (${data.action})`;
+            return JSON.stringify(data).substring(0, 30);
+        }
+
+        function getColor(name) {
+            if(name === 'page_view') return 'text-blue-400';
+            if(name === 'click') return 'text-emerald-400';
+            if(name === 'quiz_step') return 'text-purple-400';
+            return 'text-white';
+        }
+
+        let chartInstance = null;
+        function renderChart(data) {
+            const ctx = document.getElementById('chart-events').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#3b82f6', '#10b981', '#a855f7', '#f43f5e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'right', labels: { color: '#fff' } } }
+                }
+            });
+        }
+
+        // Auto Load
+        loadData();
+    </script>
+</body>
+</html>
