@@ -466,6 +466,10 @@
             const pct = ((idx) / realQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
+            // 🔥 RASTREAMENTO DE PASSO (STEP TRACKING) 🔥
+            // Isso envia pro seu painel Admin exatamente em qual pergunta o usuário está.
+            if(window.customTrack) window.customTrack("quiz_step", { step: idx + 1, total: realQuestions.length });
+
             if(idx >= realQuestions.length) {
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('processing-container').classList.remove('hidden');
@@ -500,5 +504,7 @@
         runQuiz(0);
 
     </script>
+    
+    <script type="module" src="./tracker.js"></script>
 </body>
 </html>
