@@ -472,7 +472,7 @@
             { t: "Quando vocês saem, a química é...", a: ["Incrível, parece alma gêmea", "Boa, mas ele é fechado", "Normal", "Sinto ele distante pessoalmente"] },
             { t: "Você já deixou de fazer algo seu para ficar disponível pra ele?", a: ["Várias vezes", "Raramente", "Nunca", "Sim, cancelei compromissos"] },
             { t: "Ele já disse que você é 'intensa demais' ou 'dramática'?", a: ["Sim, já ouvi isso", "Disse que sou fechada", "Nunca disse", "Disse que sou a mulher da vida dele"] },
-            { t: "O que você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
+            { t: "O quanto você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
         ];
         
         const qText = document.getElementById('question-text');
@@ -482,9 +482,15 @@
             const pct = ((idx) / realQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            // 🔥 RASTREAMENTO DE PASSO (STEP TRACKING) 🔥
-            // Isso envia pro seu painel Admin exatamente em qual pergunta o usuário está.
-            if(window.customTrack) window.customTrack("quiz_step", { step: idx + 1, total: realQuestions.length });
+            // 🔥 RASTREAMENTO INTELIGENTE (Tenta 2x se o tracker não estiver pronto) 🔥
+            const trackNow = () => {
+                if(window.customTrack) {
+                    window.customTrack("quiz_step", { step: idx + 1, total: realQuestions.length });
+                } else {
+                    setTimeout(trackNow, 500); // Tenta de novo meio segundo depois
+                }
+            };
+            trackNow();
 
             if(idx >= realQuestions.length) {
                 document.getElementById('quiz-container').classList.add('hidden');
