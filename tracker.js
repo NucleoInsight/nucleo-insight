@@ -1,8 +1,7 @@
-// tracker.js - The Silent Observer
+// tracker.js v2.0 - Com UTMs, Modo Teste e Integração Pixel
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Re-use your existing config (safe to duplicate here for the standalone module)
 const firebaseConfig = {
     apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
     authDomain: "nucleoinsight-e4566.firebaseapp.com",
@@ -16,37 +15,57 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Generate a unique Session ID for this visit
-const sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
-const projectId = document.title || "Unknown Project"; // Grabs page title as project name
+// --- 1. CAPTURA DE PARÂMETROS DE URL (UTMs e Teste) ---
+const urlParams = new URLSearchParams(window.location.search);
 
-// Helper to get User Device Info
-const getDeviceInfo = () => {
-    return {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        screenSize: `${window.screen.width}x${window.screen.height}`,
-        url: window.location.href,
-        referrer: document.referrer
-    };
+// Verifica se é teste (?mode=test na URL)
+const isTestMode = urlParams.get('mode') === 'test' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+
+// Captura UTMs
+const campaignData = {
+    source: urlParams.get('utm_source') || 'direct',
+    medium: urlParams.get('utm_medium') || 'none',
+    campaign: urlParams.get('utm_campaign') || 'none',
+    content: urlParams.get('utm_content') || 'none'
 };
 
-// --- CORE TRACKING FUNCTION ---
+// ID da Sessão
+const sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
+
+// --- 2. FUNÇÃO PRINCIPAL DE RASTREAMENTO ---
 async function trackEvent(eventName, eventData = {}) {
     const payload = {
-        projectId: projectId,
+        projectId: document.title,
         sessionId: sessionId,
         eventName: eventName,
         timestamp: new Date(),
-        device: getDeviceInfo(),
+        isTest: isTestMode, // Aqui está a mágica da separação
+        campaign: campaignData, // Aqui entram os dados da campanha
+        device: {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            url: window.location.href
+        },
         data: eventData
     };
 
     try {
-        // "Fire and forget" - we don't await this so it doesn't slow down the UI
+        // Envia para o Nosso Banco (Firebase)
         addDoc(collection(db, "analytics_events"), payload);
-        console.log(`[Tracker] ${eventName}`, eventData);
+        
+        if(isTestMode) {
+            console.log(`🧪 [TESTE] Evento disparado: ${eventName}`, payload);
+        } else {
+            // --- 3. PONTE PARA O FACEBOOK PIXEL (Se existir) ---
+            // Se o Pixel estiver instalado no index.html, nós avisamos ele também
+            if (typeof fbq === 'function') {
+                if(eventName === 'page_view') fbq('track', 'PageView');
+                else if(eventName === 'checkout') fbq('track', 'InitiateCheckout');
+                else if(eventName === 'purchase') fbq('track', 'Purchase');
+                else fbq('trackCustom', eventName, eventData);
+            }
+        }
+
     } catch (e) {
         console.error("[Tracker Error]", e);
     }
@@ -54,15 +73,15 @@ async function trackEvent(eventName, eventData = {}) {
 
 // --- AUTOMATIC LISTENERS ---
 
-// 1. Track Page View
+// Page View Automático
 trackEvent("page_view");
 
-// 2. Track Clicks (Smart Tracking)
+// Cliques Automáticos
 document.addEventListener('click', (e) => {
     const target = e.target.closest('button, a, .clickable');
     if (target) {
         let label = target.innerText || target.id || target.className;
-        label = label.substring(0, 50); // Truncate if too long
+        label = label.substring(0, 50);
         trackEvent("click", {
             element: target.tagName,
             label: label,
@@ -71,21 +90,12 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 3. Track Time on Page (Heartbeat every 30 seconds)
+// Heartbeat (Tempo na página)
 setInterval(() => {
     if (document.visibilityState === 'visible') {
         trackEvent("heartbeat", { timeElapsed: "30s" });
     }
 }, 30000);
 
-// 4. Track Video Logic (Custom function you can call)
-window.trackVideo = (videoName, action, currentTime) => {
-    trackEvent("video_interaction", {
-        video: videoName,
-        action: action, // 'play', 'pause', '25%', '50%', '100%'
-        time: currentTime
-    });
-};
-
-// Expose trackEvent globally so your main app can use it manually if needed
+// Expõe globalmente
 window.customTrack = trackEvent;
