@@ -3,13 +3,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
-    authDomain: "nucleoinsight-e4566.firebaseapp.com",
-    projectId: "nucleoinsight-e4566",
-    storageBucket: "nucleoinsight-e4566.firebasestorage.app",
-    messagingSenderId: "650150743348",
-    appId: "1:650150743348:web:f62f3cc95a38a5e90ca961",
-    measurementId: "G-M24P3TBP5J"
+  apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
+  authDomain: "nucleoinsight-e4566.firebaseapp.com",
+  projectId: "nucleoinsight-e4566",
+  storageBucket: "nucleoinsight-e4566.firebasestorage.app",
+  messagingSenderId: "650150743348",
+  appId: "1:650150743348:web:f62f3cc95a38a5e90ca961",
+  measurementId: "G-M24P3TBP5J"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -17,39 +17,28 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const RESULTS = {
-    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou a ele que seu tempo vale menos que o dele. Ao responder rápido demais, você desligou o instinto de 'caça' e tirou o prazer da conquista." },
-    desvalorizada: { title: "A Doadora Excessiva", desc: "Você dá 100% e recebe 20%. Ele não te respeita como um desafio porque você entregou o prêmio antes mesmo da corrida começar." }
+    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou a ele que seu tempo vale menos que o dele. Ao responder rápido demais, desligou o instinto de 'caça' no cérebro dele." },
+    desvalorizada: { title: "A Doadora Excessiva", desc: "Você dá 100% e recebe 20%. Ele não te respeita como desafio porque você já se entregou por completo." }
 };
 
 function LIBERAR_CONTEUDO(userData) {
-    document.getElementById('quiz-flow').classList.add('hidden');
+    const ids = ['quiz-container', 'processing-container', 'result-container'];
+    ids.forEach(id => { if(document.getElementById(id)) document.getElementById(id).classList.add('hidden'); });
+    
     const prot = document.getElementById('protocolo');
-    prot.classList.remove('hidden');
-    prot.style.display = 'block';
+    if(prot) prot.classList.remove('hidden');
 
     const upsellBox = document.getElementById('upsell-container');
-
     if(userData.protocol === "active") {
-        upsellBox.innerHTML = `
-            <div class="glass-card p-8 rounded-[2.5rem] border border-emerald-500/30 bg-emerald-500/5">
-                <h2 class="text-xl font-bold text-emerald-400 mb-2">Protocolo 2.0 Ativo</h2>
-                <p class="text-slate-400 text-sm">Use o guia de Reversão Neural nos slides ao lado.</p>
-            </div>`;
+        upsellBox.innerHTML = `<div class="glass-card p-8 rounded-3xl border border-emerald-500/30 text-center"><h2 class="text-xl font-bold text-emerald-400">✅ Protocolo 2.0 Ativado</h2><p class="text-slate-300 text-sm mt-2">A Reversão de Polaridade está liberada nos slides acima.</p></div>`;
     } else {
         upsellBox.innerHTML = `
-            <div class="relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-[2.5rem] blur opacity-40 group-hover:opacity-100 transition duration-1000"></div>
-                <div class="relative bg-slate-950 p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
-                    <span class="inline-block bg-pink-500/20 text-pink-400 text-[9px] font-black uppercase px-3 py-1 rounded-full mb-4">Acesso Restrito</span>
-                    <h2 class="text-2xl font-black text-white mb-4 leading-tight">O Protocolo Secreto 2.0: <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Reversão de Polaridade</span></h2>
-                    <p class="text-slate-300 text-sm mb-6">O Produto 1 parou seus erros. O <b>Protocolo 2.0</b> força ele a te procurar em menos de 24 horas, invertendo o medo de perda.</p>
-                    <div class="space-y-3 mb-8 text-xs text-slate-400">
-                        <p>✓ Gatilho da "Punição Silenciosa"</p>
-                        <p>✓ Técnica do Vácuo Estratégico</p>
-                    </div>
-                    <a href="https://pay.kiwify.com.br/cAMh7az" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center font-black py-4 rounded-2xl hover:scale-105 transition">ATIVAR PROTOCOLO 2.0</a>
-                    <p class="text-[9px] text-center text-slate-600 mt-4 uppercase tracking-widest">Acesso Vitalício + Garantia de Resposta</p>
-                </div>
+            <div class="bg-gradient-to-br from-purple-800 to-black p-8 rounded-[2.5rem] border-2 border-purple-400/40 shadow-2xl text-left relative overflow-hidden">
+                <span class="text-pink-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 block">Expansão Neural Vitalícia</span>
+                <h2 class="text-2xl font-black text-white mb-4 leading-tight">O Protocolo Secreto:<br><span class="text-purple-300">Reversão de Polaridade</span></h2>
+                <p class="text-slate-200 text-sm mb-6">O Guia 1 parou seus erros. O <b>Protocolo 2.0</b> força ele a te procurar em menos de 24h, invertendo o medo de perda visceral.</p>
+                <a href="https://pay.kiwify.com.br/7B4m9iI" class="block w-full bg-white text-purple-900 text-center font-black py-4 rounded-2xl hover:scale-105 transition shadow-2xl">ATIVAR PROTOCOLO 2.0</a>
+                <p class="text-[10px] text-center text-purple-400 mt-4 font-bold uppercase tracking-widest text-center">De R$ 197 por apenas R$ 47</p>
             </div>`;
     }
 }
@@ -59,8 +48,7 @@ window.finishQuizFlow = function(answers) {
     document.getElementById('processing-container').classList.remove('hidden');
     let p = 0;
     const int = setInterval(() => {
-        p += 10;
-        document.getElementById('process-pct').innerText = p + '%';
+        p += 10; document.getElementById('process-pct').innerText = p + '%';
         if(p >= 100) {
             clearInterval(int);
             const perfil = (answers.join("").length % 2 === 0) ? RESULTS.ansiosa : RESULTS.desvalorizada;
@@ -68,12 +56,11 @@ window.finishQuizFlow = function(answers) {
             document.getElementById('result-container').classList.remove('hidden');
             document.getElementById('result-title').innerText = perfil.title;
             document.getElementById('result-description').innerText = perfil.desc;
-
-            let t = 600;
+            let t = 600, d = document.getElementById('countdown-timer');
             setInterval(() => {
-                let m = Math.floor(t/60), s = t%60;
-                document.getElementById('countdown-timer').innerText = `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
-                if(t > 0) t--;
+                let m = parseInt(t/60), s = parseInt(t%60);
+                if(d) d.textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+                if(--t < 0) t = 0;
             }, 1000);
         }
     }, 200);
@@ -88,5 +75,5 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-const btn = document.getElementById('btn-login-manual');
-if (btn) btn.onclick = async () => await signInWithPopup(auth, new GoogleAuthProvider());
+const btnLogin = document.getElementById('btn-login-manual');
+if (btnLogin) btnLogin.onclick = async () => { try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { console.error(e); } };
