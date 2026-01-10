@@ -25,32 +25,33 @@ const db = getFirestore(app);
 
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
+// Variável para saber se o usuário está vendo o resultado
+window.isAtResultStage = false;
+
 // ============================================================================
-// FUNÇÃO DE SALVAMENTO DO FUNIL (IMPEDE VOLTAR PRO QUIZ)
+// FUNÇÃO DE TROCA DE TELA (PROTEGIDA)
 // ============================================================================
 function forceShowProtocol() {
-    console.log("Executando troca de tela forçada...");
+    console.log("Acionando transição para o Protocolo...");
     
-    // 1. Tenta usar a função global de abas se ela existir
+    // Se estiver no modo teste ou for admin, e não estiver na tela de resultado, 
+    // não forçamos a saída para permitir testar o quiz.
+    const isTesting = new URLSearchParams(window.location.search).get('mode') === 'test';
+    if (isTesting && !window.isAtResultStage) return;
+
     if (window.switchTab) {
         window.switchTab('protocolo');
     } else {
-        // 2. Se não existir, escondemos os containers do quiz manualmente
-        const containers = ['quiz-container', 'processing-container', 'result-container'];
-        containers.forEach(id => {
+        const toHide = ['quiz-container', 'processing-container', 'result-container'];
+        toHide.forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.style.display = 'none';
+            if(el) { el.style.display = 'none'; el.classList.add('hidden'); }
         });
         
-        // 3. Tenta mostrar o container do protocolo (se o ID for esse)
         const prot = document.getElementById('protocolo-container') || document.getElementById('protocolo');
         if(prot) {
             prot.style.display = 'block';
             prot.classList.remove('hidden');
-        } else {
-            // Caso extremo: Se não houver aba, redireciona para a página de vendas do Upsell
-            console.warn("Aba não encontrada, redirecionando para checkout...");
-            // window.location.href = "LINK_DO_SEU_UPSELL_AQUI"; 
         }
     }
 }
@@ -65,6 +66,8 @@ const RESULTS = {
 };
 
 window.finishQuizFlow = function(answers) {
+    window.isAtResultStage = true; // Agora o sistema sabe que pode redirecionar se for pago
+    
     const quizContainer = document.getElementById('quiz-container');
     const processingContainer = document.getElementById('processing-container');
     const resultContainer = document.getElementById('result-container');
@@ -84,10 +87,23 @@ window.finishQuizFlow = function(answers) {
 
             if(processingContainer) processingContainer.classList.add('hidden');
             if(resultContainer) resultContainer.classList.remove('hidden');
-            startTimer(600, document.getElementById('countdown-timer'));
+            
+            // Verifica se já é premium para pular logo
+            checkPremiumStatus();
         }
     }, 200);
 };
+
+function checkPremiumStatus() {
+    const user = auth.currentUser;
+    if (user) {
+        getDoc(doc(db, "users", user.email)).then(docSnap => {
+            if (docSnap.exists() && docSnap.data().status === 'premium') {
+                setTimeout(() => forceShowProtocol(), 1500);
+            }
+        });
+    }
+}
 
 function defineProfile(answers) {
     const text = answers.join(" ").toLowerCase();
@@ -96,19 +112,8 @@ function defineProfile(answers) {
     return RESULTS.desvalorizada;
 }
 
-function startTimer(duration, display) {
-    if(!display) return;
-    var timer = duration, minutes, seconds;
-    setInterval(() => {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-        display.textContent = (minutes < 10 ? "0"+minutes : minutes) + ":" + (seconds < 10 ? "0"+seconds : seconds);
-        if (--timer < 0) timer = 0;
-    }, 1000);
-}
-
 // ============================================================================
-// 2. LÓGICA DE LOGIN E REDIRECIONAMENTO (O CORAÇÃO DO SISTEMA)
+// 2. LÓGICA DE LOGIN E ADMIN
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
@@ -120,11 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnAdmin.classList.remove('hidden-force');
             }
 
-            // OUVINTE EM TEMPO REAL: Se mudar no Firebase, troca a tela na hora
+            // OUVINTE EM TEMPO REAL: Só age se o usuário estiver na fase de resultado
             onSnapshot(doc(db, "users", user.email), (snapshot) => {
                 const data = snapshot.data();
-                if (data && data.status === "premium") {
-                    console.log("Pagamento detectado no Firebase!");
+                if (data && data.status === "premium" && window.isAtResultStage) {
                     forceShowProtocol();
                 }
             });
@@ -133,13 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (btnLogin) {
         btnLogin.addEventListener("click", async (e) => {
-            e.preventDefault(); // Impede o navegador de dar reload no clique
+            e.preventDefault();
             btnLogin.innerText = "Verificando...";
             try {
                 const provider = new GoogleAuthProvider();
                 await signInWithPopup(auth, provider);
+                btnLogin.innerText = "Já fiz o pagamento";
             } catch (error) {
-                alert("Erro: " + error.message);
+                console.error(error);
                 btnLogin.innerText = "Já fiz o pagamento";
             }
         });
@@ -147,19 +152,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (btnAdmin) {
         btnAdmin.addEventListener("click", async (e) => {
-            e.preventDefault(); // FUNDAMENTAL: Impede o reload do botão
+            e.preventDefault();
             const user = auth.currentUser;
             if (!user) return alert("Logue primeiro.");
-            if (!confirm("Simular Pagamento?")) return;
-
-            btnAdmin.innerText = "Gravando...";
+            
+            btnAdmin.innerText = "Processando...";
             try {
                 const userRef = doc(db, "users", user.email);
-                // Atualiza o Firebase. O onSnapshot acima vai ver isso e mudar a tela.
                 await setDoc(userRef, { status: "premium" }, { merge: true });
                 btnAdmin.innerText = "Aprovado!";
+                window.isAtResultStage = true; // Força a permissão de troca de tela
+                setTimeout(() => forceShowProtocol(), 500);
             } catch (error) {
                 alert(error.message);
+                btnAdmin.innerText = "Simular Compra";
             }
         });
     }
