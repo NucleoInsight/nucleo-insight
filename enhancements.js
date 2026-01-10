@@ -6,9 +6,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, updateDoc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ============================================================================
-// CONFIGURAÇÃO DO FIREBASE
-// ============================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
   authDomain: "nucleoinsight-e4566.firebaseapp.com",
@@ -22,43 +19,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
-// CONTROLES DE ESTADO (Para evitar o reset automático)
-window.quizConcluido = false; 
-
 // ============================================================================
-// FUNÇÃO DE TRANSIÇÃO (SÓ EXECUTA NO MOMENTO CERTO)
-// ============================================================================
-function forceShowProtocol() {
-    // SÓ permite a troca de tela se o Quiz já tiver acabado
-    if (!window.quizConcluido) {
-        console.log("Troca de tela ignorada: Quiz ainda em andamento.");
-        return;
-    }
-
-    console.log("Quiz concluído e pagamento detectado. Mudando para Protocolo...");
-    
-    if (window.switchTab) {
-        window.switchTab('protocolo');
-    } else {
-        const toHide = ['quiz-container', 'processing-container', 'result-container'];
-        toHide.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) { el.style.display = 'none'; el.classList.add('hidden'); }
-        });
-        
-        const prot = document.getElementById('protocolo-container') || document.getElementById('protocolo');
-        if(prot) {
-            prot.style.display = 'block';
-            prot.classList.remove('hidden');
-        }
-    }
-}
-
-// ============================================================================
-// 1. LÓGICA DO QUIZ
+// 1. LÓGICA DO QUIZ (SEM MUDANÇA DE TELA AUTOMÁTICA)
 // ============================================================================
 const RESULTS = {
     ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou que seu tempo vale menos." },
@@ -78,12 +42,8 @@ window.finishQuizFlow = function(answers) {
     const int = setInterval(() => {
         p += 10;
         if(document.getElementById('process-pct')) document.getElementById('process-pct').innerText = p + '%';
-        
         if(p >= 100) {
             clearInterval(int);
-            // MARCA COMO CONCLUÍDO AQUI
-            window.quizConcluido = true; 
-
             const perfil = defineProfile(answers);
             if(document.getElementById('result-title')) document.getElementById('result-title').innerHTML = perfil.title;
             if(document.getElementById('result-description')) document.getElementById('result-description').innerHTML = perfil.desc;
@@ -91,21 +51,18 @@ window.finishQuizFlow = function(answers) {
             if(processingContainer) processingContainer.classList.add('hidden');
             if(resultContainer) resultContainer.classList.remove('hidden');
             
-            // Verifica se o usuário logado já é premium para pular a oferta
-            checkStatusAndRedirect();
+            // Inicia o timer de 10 minutos
+            var display = document.getElementById('countdown-timer');
+            var timer = 600;
+            setInterval(() => {
+                var min = parseInt(timer / 60, 10);
+                var sec = parseInt(timer % 60, 10);
+                if(display) display.textContent = (min < 10 ? "0"+min : min) + ":" + (sec < 10 ? "0"+sec : sec);
+                if (--timer < 0) timer = 0;
+            }, 1000);
         }
     }, 200);
 };
-
-async function checkStatusAndRedirect() {
-    const user = auth.currentUser;
-    if (user && window.quizConcluido) {
-        const docSnap = await getDoc(doc(db, "users", user.email));
-        if (docSnap.exists() && docSnap.data().status === 'premium') {
-            setTimeout(() => forceShowProtocol(), 1000);
-        }
-    }
-}
 
 function defineProfile(answers) {
     const text = answers.join(" ").toLowerCase();
@@ -115,36 +72,39 @@ function defineProfile(answers) {
 }
 
 // ============================================================================
-// 2. LÓGICA DE LOGIN E ADMIN
+// 2. LÓGICA DE LOGIN E ADMIN (MUDANÇA APENAS SOB COMANDO)
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
     const btnAdmin = document.getElementById('btn-admin-action');
 
+    // Monitora login apenas para mostrar o botão de admin
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            if (ADMIN_EMAILS.includes(user.email) && btnAdmin) {
-                btnAdmin.classList.remove('hidden-force');
-            }
-
-            // Escuta o banco de dados, mas só age se o Quiz tiver terminado
-            onSnapshot(doc(db, "users", user.email), (snapshot) => {
-                const data = snapshot.data();
-                if (data && data.status === "premium" && window.quizConcluido) {
-                    forceShowProtocol();
-                }
-            });
+        if (user && ADMIN_EMAILS.includes(user.email) && btnAdmin) {
+            btnAdmin.classList.remove('hidden-force');
         }
     });
 
     if (btnLogin) {
         btnLogin.addEventListener("click", async (e) => {
             e.preventDefault();
-            btnLogin.innerText = "Aguarde...";
+            btnLogin.innerText = "Verificando...";
             try {
                 const provider = new GoogleAuthProvider();
-                await signInWithPopup(auth, provider);
-                btnLogin.innerText = "Já fiz o pagamento";
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // Verifica status de pagamento
+                const docSnap = await getDoc(doc(db, "users", user.email));
+                if (docSnap.exists() && docSnap.data().status === 'premium') {
+                    // SE PAGOU: Muda o botão para "ACESSAR PROTOCOLO" em vez de mudar a tela sozinho
+                    btnLogin.innerHTML = "🔓 ACESSAR PROTOCOLO AGORA";
+                    btnLogin.classList.replace('bg-white/5', 'bg-green-600');
+                    btnLogin.onclick = () => { if(window.switchTab) window.switchTab('protocolo'); };
+                } else {
+                    alert("Pagamento não identificado para: " + user.email);
+                    btnLogin.innerText = "Já fiz o pagamento";
+                }
             } catch (error) {
                 btnLogin.innerText = "Já fiz o pagamento";
             }
@@ -159,14 +119,15 @@ document.addEventListener("DOMContentLoaded", () => {
             
             btnAdmin.innerText = "Simulando...";
             try {
-                const userRef = doc(db, "users", user.email);
-                // 1. Marca como pago no banco
-                await setDoc(userRef, { status: "premium" }, { merge: true });
+                // 1. Atualiza o Firebase
+                await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
                 
-                // 2. Libera a trava do Quiz e redireciona
-                window.quizConcluido = true; 
-                btnAdmin.innerText = "Aprovado!";
-                setTimeout(() => forceShowProtocol(), 500);
+                // 2. Transforma o botão de Admin em um botão de navegação
+                btnAdmin.innerText = "✅ APROVADO! CLIQUE PARA IR AO UPSELL";
+                btnAdmin.classList.replace('border-slate-700', 'bg-purple-600');
+                btnAdmin.onclick = () => { if(window.switchTab) window.switchTab('protocolo'); };
+                
+                alert("Simulação concluída. O botão acima agora te levará ao Upsell.");
             } catch (error) {
                 alert(error.message);
                 btnAdmin.innerText = "Simular Compra";
