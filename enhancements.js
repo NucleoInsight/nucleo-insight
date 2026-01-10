@@ -37,31 +37,46 @@ function LIBERAR_CONTEUDO(userData) {
         prot.style.display = 'block';
     }
 
-    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA)
+    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA + DESIGN HACKER)
     const upsellBox = document.getElementById('upsell-container');
     
-    // SÓ MOSTRA O VERDE SE TIVER "protocol" COMO "active"
+    // SÓ MOSTRA O DESIGN ROBUSTO SE TIVER "protocol" COMO "active"
     if(userData.protocol === "active") {
         
-        // --- CENÁRIO VIP (LIBERADO) ---
-        // DESIGN CORRIGIDO: Usando o glass-card simples verde com o botão, conforme a imagem.
+        // --- CENÁRIO VIP (DESIGN ROBUSTO/HACKER) ---
+        // Fundo escuro, textura de carbono, verde neon, combinando com o Simulador
         upsellBox.innerHTML = `
-            <div class="glass-card p-8 rounded-3xl border border-emerald-500/30 bg-emerald-500/10">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-emerald-500 rounded-full p-1">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-emerald-400">Protocolo Secreto Liberado</h2>
-                </div>
-                <p class="text-slate-300 text-sm leading-relaxed">Você agora tem acesso total à Reversão de Polaridade. <br><br> <strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
+            <div class="bg-gradient-to-r from-emerald-900/40 to-black p-6 rounded-3xl border border-emerald-500/40 relative overflow-hidden group hover:border-emerald-400 transition-all duration-500">
                 
-                <button onclick="window.location.href='protocolo.html'" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-sm tracking-wider">
-                    ACESSAR SISTEMA ➜
-                </button>
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/50 backdrop-blur-sm">
+                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-emerald-400 font-bold text-lg leading-none tracking-wide">ACESSO VITALÍCIO</h3>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold">Protocolo 2.0 Ativo</span>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">Liberado</span>
+                    </div>
+
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed border-l-2 border-emerald-500/30 pl-3 font-mono">
+                        O Sistema de Neuro-Decodificação está pronto. Não responda nenhuma mensagem dele antes de consultar o oráculo.
+                    </p>
+
+                    <button onclick="window.location.href='protocolo.html'" class="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-black font-bold py-4 px-4 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-3 uppercase text-xs tracking-[0.2em] border border-emerald-500/50">
+                        <span>ENTRAR NO SISTEMA</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </button>
+                </div>
             </div>`;
             
     } else {
-        // --- CENÁRIO BÁSICO (BLOQUEADO - CARTÃO ROXO) ---
+        // --- CENÁRIO BÁSICO (BLOQUEADO - CARTÃO ROXO ORIGINAL) ---
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
