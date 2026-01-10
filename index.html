@@ -17,95 +17,71 @@
     fbq('init', '757989490676159');
     fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
-    /></noscript>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-soft { animation: pulse-soft 3s infinite; }
-        @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
-        .hidden-force { display: none !important; }
-        .cursor-pointer { cursor: pointer; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
+<body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 selection:bg-purple-500">
+
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
         
-        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
-            <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
-            <div class="mb-8 flex items-center justify-between relative z-10">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
-                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div></div>
+        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="mb-8 flex items-center justify-between">
+                <span class="text-[10px] font-bold text-purple-300 uppercase">Análise Neural</span>
+                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div>
+                </div>
             </div>
-            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
-            <div id="answers-box" class="space-y-3 relative z-10"></div>
+            <h2 id="question-text" class="text-xl font-bold mb-8 text-white min-h-[90px]">...</h2>
+            <div id="answers-box" class="space-y-3"></div>
         </div>
 
-        <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-24 h-24 mx-auto mb-8">
-                <div class="absolute inset-0 rounded-full border-4 border-white/5"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm animate-pulse" id="process-pct">0%</div>
-            </div>
+        <div id="processing-container" class="hidden w-full max-w-md text-center">
+            <div class="w-16 h-16 border-4 border-t-purple-500 border-white/10 rounded-full animate-spin mx-auto mb-8"></div>
             <h3 class="text-xl font-bold text-white mb-2">Calculando Padrão...</h3>
-            <p id="process-text" class="text-sm text-slate-400">Cruzando suas respostas com o banco de dados...</p>
+            <p id="process-pct" class="text-purple-300 animate-pulse">0%</p>
         </div>
 
-        <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center fade-in border-t border-purple-500/20 overflow-hidden">
+        <div id="result-container" class="hidden w-full max-w-md glass-card rounded-3xl text-center overflow-hidden">
             <div class="bg-black/40 p-6 border-b border-white/5">
-                <p class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
-                <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
+                <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão: <br><span id="result-title" class="text-purple-400">...</span></h2>
             </div>
             <div class="p-6">
-                <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">...</p>
-                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6 relative overflow-hidden">
-                    <div class="bg-red-500/10 border-b border-red-500/20 p-2 -mx-5 -mt-5 mb-4 flex justify-center items-center gap-2">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                        </span>
-                        <p class="text-[10px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira em: <span id="countdown-timer" class="text-white font-mono">10:00</span></p>
-                    </div>
-                    <h3 class="text-white font-bold text-sm mb-2 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Plano de Quebra de Ciclo
-                    </h3>
-                    <p class="text-[11px] text-slate-400 mb-4">Saber o padrão é o primeiro passo. Para fazer ele sentir sua falta e correr atrás, você precisa do <strong>Guia de Resgate Neural</strong>.</p>
-                    <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition transform active:scale-[0.98] pulse-soft">
-                        <span>Baixar Guia Completo</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                <p id="result-description" class="text-slate-300 text-sm mb-6">...</p>
+                
+                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30">
+                    <p class="text-[10px] text-red-400 font-bold uppercase mb-3">Oferta Expira em: <span id="countdown-timer">10:00</span></p>
+                    
+                    <a href="https://pay.kiwify.com.br/cAMh7az" class="block w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg pulse-soft mb-4">
+                        Baixar Guia Completo
                     </a>
-                    <p class="text-[10px] text-slate-500 mt-2 mb-4">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
-                    <button id="btn-login-action" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 cursor-pointer relative z-50">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+
+                    <button id="btn-login-action" class="w-full border border-white/10 bg-white/5 text-slate-300 text-xs py-3 rounded-lg hover:bg-white/10 transition">
                         Já fiz o pagamento (Liberar Acesso)
-                    </button>
-                    <button id="btn-admin-action" class="hidden-force mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer relative z-50">
-                        👑 Admin: Simular Compra Aprovada
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="protocolo" class="hidden w-full max-w-2xl glass-card p-8 rounded-3xl fade-in text-center">
+        <div id="protocolo" class="hidden w-full max-w-2xl glass-card p-8 rounded-3xl text-center fade-in">
             <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-4">Acesso Liberado!</h2>
-            <p class="text-slate-300 mb-8">Bem-vinda ao seu Protocolo de Resgate Neural.</p>
-            <div class="aspect-video bg-black/40 rounded-2xl border border-white/10 flex items-center justify-center mb-8">
-                 <p class="text-slate-500 italic text-sm">Seu conteúdo premium aparecerá aqui.</p>
+            <p class="text-slate-300 mb-8">O seu Protocolo de Resgate Neural está disponível abaixo.</p>
+            <div class="aspect-video bg-black/40 rounded-2xl border border-white/10 flex items-center justify-center mb-6">
+                <span class="text-slate-500 italic">Área de Conteúdo Premium</span>
             </div>
-            <p class="text-sm text-slate-400 leading-relaxed">Siga o plano passo a passo para reverter o desinteresse e ativar o gatilho da busca no cérebro dele.</p>
+            <p class="text-sm text-slate-400">Siga o plano para ativar o gatilho da busca.</p>
         </div>
 
     </div>
+
     <script type="module" src="./enhancements.js"></script>
-    <script type="module" src="./tracker.js"></script>
     <script>
         const realQuestions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
@@ -119,32 +95,22 @@
             { t: "Ele já disse que você é 'intensa demais' ou 'dramática'?", a: ["Sim, já ouvi isso", "Disse que sou fechada", "Nunca disse", "Disse que sou a mulher da vida dele"] },
             { t: "O quanto você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
         ];
-                const qText = document.getElementById('question-text');
+        const qText = document.getElementById('question-text');
         const aBox = document.getElementById('answers-box');
         window.userAnswers = []; 
         function runQuiz(idx) {
-            const pct = ((idx) / realQuestions.length) * 100;
-            const bar = document.getElementById('progress-bar');
-            if(bar) bar.style.width = `${pct}%`;
+            document.getElementById('progress-bar').style.width = `${(idx / realQuestions.length) * 100}%`;
             if(idx >= realQuestions.length) {
-                if(window.finishQuizFlow) {
-                    window.finishQuizFlow(window.userAnswers);
-                } else {
-                    document.getElementById('quiz-container').classList.add('hidden');
-                    document.getElementById('result-container').classList.remove('hidden');
-                }
+                if(window.finishQuizFlow) window.finishQuizFlow(window.userAnswers);
                 return;
             }
             qText.innerText = realQuestions[idx].t;
             aBox.innerHTML = '';
             realQuestions[idx].a.forEach(ans => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 hover:border-purple-500/50 text-slate-200 p-4 rounded-xl border border-white/10 active:scale-[0.98] transition duration-200";
+                btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl border border-white/10 transition";
                 btn.innerText = ans;
-                btn.onclick = () => {
-                    window.userAnswers.push(ans);
-                    runQuiz(idx + 1);
-                };
+                btn.onclick = () => { window.userAnswers.push(ans); runQuiz(idx + 1); };
                 aBox.appendChild(btn);
             });
         }
