@@ -33,27 +33,28 @@
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
         
-        /* Estilos do Upsell (Ponte) */
+        /* Estilos do Upsell (Ponte) - Estilo Idêntico à Imagem */
         .upsell-bridge-card {
-            background: linear-gradient(145deg, #2e0249 0%, #1a0b2e 100%);
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: linear-gradient(180deg, #2e0249 0%, #0f0c29 100%); /* Gradiente Roxo Escuro */
+            border: 1px solid rgba(139, 92, 246, 0.2);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
             text-align: left;
             margin-top: 20px;
         }
         .upsell-badge {
             position: absolute; top: 0; right: 0;
-            background: #ec4899; color: white; font-size: 10px; font-weight: 800;
-            padding: 5px 15px; border-bottom-left-radius: 10px; text-transform: uppercase;
+            background: #ec4899; color: white; font-size: 9px; font-weight: 800;
+            padding: 4px 12px; border-bottom-left-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
         .upsell-btn-action {
             background: white; color: #4c1d95; font-weight: 800; text-transform: uppercase;
-            width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer;
-            transition: transform 0.2s; font-size: 16px; box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+            width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
+            transition: transform 0.2s; font-size: 14px; box-shadow: 0 4px 15px rgba(255,255,255,0.15);
+            letter-spacing: 0.5px;
         }
         .upsell-btn-action:hover { transform: scale(1.02); }
         
@@ -169,14 +170,14 @@
                         <div id="card-upsell-bridge" class="upsell-bridge-card">
                           <div class="upsell-badge">Acesso Restrito</div>
                           
-                          <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest mb-1">Oportunidade Única</p>
+                          <p class="text-[9px] text-pink-400 font-bold uppercase tracking-widest mb-1">Oportunidade Única</p>
                           
-                          <h2 class="font-bold text-white text-xl md:text-2xl leading-tight mb-2 font-inter">
+                          <h2 class="font-bold text-white text-xl leading-tight mb-2 font-inter">
                             Protocolo Secreto 2.0:<br>
                             <span class="text-pink-300">Reversão de Polaridade</span>
                           </h2>
 
-                          <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                          <p class="text-slate-300 text-xs mb-5 leading-relaxed">
                             O Guia 1 parou seus erros. O <strong>Protocolo 2.0</strong> é a arma final para <strong>forçar o contato dele em até 24h</strong>, invertendo o jogo e fazendo ele implorar por sua atenção.
                           </p>
 
@@ -286,7 +287,6 @@
                 btn.innerText = ans;
                 btn.onclick = () => { 
                     window.userAnswers.push(ans);
-                    // Dispara evento para o tracker se existir
                     if(window.customTrack) {
                         window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
                     }
