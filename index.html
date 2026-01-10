@@ -39,6 +39,7 @@
 <body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
 
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
+        
         <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
             <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
             <div class="mb-8 flex items-center justify-between relative z-10">
@@ -64,8 +65,10 @@
                 <p class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
                 <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
             </div>
+
             <div class="p-6">
                 <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">...</p>
+
                 <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6 relative overflow-hidden">
                     
                     <div class="bg-red-500/10 border-b border-red-500/20 p-2 -mx-5 -mt-5 mb-4 flex justify-center items-center gap-2">
@@ -88,109 +91,19 @@
                     </a>
                     <p class="text-[10px] text-slate-500 mt-2 mb-4">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
 
-                    <button id="btn-already-paid" type="button" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 cursor-pointer relative z-50">
+                    <button id="btn-login-action" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 cursor-pointer relative z-50">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                         Já fiz o pagamento (Liberar Acesso)
                     </button>
 
-                    <button id="admin-test-btn" type="button" class="hidden-force mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer relative z-50">
+                    <button id="btn-admin-action" class="hidden-force mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer relative z-50">
                         👑 Admin: Simular Compra Aprovada
                     </button>
                 </div>
             </div>
         </div>
+
     </div>
-
-    <script type="module">
-        // 1. IMPORTAÇÕES
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
-        // 2. CONFIGURAÇÃO (COLE SEUS DADOS AQUI)
-        // -----------------------------------------------------------
-        // ⚠️ ATENÇÃO: COPIE O "const firebaseConfig = {...}" DO SEU ARQUIVO
-        // enhancements.js E COLE ELE INTEIRO AQUI EMBAIXO:
-        // -----------------------------------------------------------
-        
-        const firebaseConfig = {
-            // ... COLE O CONTEÚDO AQUI (apiKey, authDomain, etc) ...
-            // Se você não colar, vai dar erro "No Firebase App"
-        }; 
-
-        // 3. INICIALIZAÇÃO DO APP (Isso corrige o erro)
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
-
-        console.log("Firebase inicializado no index.html com sucesso!");
-
-        // 4. LÓGICA DOS BOTÕES
-        function setupButtons() {
-            const btnLogin = document.getElementById('btn-already-paid');
-            const btnAdmin = document.getElementById('admin-test-btn');
-
-            if (!btnLogin) return;
-
-            btnLogin.onclick = async function() {
-                const originalText = btnLogin.innerHTML;
-                btnLogin.innerHTML = "Aguarde...";
-                
-                try {
-                    const provider = new GoogleAuthProvider();
-                    const result = await signInWithPopup(auth, provider);
-                    const user = result.user;
-                    
-                    console.log("Logado como:", user.email);
-
-                    // Verifica se é Admin
-                    if (ADMIN_EMAILS.includes(user.email)) {
-                        alert("Modo Admin Detectado! O botão de teste apareceu.");
-                        btnAdmin.classList.remove('hidden-force');
-                        btnLogin.innerHTML = originalText;
-                        
-                        btnAdmin.onclick = async function() {
-                            if(!confirm(`Simular pagamento de R$27 para ${user.email}?`)) return;
-                            try {
-                                btnAdmin.innerText = "Processando...";
-                                const userRef = doc(db, "users", user.email);
-                                await setDoc(userRef, { status: "premium" }, { merge: true });
-                                alert("✅ Compra Simulada! Entrando...");
-                                window.location.reload();
-                            } catch (err) {
-                                alert("Erro Admin: " + err.message);
-                            }
-                        };
-                        return;
-                    }
-
-                    // Se não for admin, verifica pagamento
-                    const docRef = doc(db, "users", user.email);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists() && docSnap.data().status === 'premium') {
-                        btnLogin.innerHTML = "Sucesso! Entrando...";
-                        setTimeout(() => window.location.reload(), 1000);
-                    } else {
-                        alert(`Pagamento não encontrado para ${user.email}.\n\nSe você pagou agora, aguarde 1 minuto.`);
-                        btnLogin.innerHTML = "Tentar Novamente";
-                    }
-
-                } catch (error) {
-                    console.error("Erro no processo:", error);
-                    alert("Erro: " + error.message);
-                    btnLogin.innerHTML = originalText;
-                }
-            };
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupButtons);
-        } else {
-            setupButtons();
-        }
-    </script>
 
     <script type="module" src="./enhancements.js"></script>
     <script type="module" src="./tracker.js"></script>
@@ -216,9 +129,7 @@
         function runQuiz(idx) {
             const pct = ((idx) / realQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
-
             if(window.customTrack) window.customTrack("quiz_step", { step: idx + 1 });
-
             if(idx >= realQuestions.length) {
                 if(window.finishQuizFlow) {
                     window.finishQuizFlow(window.userAnswers);
@@ -228,7 +139,6 @@
                 }
                 return;
             }
-            
             qText.innerText = realQuestions[idx].t;
             aBox.innerHTML = '';
             realQuestions[idx].a.forEach(ans => {
