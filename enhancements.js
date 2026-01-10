@@ -1,8 +1,34 @@
 /*
- * enhancements.js - Lógica de Revelação, Timer e Conversão
+ * enhancements.js - Cérebro Central (Quiz, Timer, Login e Admin)
  */
 
-// 1. Textos Persuasivos por Perfil
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, updateDoc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// ============================================================================
+// CONFIGURAÇÃO DO FIREBASE (ATUALIZADA)
+// ============================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
+  authDomain: "nucleoinsight-e4566.firebaseapp.com",
+  projectId: "nucleoinsight-e4566",
+  storageBucket: "nucleoinsight-e4566.firebasestorage.app",
+  messagingSenderId: "650150743348",
+  appId: "1:650150743348:web:f62f3cc95a38a5e90ca961",
+  measurementId: "G-M24P3TBP5J"
+};
+
+// Inicialização
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
+
+// ============================================================================
+// 1. LÓGICA DO QUIZ E RESULTADO
+// ============================================================================
 const RESULTS = {
     ansiosa: {
         title: "A Ansiosa Disponível",
@@ -18,17 +44,14 @@ const RESULTS = {
     }
 };
 
-// 2. Função Principal (Acionada no fim do Quiz)
 window.finishQuizFlow = function(answers) {
     const quizContainer = document.getElementById('quiz-container');
     const processingContainer = document.getElementById('processing-container');
     const resultContainer = document.getElementById('result-container');
 
-    // Troca para tela de carregamento
     quizContainer.classList.add('hidden');
     processingContainer.classList.remove('hidden');
 
-    // Animação de 0% a 100%
     let p = 0;
     const int = setInterval(() => {
         p += Math.floor(Math.random() * 15);
@@ -37,52 +60,118 @@ window.finishQuizFlow = function(answers) {
         
         if(p === 100) {
             clearInterval(int);
-            
-            // Define o perfil e atualiza o texto
             const perfil = defineProfile(answers);
             document.getElementById('result-title').innerHTML = perfil.title;
             document.getElementById('result-description').innerHTML = perfil.desc;
 
-            // Mostra o resultado final e INICIA O TIMER
             setTimeout(() => {
                 processingContainer.classList.add('hidden');
                 resultContainer.classList.remove('hidden');
-                
-                // Inicia contagem regressiva de 10 minutos (600 segundos)
                 startTimer(600, document.getElementById('countdown-timer'));
-
-                // Dispara pixel
                 if(window.fbq) window.fbq('track', 'ViewContent', { content_name: perfil.title });
             }, 800);
         }
     }, 250);
 };
 
-// 3. Lógica de Perfilamento
 function defineProfile(answers) {
     const textAnswers = answers.join(" ").toLowerCase();
     if (textAnswers.includes("imediatamente") || textAnswers.includes("medo")) return RESULTS.ansiosa;
     if (textAnswers.includes("sei tudo") || textAnswers.includes("stalkei")) return RESULTS.controladora;
     if (textAnswers.includes("cancelei") || textAnswers.includes("deixei de fazer")) return RESULTS.desvalorizada;
-    return RESULTS.ansiosa; // Padrão
+    return RESULTS.ansiosa;
 }
 
-// 4. Função do Relógio (Escassez)
 function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
-
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
-
         display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            timer = 0;
-            display.textContent = "00:00";
-            display.classList.add("text-red-500"); // Fica vermelho quando zera
-        }
+        if (--timer < 0) timer = 0;
     }, 1000);
 }
+
+// ============================================================================
+// 2. LÓGICA DE LOGIN, PAGAMENTO E ADMIN
+// ============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const btnLogin = document.getElementById('btn-login-action');
+    const btnAdmin = document.getElementById('btn-admin-action');
+
+    // Escuta mudanças no banco de dados para redirecionar para o Upsell automaticamente
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            if (ADMIN_EMAILS.includes(user.email)) {
+                btnAdmin.classList.remove('hidden-force');
+            }
+
+            // Monitora o status em tempo real
+            onSnapshot(doc(db, "users", user.email), (snapshot) => {
+                const data = snapshot.data();
+                // Se pagou o diagnóstico mas não o protocolo, joga para a aba do Upsell
+                if (data && data.status === "premium" && data.protocol !== "active") {
+                    if (window.switchTab) {
+                        console.log("Status Premium detectado. Redirecionando para Upsell...");
+                        setTimeout(() => window.switchTab('protocolo'), 1000);
+                    }
+                }
+            });
+        }
+    });
+
+    if (btnLogin) {
+        btnLogin.addEventListener("click", async () => {
+            const originalText = btnLogin.innerHTML;
+            btnLogin.innerHTML = "Verificando...";
+
+            try {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                if (ADMIN_EMAILS.includes(user.email)) {
+                    alert("Modo Admin Ativado!");
+                    btnAdmin.classList.remove('hidden-force');
+                    btnLogin.innerHTML = originalText;
+                    return;
+                }
+
+                const docRef = doc(db, "users", user.email);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists() && docSnap.data().status === 'premium') {
+                    btnLogin.innerHTML = "Sucesso! Entrando...";
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    alert("Pagamento não encontrado. Se pagou agora, aguarde 1 minuto.");
+                    btnLogin.innerHTML = "Tentar Novamente";
+                }
+            } catch (error) {
+                alert("Erro: " + error.message);
+                btnLogin.innerHTML = originalText;
+            }
+        });
+    }
+
+    if (btnAdmin) {
+        btnAdmin.addEventListener("click", async () => {
+            const user = auth.currentUser;
+            if (!user) return alert("Faça login primeiro.");
+            if (!confirm(`Simular R$27 para ${user.email}?`)) return;
+
+            try {
+                btnAdmin.innerHTML = "Processando...";
+                const userRef = doc(db, "users", user.email);
+                await setDoc(userRef, { status: "premium" }, { merge: true });
+                alert("✅ Compra Simulada!");
+                window.location.reload();
+            } catch (error) {
+                alert("Erro: " + error.message);
+                btnAdmin.innerHTML = "Erro";
+            }
+        });
+    }
+});
