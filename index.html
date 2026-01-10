@@ -139,23 +139,21 @@
                     </div>
 
                     <style>
-                      /* Estilos Locais para não quebrar o resto do site */
                       .upsell-dashboard-card {
                         background: rgba(255, 255, 255, 0.03);
                         backdrop-filter: blur(10px);
                         -webkit-backdrop-filter: blur(10px);
                         border: 1px solid rgba(255, 255, 255, 0.1);
-                        border-radius: 16px; /* Borda arredondada igual ao resto */
+                        border-radius: 16px;
                         padding: 30px;
                         margin-top: 20px;
                         position: relative;
                         overflow: hidden;
                         color: white;
-                        font-family: 'Inter', sans-serif; /* Garanta que a fonte Inter está importada */
+                        font-family: 'Inter', sans-serif;
                         box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+                        transition: all 0.5s ease;
                       }
-                    
-                      /* Faixa de "Acesso Restrito" melhorada */
                       .upsell-tag {
                         position: absolute;
                         top: 0;
@@ -170,89 +168,35 @@
                         letter-spacing: 1px;
                         box-shadow: -2px 2px 10px rgba(0,0,0,0.3);
                       }
-                    
-                      .upsell-content-wrapper {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 15px;
-                      }
-                    
+                      .upsell-content-wrapper { display: flex; flex-direction: column; gap: 15px; }
                       .upsell-headline {
-                        font-size: 20px;
-                        font-weight: 700;
-                        line-height: 1.3;
+                        font-size: 20px; font-weight: 700; line-height: 1.3;
                         background: linear-gradient(to right, #fff, #a5b4fc);
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                        margin: 0;
+                        -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;
                       }
-                    
-                      .upsell-sub {
-                        font-size: 14px;
-                        color: #9ca3af;
-                        line-height: 1.5;
-                        margin-bottom: 10px;
-                      }
-                    
-                      .upsell-pillars {
-                        display: flex;
-                        gap: 10px;
-                        flex-wrap: wrap;
-                        margin-bottom: 15px;
-                      }
-                    
+                      .upsell-sub { font-size: 14px; color: #9ca3af; line-height: 1.5; margin-bottom: 10px; }
+                      .upsell-pillars { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
                       .pillar-badge {
-                        background: rgba(139, 92, 246, 0.15);
-                        border: 1px solid rgba(139, 92, 246, 0.3);
-                        color: #ddd6fe;
-                        padding: 6px 12px;
-                        border-radius: 8px;
-                        font-size: 12px;
-                        font-weight: 600;
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
+                        background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);
+                        color: #ddd6fe; padding: 6px 12px; border-radius: 8px; font-size: 12px;
+                        font-weight: 600; display: flex; align-items: center; gap: 6px;
                       }
-                       
-                      .pillar-badge span { color: #fbbf24; } /* Estrela dourada */
-                    
-                      /* Botão Pulsante */
+                      .pillar-badge span { color: #fbbf24; }
                       .upsell-btn {
                         background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%);
-                        color: white;
-                        border: none;
-                        width: 100%;
-                        padding: 16px;
-                        border-radius: 10px;
-                        font-size: 15px;
-                        font-weight: 700;
-                        text-transform: uppercase;
-                        cursor: pointer;
-                        transition: all 0.2s;
-                        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-                        position: relative;
-                        overflow: hidden;
+                        color: white; border: none; width: 100%; padding: 16px; border-radius: 10px;
+                        font-size: 15px; font-weight: 700; text-transform: uppercase; cursor: pointer;
+                        transition: all 0.2s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+                        position: relative; overflow: hidden;
                       }
-                    
-                      .upsell-btn:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
-                      }
-                    
-                      .price-anchor {
-                        text-align: center;
-                        font-size: 12px;
-                        color: #6b7280;
-                        margin-top: 10px;
-                      }
-                    
+                      .upsell-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5); }
+                      .price-anchor { text-align: center; font-size: 12px; color: #6b7280; margin-top: 10px; }
                       .price-anchor s { text-decoration: line-through; opacity: 0.7; }
                       .price-anchor strong { color: #10b981; font-size: 14px; margin-left: 5px; }
-                    
                     </style>
                     
-                    <div class="upsell-dashboard-card">
-                      <div class="upsell-tag">🔒 Acesso Bloqueado</div>
+                    <div class="upsell-dashboard-card" id="card-upsell">
+                      <div class="upsell-tag" id="tag-upsell">🔒 Acesso Bloqueado</div>
                     
                       <div class="upsell-content-wrapper">
                         <h2 class="upsell-headline">
@@ -269,11 +213,11 @@
                           <div class="pillar-badge"><span>★</span> Recompensa Neural</div>
                         </div>
                     
-                        <button onclick="window.location.href='SEU_LINK_DE_CHECKOUT_AQUI'" class="upsell-btn">
+                        <button id="btn-upsell" class="upsell-btn" onclick="window.location.href='https://pay.kiwify.com.br/SEU_LINK_DO_UPSELL_AQUI'">
                           Destravar Protocolo Completo 🔓
                         </button>
                     
-                        <div class="price-anchor">
+                        <div class="price-anchor" id="price-upsell">
                           Oferta Única de Membros: <s>R$ 197</s> por <strong>R$ 47,00</strong>
                         </div>
                       </div>
@@ -287,6 +231,41 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
+        // === LÓGICA DE DESBLOQUEIO VIP (UPSELL) ===
+        // Para quem comprou o Upsell, você envia este link: seudominio.com/index.html?acesso=vip
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isVip = urlParams.get('acesso') === 'vip';
+
+            if (isVip) {
+                // 1. Muda a faixa para VERDE
+                const tag = document.getElementById('tag-upsell');
+                if(tag) {
+                    tag.innerText = "ACESSO LIBERADO";
+                    tag.style.background = "linear-gradient(90deg, #10b981, #059669)"; // Verde Sucesso
+                }
+
+                // 2. Muda o texto do botão e a ação
+                const btn = document.getElementById('btn-upsell');
+                if(btn) {
+                    btn.innerText = "ACESSAR CONTEÚDO EXTRA 📂";
+                    // Tira o link de compra e põe ação de abrir conteudo
+                    btn.onclick = function(e) { 
+                        e.preventDefault();
+                        alert("Área VIP liberada! (Redirecione aqui para o PDF/Vídeo do Upsell)");
+                        // window.location.href = "LINK_DO_CONTEUDO_UPSELL"; 
+                    };
+                    btn.style.background = "linear-gradient(90deg, #10b981, #059669)";
+                }
+
+                // 3. Esconde o preço
+                const price = document.getElementById('price-upsell');
+                if(price) price.style.display = 'none';
+            }
+        });
+
+        // --- FUNÇÕES DO CONTEÚDO ---
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
