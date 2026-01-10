@@ -20,9 +20,8 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
     /></noscript>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
@@ -139,66 +138,152 @@
                         </div>
                     </div>
 
-                    <div id="upsell-container" class="glass-card p-8 rounded-3xl border border-purple-500/40 relative overflow-hidden bg-gradient-to-br from-purple-900/20 to-black/60 shadow-2xl">
-                        
-                        <div class="absolute top-0 right-0 bg-purple-500 px-4 py-1 text-[10px] font-black text-white rounded-bl-2xl uppercase tracking-tighter">Upgrade Vitalício</div>
-
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="bg-purple-600 p-2.5 rounded-xl shadow-lg shadow-purple-500/30">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-extrabold text-white tracking-tight uppercase italic">O Código da Obsessão</h3>
-                                <p class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo de Reversão de Papéis</p>
-                            </div>
-                        </div>
-
-                        <p class="text-slate-300 text-sm leading-relaxed mb-8">
-                            Você já sabe como falar. Agora, aprenda como fazer ele sentir que <strong class="text-white uppercase">VOCÊ</strong> é o prêmio que ele está prestes a perder para sempre.
+                    <style>
+                      /* Estilos Locais para não quebrar o resto do site */
+                      .upsell-dashboard-card {
+                        background: rgba(255, 255, 255, 0.03);
+                        backdrop-filter: blur(10px);
+                        -webkit-backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        border-radius: 16px; /* Borda arredondada igual ao resto */
+                        padding: 30px;
+                        margin-top: 20px;
+                        position: relative;
+                        overflow: hidden;
+                        color: white;
+                        font-family: 'Inter', sans-serif; /* Garanta que a fonte Inter está importada */
+                        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+                      }
+                    
+                      /* Faixa de "Acesso Restrito" melhorada */
+                      .upsell-tag {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        background: linear-gradient(90deg, #ef4444, #b91c1c);
+                        color: white;
+                        font-size: 11px;
+                        font-weight: 800;
+                        padding: 6px 16px;
+                        border-bottom-left-radius: 12px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        box-shadow: -2px 2px 10px rgba(0,0,0,0.3);
+                      }
+                    
+                      .upsell-content-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                      }
+                    
+                      .upsell-headline {
+                        font-size: 20px;
+                        font-weight: 700;
+                        line-height: 1.3;
+                        background: linear-gradient(to right, #fff, #a5b4fc);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        margin: 0;
+                      }
+                    
+                      .upsell-sub {
+                        font-size: 14px;
+                        color: #9ca3af;
+                        line-height: 1.5;
+                        margin-bottom: 10px;
+                      }
+                    
+                      .upsell-pillars {
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                        margin-bottom: 15px;
+                      }
+                    
+                      .pillar-badge {
+                        background: rgba(139, 92, 246, 0.15);
+                        border: 1px solid rgba(139, 92, 246, 0.3);
+                        color: #ddd6fe;
+                        padding: 6px 12px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                      }
+                       
+                      .pillar-badge span { color: #fbbf24; } /* Estrela dourada */
+                    
+                      /* Botão Pulsante */
+                      .upsell-btn {
+                        background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%);
+                        color: white;
+                        border: none;
+                        width: 100%;
+                        padding: 16px;
+                        border-radius: 10px;
+                        font-size: 15px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+                        position: relative;
+                        overflow: hidden;
+                      }
+                    
+                      .upsell-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+                      }
+                    
+                      .price-anchor {
+                        text-align: center;
+                        font-size: 12px;
+                        color: #6b7280;
+                        margin-top: 10px;
+                      }
+                    
+                      .price-anchor s { text-decoration: line-through; opacity: 0.7; }
+                      .price-anchor strong { color: #10b981; font-size: 14px; margin-left: 5px; }
+                    
+                    </style>
+                    
+                    <div class="upsell-dashboard-card">
+                      <div class="upsell-tag">🔒 Acesso Bloqueado</div>
+                    
+                      <div class="upsell-content-wrapper">
+                        <h2 class="upsell-headline">
+                          Protocolo de Reversão: O Código da Obsessão
+                        </h2>
+                    
+                        <p class="upsell-sub">
+                          O Guia 1 foi o "Remédio". Este é a <strong>Cura Definitiva</strong>. Não apenas fale, faça ele sentir medo real de te perder usando a <em>Engenharia Reversa de Papéis</em>.
                         </p>
-
-                        <div class="grid grid-cols-1 gap-4 mb-8">
-                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-purple-500/30 transition">
-                                <div class="bg-purple-500/20 text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0">01</div>
-                                <div>
-                                    <h4 class="text-white text-xs font-bold uppercase mb-1">Atração Magnética</h4>
-                                    <p class="text-slate-400 text-[11px]">Como reprogramar a mente dele para que ele te veja como prioridade única.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-purple-500/30 transition">
-                                <div class="bg-purple-500/20 text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0">02</div>
-                                <div>
-                                    <h4 class="text-white text-xs font-bold uppercase mb-1">Mistério & Negação</h4>
-                                    <p class="text-slate-400 text-[11px]">O gatilho exato para forçar o contato dele nas próximas 24 horas.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-purple-500/30 transition">
-                                <div class="bg-purple-500/20 text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0">03</div>
-                                <div>
-                                    <h4 class="text-white text-xs font-bold uppercase mb-1">Recompensa Variável</h4>
-                                    <p class="text-slate-400 text-[11px]">O segredo para manter ele viciado na sua atenção a longo prazo.</p>
-                                </div>
-                            </div>
+                    
+                        <div class="upsell-pillars">
+                          <div class="pillar-badge"><span>★</span> Atração Involuntária</div>
+                          <div class="pillar-badge"><span>★</span> Mistério Arquitetado</div>
+                          <div class="pillar-badge"><span>★</span> Recompensa Neural</div>
                         </div>
-
-                        <a href="https://pay.kiwify.com.br/LINK_DO_UPSELL" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-purple-500/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] pulse-soft">
-                            <span class="text-sm uppercase tracking-widest">Ativar Desbloqueio Vitalício</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                        </a>
-
-                        <div class="mt-8 flex flex-col items-center gap-4">
-                            <div class="flex items-center gap-3 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">
-                                <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm9.496 3.502a1 1 0 00-1.414-1.415l-3 3a1 1 0 001.414 1.415l3-3z" clip-rule="evenodd"></path></svg>
-                                <span class="text-[9px] text-emerald-400 font-black uppercase tracking-widest">Garantia Blindada de 7 Dias</span>
-                            </div>
-                            <p class="text-[9px] text-slate-500 uppercase tracking-tighter text-center max-w-[200px]">Sem perguntas, sem burocracia. Sua satisfação ou seu dinheiro de volta.</p>
+                    
+                        <button onclick="window.location.href='SEU_LINK_DE_CHECKOUT_AQUI'" class="upsell-btn">
+                          Destravar Protocolo Completo 🔓
+                        </button>
+                    
+                        <div class="price-anchor">
+                          Oferta Única de Membros: <s>R$ 197</s> por <strong>R$ 47,00</strong>
                         </div>
+                      </div>
                     </div>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
+    <script type="module" src="./tracker.js"></script>
     <script type="module" src="./enhancements.js"></script>
 
     <script>
@@ -307,7 +392,15 @@
                 btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl border border-white/10 transition duration-200";
                 btn.innerText = ans;
                 btn.onclick = () => { 
-                    window.userAnswers.push(ans); 
+                    window.userAnswers.push(ans);
+                    // INTEGRACAO TRACKER: Dispara evento a cada resposta
+                    if(window.customTrack) {
+                        window.customTrack("quiz_answer", { 
+                            question_number: idx + 1,
+                            question_text: realQuestions[idx].t,
+                            answer: ans 
+                        });
+                    }
                     runQuiz(idx + 1); 
                 };
                 aBox.appendChild(btn);
