@@ -22,7 +22,7 @@ const db = getFirestore(app);
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
 // ============================================================================
-// 1. LÓGICA DO QUIZ (SEM MUDANÇA DE TELA AUTOMÁTICA)
+// 1. LÓGICA DO QUIZ
 // ============================================================================
 const RESULTS = {
     ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou que seu tempo vale menos." },
@@ -51,7 +51,7 @@ window.finishQuizFlow = function(answers) {
             if(processingContainer) processingContainer.classList.add('hidden');
             if(resultContainer) resultContainer.classList.remove('hidden');
             
-            // Inicia o timer de 10 minutos
+            // Inicia o timer
             var display = document.getElementById('countdown-timer');
             var timer = 600;
             setInterval(() => {
@@ -72,13 +72,32 @@ function defineProfile(answers) {
 }
 
 // ============================================================================
-// 2. LÓGICA DE LOGIN E ADMIN (MUDANÇA APENAS SOB COMANDO)
+// 2. LÓGICA DE NAVEGAÇÃO (AQUI ESTÁ A SOLUÇÃO DO CLIQUE)
+// ============================================================================
+function goToUpsell() {
+    console.log("Navegando para o Protocolo...");
+    // Tenta trocar a aba visualmente
+    const protocolSection = document.getElementById('protocolo') || document.getElementById('protocolo-container');
+    const resultSection = document.getElementById('result-container');
+
+    if (protocolSection) {
+        if (resultSection) resultSection.classList.add('hidden');
+        protocolSection.classList.remove('hidden');
+        protocolSection.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        // Se a aba não existir no HTML, recarrega a página ou avisa
+        alert("Acesso Liberado! Role a página para ver o seu Protocolo.");
+    }
+}
+
+// ============================================================================
+// 3. LOGIN E ADMIN
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
     const btnAdmin = document.getElementById('btn-admin-action');
 
-    // Monitora login apenas para mostrar o botão de admin
     onAuthStateChanged(auth, (user) => {
         if (user && ADMIN_EMAILS.includes(user.email) && btnAdmin) {
             btnAdmin.classList.remove('hidden-force');
@@ -88,25 +107,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnLogin) {
         btnLogin.addEventListener("click", async (e) => {
             e.preventDefault();
+            const originalText = btnLogin.innerHTML;
             btnLogin.innerText = "Verificando...";
+            
             try {
                 const provider = new GoogleAuthProvider();
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
-                // Verifica status de pagamento
                 const docSnap = await getDoc(doc(db, "users", user.email));
                 if (docSnap.exists() && docSnap.data().status === 'premium') {
-                    // SE PAGOU: Muda o botão para "ACESSAR PROTOCOLO" em vez de mudar a tela sozinho
-                    btnLogin.innerHTML = "🔓 ACESSAR PROTOCOLO AGORA";
-                    btnLogin.classList.replace('bg-white/5', 'bg-green-600');
-                    btnLogin.onclick = () => { if(window.switchTab) window.switchTab('protocolo'); };
+                    // PARA O CLIENTE: O botão fica verde e libera o acesso
+                    btnLogin.innerHTML = "🔓 ACESSAR MEU PROTOCOLO";
+                    btnLogin.style.backgroundColor = "#16a34a"; // Verde sucesso
+                    btnLogin.onclick = (event) => {
+                        event.preventDefault();
+                        goToUpsell();
+                    };
                 } else {
-                    alert("Pagamento não identificado para: " + user.email);
-                    btnLogin.innerText = "Já fiz o pagamento";
+                    alert("Ainda não identificamos o pagamento para: " + user.email);
+                    btnLogin.innerHTML = originalText;
                 }
             } catch (error) {
-                btnLogin.innerText = "Já fiz o pagamento";
+                btnLogin.innerHTML = originalText;
             }
         });
     }
@@ -115,19 +138,19 @@ document.addEventListener("DOMContentLoaded", () => {
         btnAdmin.addEventListener("click", async (e) => {
             e.preventDefault();
             const user = auth.currentUser;
-            if (!user) return alert("Logue primeiro.");
+            if (!user) return alert("Logue primeiro no botão de cima.");
             
-            btnAdmin.innerText = "Simulando...";
+            btnAdmin.innerText = "Liberando...";
             try {
-                // 1. Atualiza o Firebase
                 await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
                 
-                // 2. Transforma o botão de Admin em um botão de navegação
-                btnAdmin.innerText = "✅ APROVADO! CLIQUE PARA IR AO UPSELL";
-                btnAdmin.classList.replace('border-slate-700', 'bg-purple-600');
-                btnAdmin.onclick = () => { if(window.switchTab) window.switchTab('protocolo'); };
-                
-                alert("Simulação concluída. O botão acima agora te levará ao Upsell.");
+                // MUDANÇA VISUAL PARA O ADMIN TESTAR
+                btnAdmin.innerText = "✅ LIBERADO! CLIQUE AQUI PARA ENTRAR";
+                btnAdmin.style.backgroundColor = "#9333ea"; // Roxo admin
+                btnAdmin.onclick = (event) => {
+                    event.preventDefault();
+                    goToUpsell();
+                };
             } catch (error) {
                 alert(error.message);
                 btnAdmin.innerText = "Simular Compra";
