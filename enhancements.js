@@ -49,7 +49,7 @@ function LIBERAR_CONTEUDO(userData) {
                 <span class="text-pink-300 text-[10px] font-bold uppercase tracking-widest">Oportunidade Única</span>
                 <h2 class="text-2xl font-black text-white mt-2 mb-4 leading-tight text-left">Protocolo Secreto 2.0:<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Reversão de Polaridade</span></h2>
                 <p class="text-slate-300 text-sm mb-6 text-left">O Guia 1 parou seus erros. O <strong>Protocolo 2.0</strong> é a arma final para <strong>forçar o contato dele em até 24h</strong>, invertendo o jogo e fazendo ele implorar por sua atenção.</p>
-                <a href="https://pay.kiwify.com.br/7B4m9iI" class="inline-block w-full bg-white text-purple-900 font-black px-6 py-4 rounded-xl text-center shadow-white/10 shadow-lg transform active:scale-95 transition">ATIVAR PROTOCOLO 2.0</a>
+                <a href="https://nucleoinsight.github.io/nucleo-insight/upsell.html" class="inline-block w-full bg-white text-purple-900 font-black px-6 py-4 rounded-xl text-center shadow-white/10 shadow-lg transform active:scale-95 transition">ATIVAR PROTOCOLO 2.0</a>
                 <p class="text-[10px] text-slate-400 mt-4 text-center">De <span class="line-through">R$ 197</span> por apenas <span class="text-emerald-400 font-bold text-lg">R$ 47</span></p>
             </div>`;
     }
