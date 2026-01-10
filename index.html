@@ -26,16 +26,15 @@
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
-        
-        /* VISUAL MÍSTICO PREMIUM */
         .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
         .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        
         .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
+        
+        /* Classe para esconder elementos (segurança visual) */
+        .hidden-force { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
@@ -96,14 +95,87 @@
                     </a>
                     <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
 
-                    <button onclick="if(window.simularCompraDev) window.simularCompraDev(); else alert('Função Admin não encontrada no JS. Verifique se está logado.')" class="mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer">
+                    <button id="admin-test-btn" class="hidden-force mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer">
                         👑 Admin: Simular Compra Aprovada
                     </button>
                 </div>
             </div>
+            
+            <div class="mt-4 pb-4">
+                <button id="admin-login-link" class="text-[9px] text-slate-700 hover:text-slate-500 cursor-pointer uppercase tracking-widest">
+                    Área Restrita
+                </button>
+            </div>
         </div>
 
     </div>
+
+    <script type="module">
+        // Importa as funções necessárias do Firebase que já estão no cache do navegador (ou busca da CDN)
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // Estamos assumindo que o app já foi inicializado no enhancements.js ou tracker.js
+        // Mas para garantir, pegamos a instância global se estiver disponível, ou criamos lógica de espera.
+        
+        // LISTA DE EMAILS PERMITIDOS (SEGURANÇA)
+        const ADMIN_EMAILS = [
+            "gilvanxavierborges@gmail.com", 
+            "contatogilvannborges@gmail.com"
+        ];
+
+        // Função de Login (Caso esteja em aba anônima e precise testar)
+        document.getElementById('admin-login-link').onclick = async () => {
+             // Tenta pegar a instância de auth que o seu sistema já criou
+             // Se der erro, avisa no console
+             try {
+                // Tenta importar a app do enhancements se possível, ou usa a global se você expôs
+                // Solução mais simples: Redirecionar para o fluxo de login ou usar popup direto
+                const auth = getAuth(); // Pega a auth padrão do app
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+                alert("Login realizado! Se você for Admin, o botão aparecerá.");
+             } catch (e) {
+                 console.error("Erro no login admin:", e);
+                 alert("Erro ao abrir login. Verifique o console.");
+             }
+        };
+
+        // Monitora se o usuário logou
+        const auth = getAuth();
+        const db = getFirestore();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && ADMIN_EMAILS.includes(user.email)) {
+                // É o Gilvan! Libera o botão.
+                const btn = document.getElementById('admin-test-btn');
+                btn.classList.remove('hidden-force');
+                
+                // Define a ação do botão
+                btn.onclick = async () => {
+                    if(!confirm(`Simular pagamento de R$27 para ${user.email}?`)) return;
+                    
+                    try {
+                        btn.innerText = "Processando...";
+                        // Atualiza status para premium
+                        const userRef = doc(db, "users", user.email);
+                        await updateDoc(userRef, {
+                            status: "premium"
+                        });
+                        
+                        alert("✅ Compra Simulada! Recarregando para aplicar redirecionamento...");
+                        window.location.reload();
+                    } catch (error) {
+                        alert("Erro ao simular: " + error.message);
+                        btn.innerText = "Erro (Tente novamente)";
+                    }
+                };
+            } else {
+                // Não é admin ou não está logado
+                document.getElementById('admin-test-btn').classList.add('hidden-force');
+            }
+        });
+    </script>
 
     <script type="module" src="./enhancements.js"></script>
     <script type="module" src="./tracker.js"></script>
@@ -138,7 +210,6 @@
                     window.finishQuizFlow(window.userAnswers);
                 } else {
                     console.error("Enhancements.js não carregou");
-                    // Fallback simples caso o JS falhe
                     document.getElementById('quiz-container').classList.add('hidden');
                     document.getElementById('result-container').classList.remove('hidden');
                 }
