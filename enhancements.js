@@ -1,10 +1,6 @@
-/*
- * enhancements.js - Versão Final Anti-Erro
- */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -21,127 +17,67 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
-// ============================================================================
-// A FUNÇÃO QUE VAI FAZER FUNCIONAR NA MARRA
-// ============================================================================
-function LIBERAR_PROTOCOLO_AGORA() {
-    console.log("Limpando interface e liberando protocolo...");
-    
-    // 1. Esconde TUDO que for do Quiz/Resultado usando Style Direto (Mais forte que classes)
-    const fluxos = ['quiz-flow', 'quiz-container', 'processing-container', 'result-container', 'paywall-overlay'];
-    fluxos.forEach(id => {
+function LIBERAR_PROTOCOLO() {
+    const ids = ['quiz-container', 'processing-container', 'result-container'];
+    ids.forEach(id => {
         const el = document.getElementById(id);
-        if(el) {
-            el.setAttribute('style', 'display: none !important');
-            el.classList.add('hidden');
-        }
+        if(el) el.classList.add('hidden');
     });
-
-    // 2. Procura a seção do Protocolo e FORÇA ela a aparecer
-    // Tentamos os 3 IDs possíveis que você pode ter usado
-    const secoes = ['protocolo', 'protocolo-container', 'premium-content'];
-    let achou = false;
-
-    secoes.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) {
-            el.setAttribute('style', 'display: block !important; opacity: 1 !important; visibility: visible !important');
-            el.classList.remove('hidden', 'blur-secret');
-            achou = true;
-        }
-    });
-
-    if(!achou) {
-        alert("Acesso Liberado! O conteúdo está logo abaixo ou na aba Protocolo.");
+    const prot = document.getElementById('protocolo');
+    if(prot) {
+        prot.classList.remove('hidden');
+        prot.style.display = 'block';
     }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0,0);
 }
 
-// ============================================================================
-// LÓGICA DO QUIZ
-// ============================================================================
 window.finishQuizFlow = function(answers) {
-    const quiz = document.getElementById('quiz-container');
-    const proc = document.getElementById('processing-container');
-    const res = document.getElementById('result-container');
-
-    if(quiz) quiz.classList.add('hidden');
-    if(proc) proc.classList.remove('hidden');
-
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('processing-container').classList.remove('hidden');
     let p = 0;
     const int = setInterval(() => {
         p += 10;
-        if(document.getElementById('process-pct')) document.getElementById('process-pct').innerText = p + '%';
+        document.getElementById('process-pct').innerText = p + '%';
         if(p >= 100) {
             clearInterval(int);
-            if(proc) proc.classList.add('hidden');
-            if(res) res.classList.remove('hidden');
-            
-            // Pega o título do resultado (simples para não dar erro)
-            const title = document.getElementById('result-title');
-            if(title) title.innerText = "Análise Concluída";
-            
-            // Timer
-            var timer = 600, display = document.getElementById('countdown-timer');
-            setInterval(() => {
-                var m = parseInt(timer / 60, 10), s = parseInt(timer % 60, 10);
-                if(display) display.textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
-                if (--timer < 0) timer = 0;
-            }, 1000);
+            document.getElementById('processing-container').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+            document.getElementById('result-title').innerText = "Análise Concluída";
+            document.getElementById('result-description').innerText = "Identificamos padrões de alta reatividade emocional no seu perfil.";
         }
     }, 200);
 };
 
-// ============================================================================
-// EVENTOS DOS BOTÕES
-// ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
     const btnAdmin = document.getElementById('btn-admin-action');
 
     onAuthStateChanged(auth, (user) => {
-        if (user && ADMIN_EMAILS.includes(user.email) && btnAdmin) {
-            btnAdmin.classList.remove('hidden-force');
+        if (user) {
+            if (ADMIN_EMAILS.includes(user.email)) btnAdmin.classList.remove('hidden-force');
+            
+            // Monitora mudança no banco para liberar sozinho
+            onSnapshot(doc(db, "users", user.email), (snap) => {
+                if (snap.exists() && snap.data().status === 'premium') LIBERAR_PROTOCOLO();
+            });
         }
     });
 
     if (btnLogin) {
-        btnLogin.addEventListener("click", async (e) => {
-            e.preventDefault();
-            btnLogin.innerText = "Verificando...";
+        btnLogin.onclick = async () => {
             try {
-                const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                const docSnap = await getDoc(doc(db, "users", user.email));
-                if (docSnap.exists() && docSnap.data().status === 'premium') {
-                    btnLogin.innerHTML = "🔓 ACESSAR AGORA";
-                    btnLogin.style.cssText = "background-color: #16a34a !important; color: white !important; font-weight: bold;";
-                    btnLogin.onclick = (ev) => { ev.preventDefault(); LIBERAR_PROTOCOLO_AGORA(); };
-                } else {
-                    alert("Pagamento não encontrado.");
-                    btnLogin.innerText = "Já fiz o pagamento";
-                }
-            } catch (err) { btnLogin.innerText = "Erro ao logar"; }
-        });
+                await signInWithPopup(auth, new GoogleAuthProvider());
+            } catch (e) { alert("Erro ao conectar."); }
+        };
     }
 
     if (btnAdmin) {
-        btnAdmin.addEventListener("click", async (e) => {
-            e.preventDefault();
+        btnAdmin.onclick = async () => {
             const user = auth.currentUser;
             if(!user) return alert("Logue primeiro!");
-
-            try {
-                btnAdmin.innerText = "Liberando...";
-                await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
-                
-                btnAdmin.innerHTML = "🔥 APROVADO! ENTRAR NO PROTOCOLO";
-                btnAdmin.style.cssText = "background-color: #9333ea !important; color: white !important; font-weight: bold;";
-                btnAdmin.onclick = (ev) => { ev.preventDefault(); LIBERAR_PROTOCOLO_AGORA(); };
-            } catch (err) { alert(err.message); }
-        });
+            await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
+            alert("✅ Compra Simulada!");
+            LIBERAR_PROTOCOLO();
+        };
     }
 });
