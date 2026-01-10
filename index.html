@@ -20,9 +20,8 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
     /></noscript>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
@@ -34,7 +33,31 @@
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
         
-        /* Estilo para o visualizador de Gatilhos */
+        /* Estilos do Upsell (Ponte) */
+        .upsell-bridge-card {
+            background: linear-gradient(145deg, #2e0249 0%, #1a0b2e 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: left;
+            margin-top: 20px;
+        }
+        .upsell-badge {
+            position: absolute; top: 0; right: 0;
+            background: #ec4899; color: white; font-size: 10px; font-weight: 800;
+            padding: 5px 15px; border-bottom-left-radius: 10px; text-transform: uppercase;
+        }
+        .upsell-btn-action {
+            background: white; color: #4c1d95; font-weight: 800; text-transform: uppercase;
+            width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer;
+            transition: transform 0.2s; font-size: 16px; box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+        }
+        .upsell-btn-action:hover { transform: scale(1.02); }
+        
+        /* Scrollbar */
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         .bonus-scroll::-webkit-scrollbar { width: 6px; }
         .bonus-scroll::-webkit-scrollbar-track { background: #1e1b4b; }
@@ -141,91 +164,93 @@
                         </div>
                     </div>
 
-                    <div id="upsell-container"></div>
+                    <div id="upsell-container">
+                        
+                        <div id="card-upsell-bridge" class="upsell-bridge-card">
+                          <div class="upsell-badge">Acesso Restrito</div>
+                          
+                          <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest mb-1">Oportunidade Única</p>
+                          
+                          <h2 class="font-bold text-white text-xl md:text-2xl leading-tight mb-2 font-inter">
+                            Protocolo Secreto 2.0:<br>
+                            <span class="text-pink-300">Reversão de Polaridade</span>
+                          </h2>
+
+                          <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                            O Guia 1 parou seus erros. O <strong>Protocolo 2.0</strong> é a arma final para <strong>forçar o contato dele em até 24h</strong>, invertendo o jogo e fazendo ele implorar por sua atenção.
+                          </p>
+
+                          <button onclick="window.location.href='./upsell.html'" class="upsell-btn-action">
+                            ATIVAR PROTOCOLO 2.0
+                          </button>
+
+                          <div class="text-center text-xs text-slate-400 mt-3">
+                            De <s style="opacity: 0.7">R$ 197</s> por apenas <strong class="text-emerald-400 text-sm">R$ 47</strong>
+                          </div>
+                        </div>
+
+                        <div id="card-upsell-unlocked" class="hidden mt-6 bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl">
+                            <div class="flex items-start gap-4">
+                                <div class="bg-emerald-500 rounded-full p-1 mt-1">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-emerald-400 font-bold text-lg mb-1">Protocolo Secreto Liberado</h3>
+                                    <p class="text-slate-300 text-sm mb-4">Você agora tem acesso à Reversão de Polaridade.</p>
+                                    <p class="text-xs text-slate-400"><strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
+                                    <button onclick="alert('Abrindo Conteúdo VIP...')" class="mt-4 text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition font-bold uppercase tracking-wide">ACESSAR MATERIAL 📂</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script type="module" src="./tracker.js"></script>
     <script type="module" src="./enhancements.js"></script>
 
     <script>
+        // === LÓGICA DE LIBERAÇÃO (Pontes) ===
+        // Lê a URL em busca de ?status=premium OU ?protocol=active
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const protocol = urlParams.get('protocol');
+
+            const cardBridge = document.getElementById('card-upsell-bridge');
+            const cardUnlocked = document.getElementById('card-upsell-unlocked');
+
+            // Se for premium, esconde o Roxo e mostra o Verde
+            if (status === 'premium' || protocol === 'active') {
+                if(cardBridge) cardBridge.classList.add('hidden');
+                if(cardUnlocked) cardUnlocked.classList.remove('hidden');
+            }
+        });
+
+        // --- FUNÇÕES DE CONTEÚDO (MANTIDAS) ---
         function showContent(module) {
             const area = document.getElementById('main-content-area');
-            area.innerHTML = ''; // Limpa a área
-            
+            area.innerHTML = ''; 
             let html = '';
-
             if(module === 1) {
-                html = `
-                    <div class="fade-in">
-                        <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 01</span>
-                        <h3 class="text-2xl font-black text-white mt-2 mb-6 uppercase">O Despertar da Escassez</h3>
-                        <div class="space-y-4">
-                            <div class="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl">
-                                <strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O que NÃO fazer:</strong>
-                                <p class="text-slate-300 text-sm italic">"Estar sempre online e responder antes mesmo dele terminar de digitar."</p>
-                            </div>
-                            <div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
-                                <strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">Sua nova postura:</strong>
-                                <p class="text-slate-300 text-sm">Instale a <strong>Incerteza Neural</strong>. Ele precisa se perguntar por que você não visualizou ainda. O silêncio é sua ferramenta de poder.</p>
-                            </div>
-                        </div>
-                    </div>`;
+                html = `<div class="fade-in"><span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 01</span><h3 class="text-2xl font-black text-white mt-2 mb-6 uppercase">O Despertar da Escassez</h3><div class="space-y-4"><div class="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl"><strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O que NÃO fazer:</strong><p class="text-slate-300 text-sm italic">"Estar sempre online e responder antes mesmo dele terminar de digitar."</p></div><div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl"><strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">Sua nova postura:</strong><p class="text-slate-300 text-sm">Instale a <strong>Incerteza Neural</strong>. Ele precisa se perguntar por que você não visualizou ainda. O silêncio é sua ferramenta de poder.</p></div></div></div>`;
             } else if(module === 2) {
-                html = `
-                    <div class="fade-in">
-                        <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 02</span>
-                        <h3 class="text-2xl font-black text-white mt-2 mb-4 uppercase">A Técnica do Vácuo</h3>
-                        <p class="text-slate-400 text-xs mb-6">Copie e envie este script se ele estiver frio há mais de 24h:</p>
-                        <div class="p-6 bg-white/5 border border-white/10 rounded-3xl relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script de Reativação</div>
-                            <p class="text-white text-lg font-serif italic mb-6">"Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não."</p>
-                            <button onclick="copiarTexto()" class="w-full bg-purple-600 text-white font-black py-4 rounded-xl hover:bg-purple-500 transition uppercase text-xs tracking-widest">Copiar Script</button>
-                        </div>
-                    </div>`;
+                html = `<div class="fade-in"><span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 02</span><h3 class="text-2xl font-black text-white mt-2 mb-4 uppercase">A Técnica do Vácuo</h3><p class="text-slate-400 text-xs mb-6">Copie e envie este script se ele estiver frio há mais de 24h:</p><div class="p-6 bg-white/5 border border-white/10 rounded-3xl relative overflow-hidden group"><div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script de Reativação</div><p class="text-white text-lg font-serif italic mb-6">"Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não."</p><button onclick="copiarTexto()" class="w-full bg-purple-600 text-white font-black py-4 rounded-xl hover:bg-purple-500 transition uppercase text-xs tracking-widest">Copiar Script</button></div></div>`;
             } else if(module === 3) {
-                html = `
-                    <div class="fade-in">
-                        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
-                            <div>
-                                <span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest">Acesso VIP</span>
-                                <h3 class="text-xl font-black text-white uppercase">Dicionário de Gatilhos</h3>
-                            </div>
-                            <div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold">PDF MODO LEITURA</div>
-                        </div>
-                        
-                        <div class="bonus-scroll pr-2 space-y-4">
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Curiosidade</p>
-                                <p class="text-slate-200 text-sm italic">"Preciso te contar uma coisa, mas tem que ser pessoalmente..."</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Escassez</p>
-                                <p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso incrível hoje. Fica pra próxima?"</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Desafio</p>
-                                <p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem checar o celular comigo."</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Autoridade</p>
-                                <p class="text-slate-200 text-sm italic">"Eu sei exatamente o que você está tentando fazer... e não vai funcionar comigo."</p>
-                            </div>
-                        </div>
-                        <p class="text-[9px] text-slate-500 mt-4 text-center uppercase tracking-widest">Fim do Guia de Gatilhos Rápidos</p>
-                    </div>`;
+                html = `<div class="fade-in"><div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4"><div><span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest">Acesso VIP</span><h3 class="text-xl font-black text-white uppercase">Dicionário de Gatilhos</h3></div><div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold">PDF MODO LEITURA</div></div><div class="bonus-scroll pr-2 space-y-4"><div class="p-4 bg-white/5 rounded-2xl border border-white/5"><p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Curiosidade</p><p class="text-slate-200 text-sm italic">"Preciso te contar uma coisa, mas tem que ser pessoalmente..."</p></div><div class="p-4 bg-white/5 rounded-2xl border border-white/5"><p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Escassez</p><p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso incrível hoje. Fica pra próxima?"</p></div><div class="p-4 bg-white/5 rounded-2xl border border-white/5"><p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Desafio</p><p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem checar o celular comigo."</p></div><div class="p-4 bg-white/5 rounded-2xl border border-white/5"><p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Autoridade</p><p class="text-slate-200 text-sm italic">"Eu sei exatamente o que você está tentando fazer... e não vai funcionar comigo."</p></div></div><p class="text-[9px] text-slate-500 mt-4 text-center uppercase tracking-widest">Fim do Guia de Gatilhos Rápidos</p></div>`;
             }
             area.innerHTML = html;
         }
 
         function copiarTexto() {
             const texto = "Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não.";
-            navigator.clipboard.writeText(texto).then(() => {
-                alert('Script copiado! Agora é só colar no WhatsApp.');
-            });
+            navigator.clipboard.writeText(texto).then(() => { alert('Script copiado!'); });
         }
 
+        // QUIZ LOGIC
         const realQuestions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
@@ -260,13 +285,16 @@
                 btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl border border-white/10 transition duration-200";
                 btn.innerText = ans;
                 btn.onclick = () => { 
-                    window.userAnswers.push(ans); 
+                    window.userAnswers.push(ans);
+                    // Dispara evento para o tracker se existir
+                    if(window.customTrack) {
+                        window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
+                    }
                     runQuiz(idx + 1); 
                 };
                 aBox.appendChild(btn);
             });
         }
-
         runQuiz(0);
     </script>
 </body>
