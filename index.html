@@ -23,6 +23,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         
@@ -94,6 +95,10 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
                     <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
+
+                    <button onclick="if(window.simularCompraDev) window.simularCompraDev(); else alert('Função Admin não encontrada no JS. Verifique se está logado.')" class="mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer">
+                        👑 Admin: Simular Compra Aprovada
+                    </button>
                 </div>
             </div>
         </div>
@@ -133,6 +138,9 @@
                     window.finishQuizFlow(window.userAnswers);
                 } else {
                     console.error("Enhancements.js não carregou");
+                    // Fallback simples caso o JS falhe
+                    document.getElementById('quiz-container').classList.add('hidden');
+                    document.getElementById('result-container').classList.remove('hidden');
                 }
                 return;
             }
