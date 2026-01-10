@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -16,64 +16,47 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Função para pular direto para o conteúdo
-function LIBERAR_CONTEUDO() {
-    const loader = document.getElementById('initial-auth-check');
-    if(loader) loader.classList.add('hidden');
-    
-    const flow = document.getElementById('quiz-flow');
-    if(flow) flow.classList.remove('hidden');
+const RESULTS = {
+    ansiosa: {
+        title: "A Ansiosa Disponível",
+        desc: "Você inconscientemente ensinou a ele que o seu tempo vale menos que o dele. Ao responder rápido demais, você desligou o instinto de 'caça' no cérebro dele."
+    },
+    controladora: {
+        title: "A Investigadora Emocional",
+        desc: "Sua necessidade de controle gera um Sufocamento Silencioso. Ele se afasta para respirar e você aperta mais a corda."
+    },
+    desvalorizada: {
+        title: "A Doadora Excessiva",
+        desc: "Você entrega o prêmio antes da corrida começar. Ele não te respeita como um desafio porque você já se deu por vencida."
+    }
+};
 
+function LIBERAR_CONTEUDO() {
     const ids = ['quiz-container', 'processing-container', 'result-container'];
     ids.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('hidden');
     });
     const prot = document.getElementById('protocolo');
-    if(prot) {
-        prot.classList.remove('hidden');
-        prot.style.display = 'block';
-    }
+    if(prot) prot.classList.remove('hidden');
+    window.scrollTo(0,0);
 }
 
-// Lógica de monitoramento de Login
-onAuthStateChanged(auth, (user) => {
-    const loader = document.getElementById('initial-auth-check');
-    const flow = document.getElementById('quiz-flow');
-
-    if (user) {
-        // Usuário logado: Checa status no banco
-        onSnapshot(doc(db, "users", user.email), (snapshot) => {
-            if (snapshot.exists() && snapshot.data().status === 'premium') {
-                // É PREMIUM: Pula tudo
-                LIBERAR_CONTEUDO();
-            } else {
-                // LOGADO MAS NÃO COMPROU: Mostra o Quiz normal
-                if(loader) loader.classList.add('hidden');
-                if(flow) flow.classList.remove('hidden');
-            }
-        });
-    } else {
-        // NÃO LOGADO: Mostra o Quiz normal imediatamente
-        if(loader) loader.classList.add('hidden');
-        if(flow) flow.classList.remove('hidden');
-    }
-});
-
-// Lógica do Quiz
 window.finishQuizFlow = function(answers) {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('processing-container').classList.remove('hidden');
+    
     let p = 0;
     const int = setInterval(() => {
         p += 10;
         document.getElementById('process-pct').innerText = p + '%';
         if(p >= 100) {
             clearInterval(int);
+            const perfil = (answers.join(" ").length % 3 === 0) ? RESULTS.ansiosa : RESULTS.desvalorizada;
             document.getElementById('processing-container').classList.add('hidden');
             document.getElementById('result-container').classList.remove('hidden');
-            document.getElementById('result-title').innerText = "Diagnóstico Pronto";
-            document.getElementById('result-description').innerText = "Análise concluída com base no seu comportamento neural.";
+            document.getElementById('result-title').innerText = perfil.title;
+            document.getElementById('result-description').innerText = perfil.desc;
             
             var t = 600, d = document.getElementById('countdown-timer');
             setInterval(() => {
@@ -84,3 +67,22 @@ window.finishQuizFlow = function(answers) {
         }
     }, 200);
 };
+
+// Se o aluno já estiver logado, libera o conteúdo silenciosamente
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        onSnapshot(doc(db, "users", user.email), (snap) => {
+            if (snap.exists() && snap.data().status === 'premium') LIBERAR_CONTEUDO();
+        });
+    }
+});
+
+// Botão "Já sou aluno"
+const btnLogin = document.getElementById('btn-login-manual');
+if (btnLogin) {
+    btnLogin.onclick = async () => {
+        try {
+            await signInWithPopup(auth, new GoogleAuthProvider());
+        } catch (e) { console.error("Login cancelado"); }
+    };
+}
