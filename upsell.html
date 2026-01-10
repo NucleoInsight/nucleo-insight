@@ -5,118 +5,222 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oferta Especial - Blindagem</title>
 <style>
+  /* --- PALETA DE CORES (Ajuste aqui para bater com seu site) --- */
+  :root {
+    --primary-color: #D81B60; /* Rosa Forte/Cereja - Cor principal da marca */
+    --bg-color: #FFF; /* Fundo branco limpo */
+    --text-color: #333;
+    --box-bg: #FFF0F5; /* Lavanda/Rosê bem claro para o mural */
+    --box-border: #F8BBD0; /* Borda rosa suave */
+    --btn-color-1: #2ecc71; /* Verde Check (início do gradiente) */
+    --btn-color-2: #27ae60; /* Verde Check (final do gradiente) */
+  }
+
   /* Base */
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+  body { 
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif; 
+    background-color: var(--bg-color); 
+    margin: 0; padding: 0; 
+    color: var(--text-color); 
+    line-height: 1.6; 
+  }
   
-  /* Cronômetro no Topo */
-  .sticky-bar { background-color: #c0392b; color: #fff; text-align: center; padding: 10px; font-weight: bold; font-size: 14px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  /* Cronômetro no Topo - Estilo Alerta Premium */
+  .sticky-bar { 
+    background-color: var(--primary-color); 
+    color: #fff; 
+    text-align: center; 
+    padding: 12px; 
+    font-weight: 600; 
+    font-size: 14px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    box-shadow: 0 4px 10px rgba(216, 27, 96, 0.2); 
+    letter-spacing: 0.5px;
+  }
   
   /* Container Principal */
-  .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.05); margin-top: 20px; border-radius: 10px; text-align: center; }
+  .container { 
+    max-width: 600px; 
+    margin: 0 auto; 
+    padding: 20px 20px 40px 20px; 
+    text-align: center; 
+  }
 
-  /* Barra de Progresso */
-  .progress-container { background-color: #e0e0e0; border-radius: 20px; margin: 20px 0; height: 20px; width: 100%; overflow: hidden; }
-  .progress-bar { background: linear-gradient(90deg, #f1c40f, #f39c12); width: 85%; height: 100%; text-align: right; padding-right: 10px; color: #fff; font-size: 12px; line-height: 20px; font-weight: bold; }
+  /* Barra de Progresso - Estilo Feminino/Tech */
+  .progress-container { 
+    background-color: #f0f0f0; 
+    border-radius: 50px; 
+    margin: 30px 0; 
+    height: 24px; 
+    width: 100%; 
+    overflow: hidden; 
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  }
+  .progress-bar { 
+    background: linear-gradient(90deg, #ec407a, #ab47bc); /* Rosa para Roxo */
+    width: 85%; 
+    height: 100%; 
+    text-align: right; 
+    padding-right: 15px; 
+    color: #fff; 
+    font-size: 11px; 
+    line-height: 24px; 
+    font-weight: 800; 
+    letter-spacing: 1px;
+    border-radius: 50px;
+  }
 
   /* Headlines */
-  h1 { color: #2c3e50; font-size: 28px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -1px; }
-  h2 { color: #c0392b; font-size: 18px; font-weight: 600; margin-top: 0; margin-bottom: 30px; }
-
-  /* O "Mural" Destacado */
-  .mural-box { 
-    background-color: #fffbf0; /* Amarelo muito suave */
-    border: 2px dashed #d4af37; /* Borda Dourada pontilhada */
-    padding: 25px; 
-    border-radius: 8px; 
-    text-align: left; 
-    font-size: 17px;
-    margin-bottom: 30px;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.05);
+  h1 { 
+    color: #000; 
+    font-size: 26px; 
+    margin-bottom: 15px; 
+    font-weight: 800;
+    line-height: 1.2;
   }
-  .highlight { background-color: #ffeaa7; font-weight: bold; padding: 2px 5px; }
-  .bold-red { color: #c0392b; font-weight: bold; }
+  h2 { 
+    color: var(--primary-color); 
+    font-size: 18px; 
+    font-weight: 500; 
+    margin-top: 0; 
+    margin-bottom: 30px; 
+    line-height: 1.4;
+  }
+
+  /* O "Mural" Destacado - Versão Clean/Elegante */
+  .mural-box { 
+    background-color: var(--box-bg); 
+    border: 1px solid var(--box-border); 
+    padding: 30px; 
+    border-radius: 12px; 
+    text-align: left; 
+    font-size: 16px;
+    margin-bottom: 35px;
+    position: relative;
+  }
+  
+  /* Elemento visual para parecer um "aviso importante" */
+  .mural-box::before {
+    content: '⚠️ MENSAGEM IMPORTANTE';
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    opacity: 0.7;
+    letter-spacing: 1px;
+  }
+
+  .highlight { 
+    background-color: rgba(255, 235, 59, 0.4); /* Marca texto suave */
+    font-weight: bold; 
+    padding: 0 4px;
+    color: #000;
+  }
+  
+  .bold-text { 
+    font-weight: 700; 
+    color: #000;
+  }
 
   /* Botão Pulsante Premium */
   .btn-pulsing {
-    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+    background: linear-gradient(to bottom, var(--btn-color-1), var(--btn-color-2));
     border: none;
     color: white;
-    padding: 20px 25px;
+    padding: 22px 20px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 18px;
+    display: block;
+    font-size: 19px;
     font-weight: 800;
-    border-radius: 50px;
+    border-radius: 8px; /* Cantos levemente arredondados, menos "bolinha" */
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+    box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
     width: 100%;
-    max-width: 450px;
+    box-sizing: border-box;
     text-transform: uppercase;
     animation: pulse 2s infinite;
-    border: 2px solid #2ecc71;
+    transition: transform 0.2s;
   }
   
-  .btn-subtext { display: block; font-size: 12px; font-weight: normal; margin-top: 5px; opacity: 0.9; }
+  .btn-pulsing:hover {
+    transform: translateY(-2px);
+  }
+  
+  .btn-subtext { 
+    display: block; 
+    font-size: 13px; 
+    font-weight: 500; 
+    margin-top: 6px; 
+    opacity: 0.95; 
+    text-transform: none;
+  }
 
   @keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
   }
 
-  /* Link de Recusa */
+  /* Link de Recusa - Psicologia da Cor */
   .no-thanks {
-    display: block;
-    margin-top: 25px;
-    color: #922b21; /* Vermelho escuro discreto */
-    font-size: 13px;
-    text-decoration: underline;
-    opacity: 0.8;
+    display: inline-block;
+    margin-top: 30px;
+    color: #A93226; /* Vermelho sangue seco - Discreto mas "negativo" */
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid #A93226;
+    padding-bottom: 2px;
+    opacity: 0.75;
     transition: 0.3s;
     line-height: 1.5;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
   }
-  .no-thanks:hover { opacity: 1; font-weight: bold; }
+  .no-thanks:hover { opacity: 1; font-weight: 600; }
 
 </style>
 </head>
 <body>
 
 <div class="sticky-bar">
-  🔒 OFERTA ÚNICA: O PREÇO SUBIRÁ EM <span id="timer">04:59</span>
+  ⏳ FALTA POUCO: SUA OPORTUNIDADE ACABA EM <span id="timer">04:59</span>
 </div>
 
 <div class="container">
+  
+  <h1>ESPERE! O SEU PEDIDO AINDA NÃO ESTÁ COMPLETO...</h1>
+  <h2>Você garantiu que ele volte... mas você sabe como impedir que ele "esfrie" e <span style="border-bottom: 2px solid #D81B60;">te abandone novamente?</span></h2>
+
   <div class="progress-container">
-    <div class="progress-bar">PEDIDO 85% CONCLUÍDO</div>
+    <div class="progress-bar">85% CONCLUÍDO...</div>
   </div>
 
-  <h1>ESPERE! AINDA NÃO ACABOU...</h1>
-  <h2>Você quer que ele volte... mas quer ter certeza absoluta que ele <span style="text-decoration: underline;">NUNCA MAIS</span> vá embora?</h2>
-
   <div class="mural-box">
-    <p>Preste muita atenção, pois essa oportunidade não vai aparecer de novo.</p>
-    <p>A estatística é clara: <span class="bold-red">80% dos homens voltam, mas acabam "esfriando"</span> semanas depois se não sentirem uma mudança real.</p>
-    <p>Você não quer apenas uma noite. Você quer <span class="highlight">Obsessão</span>. Você quer que ele sinta um <strong>vício emocional</strong> em você.</p>
-    <p>O que estou liberando agora é a chave para <strong>BLINDAR SEU RESULTADO</strong> e garantir que ele fique aos seus pés, com medo de te perder.</p>
+    <p>Preste muita atenção. Homens voltam, <strong>mas eles também vão embora.</strong></p>
+    
+    <p>A estatística é cruel: <span class="bold-text">70% dos ex-namorados voltam</span> por causa da técnica que você acabou de comprar, mas acabam esfriando depois de alguns dias se não sentirem uma <span class="highlight">Conexão Emocional Blindada</span>.</p>
+    
+    <p>Você não quer apenas ele de volta por uma noite. <strong>Você quer ele obcecado.</strong> Você quer que ele olhe para você e sinta um medo terrível de te perder novamente.</p>
+    
+    <p style="margin-bottom:0;">O que vou te oferecer agora não é uma escolha, é uma <strong>necessidade de segurança</strong> para o seu coração.</p>
   </div>
 
   <a href="https://pay.kiwify.com.br/7B4m9iI" class="btn-pulsing">
     SIM! QUERO TORNAR ELE OBCECADO E FIEL
-    <span class="btn-subtext">(Adicionar Blindagem ao meu pedido agora)</span>
+    <span class="btn-subtext">(Clique aqui para blindar seu resultado agora)</span>
   </a>
 
-  <a href="#" class="no-thanks">
-    🔓 Não, obrigado. Aceito o risco de ele esfriar novamente e perderei essa chance de blindar meu resultado.
-  </a>
+  <div style="text-align: center;">
+    <a href="#" class="no-thanks">
+      🔓 Não, obrigado. Aceito o risco de ele esfriar novamente e perderei essa chance.
+    </a>
+  </div>
 
 </div>
 
 <script>
-  // Script simples para o cronômetro
   function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
