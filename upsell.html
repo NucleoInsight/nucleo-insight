@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo de Reversão | Acesso Vitalício</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script type="module" src="./tracker.js"></script>
+
+    <style>
+        /* --- ESTILO ALTO PADRÃO (PREMIUM DARK) --- */
+        :root {
+            --primary-glow: #8b5cf6; /* Roxo Insight */
+            --success-color: #10b981; /* Verde Sucesso */
+            --gold-accent: #fbbf24;   /* Dourado Premium */
+            --bg-dark: #0f0c29;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* O Card Principal */
+        .upsell-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Efeito de Brilho no Topo */
+        .upsell-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-glow), var(--success-color));
+        }
+
+        /* Ícone de Sucesso Animado */
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            border: 2px solid var(--success-color);
+            animation: pulse 2s infinite;
+        }
+
+        .success-icon svg {
+            width: 30px;
+            height: 30px;
+            color: var(--success-color);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #9ca3af;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .highlight {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        /* Lista de Pilares (Visual) */
+        .pillars-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pillar-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .pillar-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .check-bullet {
+            min-width: 20px;
+            color: var(--gold-accent); /* Dourado para valorizar */
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+
+        .pillar-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .pillar-text p {
+            margin: 0;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        /* Botão de Ação */
+        .action-btn {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Garantia Badge */
+        .guarantee-badge {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .upsell-card { padding: 25px; }
+            h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upsell-card">
+        <div class="success-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <h1>Protocolo Secreto Liberado</h1>
+        
+        <div class="subtitle">
+            Você garantiu o "Remédio de Emergência" (o que falar). <br>
+            Agora, desbloqueie a <span class="highlight">Cura Definitiva</span> com a Reversão de Polaridade.
+            <br><br>
+            Não apenas faça ele responder. Faça ele <strong>sentir medo de te perder</strong>.
+        </div>
+
+        <div class="pillars-container">
+            <div class="pillar-item">
+                <div class="check-bullet">✦</div>
+                <div class="pillar-text">
+                    <h3>Atração Involuntária</h3>
+                    <p>Como ativar gatilhos que o impedem de te ignorar.</p>
+                </div>
+            </div>
+            <div class="pillar-item">
+                <div class="check-bullet">✦</div>
+                <div class="pillar-text">
+                    <h3>Mistério Arquitetado</h3>
+                    <p>A técnica para virar o jogo e fazê-lo correr atrás.</p>
+                </div>
+            </div>
+            <div class="pillar-item">
+                <div class="check-bullet">✦</div>
+                <div class="pillar-text">
+                    <h3>Recompensa Emocional</h3>
+                    <p>O segredo para se tornar o vício dopaminérgico dele.</p>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-upsell-unlock" class="action-btn clickable">
+            DESBLOQUEIO VITALÍCIO & ACESSO IMEDIATO 🔓
+        </button>
+
+        <div class="guarantee-badge">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span>Proteção Blindada de Satisfação Garantida</span>
+        </div>
+    </div>
+
+    <script>
+        // Pequeno helper para disparar o evento específico de Purchase/Upsell
+        document.getElementById('btn-upsell-unlock').addEventListener('click', () => {
+            // Verifica se o tracker foi carregado (window.customTrack definido no tracker.js)
+            if (window.customTrack) {
+                window.customTrack('purchase_upsell', {
+                    product_name: 'Codigo da Obsessao',
+                    value: 27.90, // Ajuste o valor conforme necessário
+                    currency: 'BRL',
+                    trigger: 'reversao_polaridade'
+                });
+                
+                // Redirecionamento (Simulação)
+                console.log("Redirecionando para checkout...");
+                // window.location.href = "SEU_LINK_DE_CHECKOUT_AQUI";
+            }
+        });
+    </script>
+
+</body>
+</html>
