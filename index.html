@@ -231,12 +231,19 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === LÓGICA DE DESBLOQUEIO VIP (UPSELL) ===
-        // Para quem comprou o Upsell, você envia este link: seudominio.com/index.html?acesso=vip
+        // === LÓGICA DE DESBLOQUEIO BASEADA NO BANCO DE DADOS ===
+        // Verifica se a URL contém os parâmetros das imagens:
+        // status="premium" OU protocol="active"
         
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const isVip = urlParams.get('acesso') === 'vip';
+            
+            // Dados extraídos das imagens do banco:
+            const status = urlParams.get('status');     // Espera "premium"
+            const protocol = urlParams.get('protocol'); // Espera "active"
+
+            // Se qualquer um dos campos bater, libera o acesso
+            const isVip = (status === 'premium') || (protocol === 'active');
 
             if (isVip) {
                 // 1. Muda a faixa para VERDE
@@ -246,15 +253,15 @@
                     tag.style.background = "linear-gradient(90deg, #10b981, #059669)"; // Verde Sucesso
                 }
 
-                // 2. Muda o texto do botão e a ação
+                // 2. Muda o texto do botão e a ação (remove o link de pagamento)
                 const btn = document.getElementById('btn-upsell');
                 if(btn) {
                     btn.innerText = "ACESSAR CONTEÚDO EXTRA 📂";
-                    // Tira o link de compra e põe ação de abrir conteudo
                     btn.onclick = function(e) { 
                         e.preventDefault();
-                        alert("Área VIP liberada! (Redirecione aqui para o PDF/Vídeo do Upsell)");
-                        // window.location.href = "LINK_DO_CONTEUDO_UPSELL"; 
+                        // AQUI VOCÊ COLOCA O LINK DO PDF OU VÍDEO DO UPSELL
+                        alert("Redirecionando para o Material Extra...");
+                        // window.location.href = "LINK_DO_CONTEUDO_SECRETO.pdf"; 
                     };
                     btn.style.background = "linear-gradient(90deg, #10b981, #059669)";
                 }
@@ -265,7 +272,7 @@
             }
         });
 
-        // --- FUNÇÕES DO CONTEÚDO ---
+        // --- FUNÇÕES DO CONTEÚDO (MANTIDAS) ---
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
