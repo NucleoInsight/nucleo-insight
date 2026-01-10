@@ -37,44 +37,32 @@ function LIBERAR_CONTEUDO(userData) {
         prot.style.display = 'block';
     }
 
-    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA)
+    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA APLICADA)
     const upsellBox = document.getElementById('upsell-container');
     
-    // SÓ MOSTRA O VERDE SE TIVER "protocol" COMO "active"
-    // Se tiver apenas "status: premium" (comprou só o básico), CAI NO ELSE (ROXO)
+    // ALTERAÇÃO FEITA AQUI: Removido "|| userData.status === 'premium'"
+    // Agora o básico (premium) cai no ELSE (Cartão Roxo)
     if(userData.protocol === "active") {
         
-        // --- CENÁRIO VIP (LIBERADO) ---
+        // --- CENÁRIO VIP (LIBERADO - CARTÃO VERDE) ---
         upsellBox.innerHTML = `
-            <div class="bg-gradient-to-r from-emerald-900/40 to-black p-6 rounded-3xl border border-emerald-500/40 relative overflow-hidden group hover:border-emerald-400 transition-all duration-500">
-                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-emerald-500/20 p-2 rounded-lg border border-emerald-500/50">
-                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-emerald-400 font-bold text-lg leading-none">ACESSO VITALÍCIO</h3>
-                                <span class="text-[10px] text-slate-400 uppercase tracking-widest">Protocolo 2.0 Ativo</span>
-                            </div>
-                        </div>
-                        <span class="bg-emerald-500 text-black text-[9px] font-black px-2 py-1 rounded uppercase">Liberado</span>
+            <div class="glass-card p-8 rounded-3xl border border-emerald-500/30 bg-emerald-500/10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-emerald-500 rounded-full p-1">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                     </div>
-
-                    <p class="text-slate-300 text-xs mb-6 leading-relaxed border-l-2 border-emerald-500/30 pl-3">
-                        O Sistema de Neuro-Decodificação está pronto. Não responda nenhuma mensagem dele antes de consultar o oráculo.
-                    </p>
-
-                    <button onclick="window.location.href='protocolo.html'" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-900/50 transition transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-xs tracking-[0.1em] border border-emerald-400/30">
-                        <span>ENTRAR NO SISTEMA</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                    </button>
+                    <h2 class="text-xl font-bold text-emerald-400">Protocolo Secreto Liberado</h2>
                 </div>
+                <p class="text-slate-300 text-sm leading-relaxed">Você agora tem acesso total à Reversão de Polaridade. <br><br> <strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
+                
+                <button onclick="window.location.href='protocolo.html'" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold uppercase tracking-wide cursor-pointer shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                    ACESSAR SISTEMA
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
             </div>`;
     } else {
-        // --- CENÁRIO BLOQUEADO (ROXO ORIGINAL) ---
-        // Aqui está exatamente o link e o design que você pediu para voltar
+        // --- CENÁRIO BÁSICO (BLOQUEADO - CARTÃO ROXO) ---
+        // Aqui está o link do Upsell conforme solicitado
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
