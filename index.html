@@ -39,15 +39,12 @@
 <body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans selection:bg-purple-500 selection:text-white">
 
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
-        
         <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
             <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
-            
             <div class="mb-8 flex items-center justify-between relative z-10">
                 <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
                 <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div></div>
             </div>
-            
             <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
             <div id="answers-box" class="space-y-3 relative z-10"></div>
         </div>
@@ -63,15 +60,12 @@
         </div>
 
         <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center fade-in border-t border-purple-500/20 overflow-hidden">
-            
             <div class="bg-black/40 p-6 border-b border-white/5">
                 <p class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
                 <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
             </div>
-
             <div class="p-6">
                 <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">...</p>
-
                 <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6 relative overflow-hidden">
                     
                     <div class="bg-red-500/10 border-b border-red-500/20 p-2 -mx-5 -mt-5 mb-4 flex justify-center items-center gap-2">
@@ -108,37 +102,43 @@
     </div>
 
     <script type="module">
+        // 1. IMPORTAÇÕES
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // --- CONFIGURAÇÃO ---
+        // 2. CONFIGURAÇÃO (COLE SEUS DADOS AQUI)
+        // -----------------------------------------------------------
+        // ⚠️ ATENÇÃO: COPIE O "const firebaseConfig = {...}" DO SEU ARQUIVO
+        // enhancements.js E COLE ELE INTEIRO AQUI EMBAIXO:
+        // -----------------------------------------------------------
+        
+        const firebaseConfig = {
+            // ... COLE O CONTEÚDO AQUI (apiKey, authDomain, etc) ...
+            // Se você não colar, vai dar erro "No Firebase App"
+        }; 
+
+        // 3. INICIALIZAÇÃO DO APP (Isso corrige o erro)
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
         const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
-        // Função para garantir que o elemento existe antes de adicionar o evento
+        console.log("Firebase inicializado no index.html com sucesso!");
+
+        // 4. LÓGICA DOS BOTÕES
         function setupButtons() {
             const btnLogin = document.getElementById('btn-already-paid');
             const btnAdmin = document.getElementById('admin-test-btn');
 
-            if (!btnLogin) {
-                console.error("ERRO CRÍTICO: Botão de Login não encontrado no HTML.");
-                return;
-            }
+            if (!btnLogin) return;
 
-            console.log("Sistema de botões iniciado.");
-
-            // Ação do Botão "Já Paguei"
             btnLogin.onclick = async function() {
-                console.log("Botão clicado!");
                 const originalText = btnLogin.innerHTML;
                 btnLogin.innerHTML = "Aguarde...";
                 
                 try {
-                    // Tenta pegar a instância do Firebase que já deve ter sido iniciada no enhancements.js
-                    // Se enhancements.js falhou, getAuth() vai dar erro.
-                    const auth = getAuth(); 
-                    const db = getFirestore();
                     const provider = new GoogleAuthProvider();
-                    
                     const result = await signInWithPopup(auth, provider);
                     const user = result.user;
                     
@@ -150,7 +150,6 @@
                         btnAdmin.classList.remove('hidden-force');
                         btnLogin.innerHTML = originalText;
                         
-                        // Configura o botão Admin AGORA
                         btnAdmin.onclick = async function() {
                             if(!confirm(`Simular pagamento de R$27 para ${user.email}?`)) return;
                             try {
@@ -180,17 +179,12 @@
 
                 } catch (error) {
                     console.error("Erro no processo:", error);
-                    if (error.code === 'auth/no-app') {
-                        alert("ERRO TÉCNICO: O Firebase não conectou. Verifique se o enhancements.js carregou.");
-                    } else {
-                        alert("Erro: " + error.message);
-                    }
+                    alert("Erro: " + error.message);
                     btnLogin.innerHTML = originalText;
                 }
             };
         }
 
-        // Tenta configurar os botões assim que o DOM estiver pronto
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', setupButtons);
         } else {
