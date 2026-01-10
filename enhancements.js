@@ -40,11 +40,11 @@ function LIBERAR_CONTEUDO(userData) {
     // 3. Lógica do Upsell (TRAVA DE SEGURANÇA)
     const upsellBox = document.getElementById('upsell-container');
     
-    // Só entra aqui quem tem o protocolo ativo (VIP)
+    // SÓ MOSTRA O VERDE SE TIVER "protocol" COMO "active"
     if(userData.protocol === "active") {
         
-        // --- CENÁRIO VIP (DESIGN ORIGINAL RESTAURADO) ---
-        // Este é o HTML exato da caixa verde simples que você aprovou
+        // --- CENÁRIO VIP (LIBERADO) ---
+        // DESIGN CORRIGIDO: Usando o glass-card simples verde com o botão, conforme a imagem.
         upsellBox.innerHTML = `
             <div class="glass-card p-8 rounded-3xl border border-emerald-500/30 bg-emerald-500/10">
                 <div class="flex items-center gap-3 mb-4">
@@ -55,14 +55,13 @@ function LIBERAR_CONTEUDO(userData) {
                 </div>
                 <p class="text-slate-300 text-sm leading-relaxed">Você agora tem acesso total à Reversão de Polaridade. <br><br> <strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
                 
-                <button onclick="window.location.href='protocolo.html'" class="mt-4 text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded font-bold uppercase tracking-wide cursor-pointer transition shadow-lg flex items-center gap-2">
+                <button onclick="window.location.href='protocolo.html'" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-sm tracking-wider">
                     ACESSAR SISTEMA ➜
                 </button>
             </div>`;
             
     } else {
-        // --- CENÁRIO BÁSICO (DESIGN ROXO ORIGINAL) ---
-        // Link e design mantidos para quem não comprou
+        // --- CENÁRIO BÁSICO (BLOQUEADO - CARTÃO ROXO) ---
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
