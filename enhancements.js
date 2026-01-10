@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -15,9 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
-function LIBERAR_PROTOCOLO() {
+function LIBERAR_CONTEUDO() {
     const ids = ['quiz-container', 'processing-container', 'result-container'];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -42,42 +41,38 @@ window.finishQuizFlow = function(answers) {
             clearInterval(int);
             document.getElementById('processing-container').classList.add('hidden');
             document.getElementById('result-container').classList.remove('hidden');
-            document.getElementById('result-title').innerText = "Análise Concluída";
+            document.getElementById('result-title').innerText = "Análise Neural Concluída";
             document.getElementById('result-description').innerText = "Identificamos padrões de alta reatividade emocional no seu perfil.";
+            
+            var t = 600, d = document.getElementById('countdown-timer');
+            setInterval(() => {
+                var m = parseInt(t/60), s = parseInt(t%60);
+                if(d) d.textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+                if(--t < 0) t = 0;
+            }, 1000);
         }
     }, 200);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    const btnLogin = document.getElementById('btn-login-action');
-    const btnAdmin = document.getElementById('btn-admin-action');
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            if (ADMIN_EMAILS.includes(user.email)) btnAdmin.classList.remove('hidden-force');
-            
-            // Monitora mudança no banco para liberar sozinho
-            onSnapshot(doc(db, "users", user.email), (snap) => {
-                if (snap.exists() && snap.data().status === 'premium') LIBERAR_PROTOCOLO();
-            });
-        }
-    });
-
-    if (btnLogin) {
-        btnLogin.onclick = async () => {
-            try {
-                await signInWithPopup(auth, new GoogleAuthProvider());
-            } catch (e) { alert("Erro ao conectar."); }
-        };
-    }
-
-    if (btnAdmin) {
-        btnAdmin.onclick = async () => {
-            const user = auth.currentUser;
-            if(!user) return alert("Logue primeiro!");
-            await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
-            alert("✅ Compra Simulada!");
-            LIBERAR_PROTOCOLO();
-        };
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Monitora o status no banco de dados. 
+        // Se já for premium (seu caso), o LIBERAR_CONTEUDO() abre a tela na hora.
+        onSnapshot(doc(db, "users", user.email), (snapshot) => {
+            if (snapshot.exists() && snapshot.data().status === 'premium') {
+                LIBERAR_CONTEUDO();
+            }
+        });
     }
 });
+
+const btnLogin = document.getElementById('btn-login-action');
+if (btnLogin) {
+    btnLogin.onclick = async () => {
+        try {
+            await signInWithPopup(auth, new GoogleAuthProvider());
+        } catch (e) {
+            console.error("Erro no login");
+        }
+    };
+}
