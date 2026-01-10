@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa Mental | Núcleo Insight</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+    <style>
+        body { 
+            background-color: #0f0c29; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        #cy {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .header h1 { margin: 0; font-size: 24px; color: #a855f7; }
+        .header p { color: #94a3b8; font-size: 14px; }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Núcleo Insight Flow</h1>
+        <p>Arraste os nós para organizar seu mapa mental</p>
+    </div>
+
+    <div id="cy"></div>
+
+    <div class="controls">
+        🔵 Arquivo Local | 🟢 Externo | 🟡 Banco de Dados | 🔴 Evento
+    </div>
+
+    <script>
+        var cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: [
+                // NÓS
+                { data: { id: 'user', label: 'USUÁRIO', color: '#fff' } },
+                { data: { id: 'index', label: 'index.html\n(Interface)', color: '#3b82f6' } },
+                { data: { id: 'enhancements', label: 'enhancements.js\n(Lógica/Firebase)', color: '#3b82f6' } },
+                { data: { id: 'tracker', label: 'tracker.js\n(Métricas)', color: '#3b82f6' } },
+                { data: { id: 'firebase', label: 'FIREBASE\n(Banco de Dados)', color: '#eab308' } },
+                { data: { id: 'kiwify', label: 'KIWIFY\n(Checkout)', color: '#22c55e' } },
+                { data: { id: 'make', label: 'MAKE.COM\n(Automação)', color: '#22c55e' } },
+                { data: { id: 'fb', label: 'FACEBOOK PIXEL\n(Anúncios)', color: '#ef4444' } },
+
+                // CONEXÕES
+                { data: { source: 'user', target: 'index', label: 'Acessa' } },
+                { data: { source: 'index', target: 'tracker', label: 'Envia cliques' } },
+                { data: { source: 'index', target: 'enhancements', label: 'Processa Quiz' } },
+                { data: { source: 'enhancements', target: 'firebase', label: 'Lê/Grava Status' } },
+                { data: { source: 'enhancements', target: 'fb', label: 'Dispara Pixel' } },
+                { data: { source: 'index', target: 'kiwify', label: 'Redireciona Compra' } },
+                { data: { source: 'kiwify', target: 'make', label: 'Webhook Venda' } },
+                { data: { source: 'make', target: 'firebase', label: 'Libera Acesso' } },
+                { data: { source: 'firebase', target: 'enhancements', label: 'Avisa Pagamento' } }
+            ],
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': 'data(color)',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': '120px',
+                        'height': '120px',
+                        'font-size': '12px',
+                        'text-wrap': 'wrap',
+                        'border-width': 2,
+                        'border-color': '#fff',
+                        'overlay-padding': '6px',
+                        'ghost': 'yes',
+                        'ghost-offset-x': 2,
+                        'ghost-offset-y': 2,
+                        'ghost-opacity': 0.2
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#475569',
+                        'target-arrow-color': '#475569',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'label': 'data(label)',
+                        'font-size': '10px',
+                        'color': '#94a3b8',
+                        'text-rotation': 'autorotate',
+                        'text-margin-y': -10
+                    }
+                },
+                {
+                    selector: ':active',
+                    style: {
+                        'overlay-color': '#a855f7',
+                        'overlay-opacity': 0.3
+                    }
+                }
+            ],
+            layout: {
+                name: 'breadthfirst',
+                directed: true,
+                padding: 50
+            }
+        });
+
+        // Animação de entrada
+        cy.nodes().forEach(function(ele, i){
+            setTimeout(function(){
+                ele.addClass('fadein');
+            }, i * 100);
+        });
+    </script>
+</body>
+</html>
