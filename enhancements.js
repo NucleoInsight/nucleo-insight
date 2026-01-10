@@ -37,14 +37,14 @@ function LIBERAR_CONTEUDO(userData) {
         prot.style.display = 'block';
     }
 
-    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA APLICADA)
+    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA)
     const upsellBox = document.getElementById('upsell-container');
     
-    // ALTERAÇÃO FEITA AQUI: Removido "|| userData.status === 'premium'"
-    // Agora o básico (premium) cai no ELSE (Cartão Roxo)
+    // Só entra aqui quem tem o protocolo ativo (VIP)
     if(userData.protocol === "active") {
         
-        // --- CENÁRIO VIP (LIBERADO - CARTÃO VERDE) ---
+        // --- CENÁRIO VIP (DESIGN ORIGINAL RESTAURADO) ---
+        // Este é o HTML exato da caixa verde simples que você aprovou
         upsellBox.innerHTML = `
             <div class="glass-card p-8 rounded-3xl border border-emerald-500/30 bg-emerald-500/10">
                 <div class="flex items-center gap-3 mb-4">
@@ -55,14 +55,14 @@ function LIBERAR_CONTEUDO(userData) {
                 </div>
                 <p class="text-slate-300 text-sm leading-relaxed">Você agora tem acesso total à Reversão de Polaridade. <br><br> <strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
                 
-                <button onclick="window.location.href='protocolo.html'" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold uppercase tracking-wide cursor-pointer shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
-                    ACESSAR SISTEMA
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <button onclick="window.location.href='protocolo.html'" class="mt-4 text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded font-bold uppercase tracking-wide cursor-pointer transition shadow-lg flex items-center gap-2">
+                    ACESSAR SISTEMA ➜
                 </button>
             </div>`;
+            
     } else {
-        // --- CENÁRIO BÁSICO (BLOQUEADO - CARTÃO ROXO) ---
-        // Aqui está o link do Upsell conforme solicitado
+        // --- CENÁRIO BÁSICO (DESIGN ROXO ORIGINAL) ---
+        // Link e design mantidos para quem não comprou
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
