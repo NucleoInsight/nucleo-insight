@@ -40,9 +40,11 @@ function LIBERAR_CONTEUDO(userData) {
     // 3. Lógica do Upsell (Ponte vs Liberado)
     const upsellBox = document.getElementById('upsell-container');
     
-    // Verifica se tem o protocolo ativo (VIP)
-    if(userData.protocol === "active" || userData.status === "premium") {
+    // --- CORREÇÃO AQUI: Removemos 'OR status === premium' para não liberar para quem só tem o curso básico ---
+    if(userData.protocol === "active") {
+        
         // --- CENÁRIO VIP (LINKA PARA O NOVO PROTOCOLO.HTML) ---
+        // Exibe o Card Verde apenas para quem COMPROU o Upsell
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-r from-emerald-900/40 to-black p-6 rounded-3xl border border-emerald-500/40 relative overflow-hidden group hover:border-emerald-400 transition-all duration-500">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -59,9 +61,11 @@ function LIBERAR_CONTEUDO(userData) {
                         </div>
                         <span class="bg-emerald-500 text-black text-[9px] font-black px-2 py-1 rounded uppercase">Liberado</span>
                     </div>
+
                     <p class="text-slate-300 text-xs mb-6 leading-relaxed border-l-2 border-emerald-500/30 pl-3">
                         O Sistema de Neuro-Decodificação está pronto. Não responda nenhuma mensagem dele antes de consultar o oráculo.
                     </p>
+
                     <button onclick="window.location.href='protocolo.html'" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-900/50 transition transform active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-xs tracking-[0.1em] border border-emerald-400/30">
                         <span>ENTRAR NO SISTEMA</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
@@ -70,13 +74,16 @@ function LIBERAR_CONTEUDO(userData) {
             </div>`;
     } else {
         // --- CENÁRIO BÁSICO (O DESIGN ANTIGO ROXO QUE VOCÊ PEDIU) ---
+        // Exibe o Botão de Compra para quem NÃO tem o protocolo ativo
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
                 <span class="text-pink-300 text-[10px] font-bold uppercase tracking-widest">Oportunidade Única</span>
                 <h2 class="text-2xl font-black text-white mt-2 mb-4 leading-tight text-left">Protocolo Secreto 2.0:<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Reversão de Polaridade</span></h2>
                 <p class="text-slate-300 text-sm mb-6 text-left">O Guia 1 parou seus erros. O <strong>Protocolo 2.0</strong> é a arma final para <strong>forçar o contato dele em até 24h</strong>, invertendo o jogo e fazendo ele implorar por sua atenção.</p>
+                
                 <a href="https://nucleoinsight.github.io/nucleo-insight/upsell.html?utm_source=dashboard_interno" class="inline-block w-full bg-white text-purple-900 font-black px-6 py-4 rounded-xl text-center shadow-white/10 shadow-lg transform active:scale-95 transition cursor-pointer hover:scale-105">ATIVAR PROTOCOLO 2.0</a>
+                
                 <p class="text-[10px] text-slate-400 mt-4 text-center">De <span class="line-through">R$ 197</span> por apenas <span class="text-emerald-400 font-bold text-lg">R$ 47</span></p>
             </div>`;
     }
