@@ -7,7 +7,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from
 import { getFirestore, doc, updateDoc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ============================================================================
-// CONFIGURAÇÃO DO FIREBASE (ATUALIZADA)
+// CONFIGURAÇÃO DO FIREBASE
 // ============================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -19,7 +19,6 @@ const firebaseConfig = {
   measurementId: "G-M24P3TBP5J"
 };
 
-// Inicialização
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -27,21 +26,42 @@ const db = getFirestore(app);
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
 // ============================================================================
-// 1. LÓGICA DO QUIZ E RESULTADO
+// FUNÇÃO DE SALVAMENTO DO FUNIL (IMPEDE VOLTAR PRO QUIZ)
+// ============================================================================
+function forceShowProtocol() {
+    console.log("Executando troca de tela forçada...");
+    
+    // 1. Tenta usar a função global de abas se ela existir
+    if (window.switchTab) {
+        window.switchTab('protocolo');
+    } else {
+        // 2. Se não existir, escondemos os containers do quiz manualmente
+        const containers = ['quiz-container', 'processing-container', 'result-container'];
+        containers.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.style.display = 'none';
+        });
+        
+        // 3. Tenta mostrar o container do protocolo (se o ID for esse)
+        const prot = document.getElementById('protocolo-container') || document.getElementById('protocolo');
+        if(prot) {
+            prot.style.display = 'block';
+            prot.classList.remove('hidden');
+        } else {
+            // Caso extremo: Se não houver aba, redireciona para a página de vendas do Upsell
+            console.warn("Aba não encontrada, redirecionando para checkout...");
+            // window.location.href = "LINK_DO_SEU_UPSELL_AQUI"; 
+        }
+    }
+}
+
+// ============================================================================
+// 1. LÓGICA DO QUIZ
 // ============================================================================
 const RESULTS = {
-    ansiosa: {
-        title: "A Ansiosa Disponível",
-        desc: "Você inconscientemente ensinou a ele que <strong>o seu tempo vale menos que o dele</strong>. Ao responder rápido demais e aceitar migalhas, você desligou o instinto de 'caça' no cérebro dele. A boa notícia? Esse é o padrão mais fácil de reverter com a técnica de Escassez Programada."
-    },
-    controladora: {
-        title: "A Investigadora Emocional",
-        desc: "Sua necessidade de saber tudo e controlar os passos dele está gerando um efeito de <strong>Sufocamento Silencioso</strong>. Ele sente que perdeu a liberdade e, por instinto, se afasta para respirar. Você precisa aprender a soltar a corda para ele vir até sua mão."
-    },
-    desvalorizada: {
-        title: "A Doadora Excessiva",
-        desc: "Você dá 100% e recebe 20%. O desequilíbrio está óbvio. Ele gosta de você, mas <strong>não te respeita como desafio</strong>. Homens valorizam aquilo que custa caro (emocionalmente) para conquistar. Você entregou o prêmio antes da corrida acabar."
-    }
+    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou que seu tempo vale menos." },
+    controladora: { title: "A Investigadora Emocional", desc: "Sufocamento silencioso detectado." },
+    desvalorizada: { title: "A Doadora Excessiva", desc: "Você dá 100% e recebe 20%." }
 };
 
 window.finishQuizFlow = function(answers) {
@@ -49,136 +69,97 @@ window.finishQuizFlow = function(answers) {
     const processingContainer = document.getElementById('processing-container');
     const resultContainer = document.getElementById('result-container');
 
-    quizContainer.classList.add('hidden');
-    processingContainer.classList.remove('hidden');
+    if(quizContainer) quizContainer.classList.add('hidden');
+    if(processingContainer) processingContainer.classList.remove('hidden');
 
     let p = 0;
     const int = setInterval(() => {
-        p += Math.floor(Math.random() * 15);
-        if(p > 100) p = 100;
-        document.getElementById('process-pct').innerText = p + '%';
-        
-        if(p === 100) {
+        p += 10;
+        if(document.getElementById('process-pct')) document.getElementById('process-pct').innerText = p + '%';
+        if(p >= 100) {
             clearInterval(int);
             const perfil = defineProfile(answers);
-            document.getElementById('result-title').innerHTML = perfil.title;
-            document.getElementById('result-description').innerHTML = perfil.desc;
+            if(document.getElementById('result-title')) document.getElementById('result-title').innerHTML = perfil.title;
+            if(document.getElementById('result-description')) document.getElementById('result-description').innerHTML = perfil.desc;
 
-            setTimeout(() => {
-                processingContainer.classList.add('hidden');
-                resultContainer.classList.remove('hidden');
-                startTimer(600, document.getElementById('countdown-timer'));
-                if(window.fbq) window.fbq('track', 'ViewContent', { content_name: perfil.title });
-            }, 800);
+            if(processingContainer) processingContainer.classList.add('hidden');
+            if(resultContainer) resultContainer.classList.remove('hidden');
+            startTimer(600, document.getElementById('countdown-timer'));
         }
-    }, 250);
+    }, 200);
 };
 
 function defineProfile(answers) {
-    const textAnswers = answers.join(" ").toLowerCase();
-    if (textAnswers.includes("imediatamente") || textAnswers.includes("medo")) return RESULTS.ansiosa;
-    if (textAnswers.includes("sei tudo") || textAnswers.includes("stalkei")) return RESULTS.controladora;
-    if (textAnswers.includes("cancelei") || textAnswers.includes("deixei de fazer")) return RESULTS.desvalorizada;
-    return RESULTS.ansiosa;
+    const text = answers.join(" ").toLowerCase();
+    if (text.includes("imediatamente")) return RESULTS.ansiosa;
+    if (text.includes("sei tudo")) return RESULTS.controladora;
+    return RESULTS.desvalorizada;
 }
 
 function startTimer(duration, display) {
+    if(!display) return;
     var timer = duration, minutes, seconds;
-    setInterval(function () {
+    setInterval(() => {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        display.textContent = minutes + ":" + seconds;
+        display.textContent = (minutes < 10 ? "0"+minutes : minutes) + ":" + (seconds < 10 ? "0"+seconds : seconds);
         if (--timer < 0) timer = 0;
     }, 1000);
 }
 
 // ============================================================================
-// 2. LÓGICA DE LOGIN, PAGAMENTO E ADMIN
+// 2. LÓGICA DE LOGIN E REDIRECIONAMENTO (O CORAÇÃO DO SISTEMA)
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
     const btnAdmin = document.getElementById('btn-admin-action');
 
-    // Monitoramento em tempo real do status para redirecionamento automático
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            if (ADMIN_EMAILS.includes(user.email)) {
+            if (ADMIN_EMAILS.includes(user.email) && btnAdmin) {
                 btnAdmin.classList.remove('hidden-force');
             }
 
-            // OUVINTE EM TEMPO REAL: Detecta se o status virou "premium" no Firebase
+            // OUVINTE EM TEMPO REAL: Se mudar no Firebase, troca a tela na hora
             onSnapshot(doc(db, "users", user.email), (snapshot) => {
                 const data = snapshot.data();
-                // Se pagou o diagnóstico mas não o protocolo, envia para a aba de Upsell
-                if (data && data.status === "premium" && data.protocol !== "active") {
-                    if (window.switchTab) {
-                        console.log("Status Premium detectado. Redirecionando para Upsell...");
-                        // Removemos o reload aqui para manter o estado da página
-                        setTimeout(() => window.switchTab('protocolo'), 800);
-                    }
+                if (data && data.status === "premium") {
+                    console.log("Pagamento detectado no Firebase!");
+                    forceShowProtocol();
                 }
             });
         }
     });
 
     if (btnLogin) {
-        btnLogin.addEventListener("click", async () => {
-            const originalText = btnLogin.innerHTML;
-            btnLogin.innerHTML = "Verificando...";
-
+        btnLogin.addEventListener("click", async (e) => {
+            e.preventDefault(); // Impede o navegador de dar reload no clique
+            btnLogin.innerText = "Verificando...";
             try {
                 const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                if (ADMIN_EMAILS.includes(user.email)) {
-                    alert("Modo Admin Ativado! Use o botão secreto para simular.");
-                    btnAdmin.classList.remove('hidden-force');
-                    btnLogin.innerHTML = originalText;
-                    return;
-                }
-
-                const docRef = doc(db, "users", user.email);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists() && docSnap.data().status === 'premium') {
-                    btnLogin.innerHTML = "Sucesso! Entrando...";
-                    // Mantido reload rápido apenas para login manual de quem já pagou
-                    setTimeout(() => window.location.reload(), 500);
-                } else {
-                    alert(`Pagamento não encontrado para ${user.email}. Se pagou agora, aguarde 1 minuto.`);
-                    btnLogin.innerHTML = "Tentar Novamente";
-                }
+                await signInWithPopup(auth, provider);
             } catch (error) {
                 alert("Erro: " + error.message);
-                btnLogin.innerHTML = originalText;
+                btnLogin.innerText = "Já fiz o pagamento";
             }
         });
     }
 
     if (btnAdmin) {
-        btnAdmin.addEventListener("click", async () => {
+        btnAdmin.addEventListener("click", async (e) => {
+            e.preventDefault(); // FUNDAMENTAL: Impede o reload do botão
             const user = auth.currentUser;
-            if (!user) return alert("Faça login primeiro.");
-            if (!confirm(`Simular R$27 para ${user.email}?`)) return;
+            if (!user) return alert("Logue primeiro.");
+            if (!confirm("Simular Pagamento?")) return;
 
+            btnAdmin.innerText = "Gravando...";
             try {
-                btnAdmin.innerHTML = "Processando...";
                 const userRef = doc(db, "users", user.email);
-                
-                // GRAVA NO BANCO: O onSnapshot acima vai detectar isso e trocar de aba sozinho!
+                // Atualiza o Firebase. O onSnapshot acima vai ver isso e mudar a tela.
                 await setDoc(userRef, { status: "premium" }, { merge: true });
-                
-                alert("✅ Compra Simulada! O sistema vai te redirecionar em 1 segundo.");
-                
-                // RESET DO BOTÃO (Sem dar reload na página inteira)
-                btnAdmin.innerHTML = "👑 Admin: Simular Compra Aprovada";
-                
+                btnAdmin.innerText = "Aprovado!";
             } catch (error) {
-                alert("Erro: " + error.message);
-                btnAdmin.innerHTML = "Erro";
+                alert(error.message);
             }
         });
     }
