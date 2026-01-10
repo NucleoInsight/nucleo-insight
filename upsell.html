@@ -1,291 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso Restrito | Protocolo 2.0</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" src="./tracker.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oferta Especial - Blindagem</title>
+<style>
+  /* Base */
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+  
+  /* Cronômetro no Topo */
+  .sticky-bar { background-color: #c0392b; color: #fff; text-align: center; padding: 10px; font-weight: bold; font-size: 14px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  
+  /* Container Principal */
+  .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.05); margin-top: 20px; border-radius: 10px; text-align: center; }
 
-    <style>
-        :root {
-            --primary: #8b5cf6;
-            --dark-bg: #0f0c29;
-            --card-bg: #1a1638;
-            --red-alert: #ef4444;
-            --gold: #fbbf24;
-        }
+  /* Barra de Progresso */
+  .progress-container { background-color: #e0e0e0; border-radius: 20px; margin: 20px 0; height: 20px; width: 100%; overflow: hidden; }
+  .progress-bar { background: linear-gradient(90deg, #f1c40f, #f39c12); width: 85%; height: 100%; text-align: right; padding-right: 10px; color: #fff; font-size: 12px; line-height: 20px; font-weight: bold; }
 
-        body {
-            background-color: var(--dark-bg);
-            background-image: radial-gradient(circle at 50% 0%, #2e1065 0%, #0f0c29 70%);
-            color: white;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  /* Headlines */
+  h1 { color: #2c3e50; font-size: 28px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -1px; }
+  h2 { color: #c0392b; font-size: 18px; font-weight: 600; margin-top: 0; margin-bottom: 30px; }
 
-        .container {
-            max-width: 480px;
-            width: 100%;
-        }
+  /* O "Mural" Destacado */
+  .mural-box { 
+    background-color: #fffbf0; /* Amarelo muito suave */
+    border: 2px dashed #d4af37; /* Borda Dourada pontilhada */
+    padding: 25px; 
+    border-radius: 8px; 
+    text-align: left; 
+    font-size: 17px;
+    margin-bottom: 30px;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.05);
+  }
+  .highlight { background-color: #ffeaa7; font-weight: bold; padding: 2px 5px; }
+  .bold-red { color: #c0392b; font-weight: bold; }
 
-        /* Barra de Aviso */
-        .warning-bar {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            text-align: center;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            animation: pulse-red 2s infinite;
-        }
+  /* Botão Pulsante Premium */
+  .btn-pulsing {
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+    border: none;
+    color: white;
+    padding: 20px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+    width: 100%;
+    max-width: 450px;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+    border: 2px solid #2ecc71;
+  }
+  
+  .btn-subtext { display: block; font-size: 12px; font-weight: normal; margin-top: 5px; opacity: 0.9; }
 
-        .main-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 32px 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+  }
 
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #333;
-            margin-bottom: 25px;
-            border-radius: 2px;
-            position: relative;
-        }
-        .progress-fill {
-            width: 85%;
-            height: 100%;
-            background: linear-gradient(90deg, #ec4899, #8b5cf6);
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
-        }
-        .progress-text {
-            position: absolute;
-            right: 0;
-            top: -18px;
-            font-size: 10px;
-            color: #ec4899;
-            font-weight: 700;
-        }
+  /* Link de Recusa */
+  .no-thanks {
+    display: block;
+    margin-top: 25px;
+    color: #922b21; /* Vermelho escuro discreto */
+    font-size: 13px;
+    text-decoration: underline;
+    opacity: 0.8;
+    transition: 0.3s;
+    line-height: 1.5;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .no-thanks:hover { opacity: 1; font-weight: bold; }
 
-        h1 {
-            font-size: 26px;
-            line-height: 1.2;
-            font-weight: 800;
-            margin-bottom: 15px;
-        }
-
-        .highlight-text {
-            color: transparent;
-            background: linear-gradient(90deg, #f472b6, #a78bfa);
-            -webkit-background-clip: text;
-        }
-
-        .description {
-            color: #94a3b8;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .benefit-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: left;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .benefit-item {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        .benefit-item:last-child { margin-bottom: 0; }
-        
-        .check {
-            color: var(--gold);
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .btn-cta {
-            background: linear-gradient(to right, #10b981, #059669);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 20px;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #047857;
-            transition: transform 0.1s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-cta:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        /* Efeito de brilho passando no botão */
-        .btn-cta::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        .price-tag {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 5px;
-        }
-        .price-tag s { text-decoration: line-through; opacity: 0.6; }
-        .price-tag strong { color: #34d399; font-size: 18px; }
-
-        .btn-no {
-            font-size: 12px;
-            color: #64748b;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        .btn-no:hover { opacity: 1; color: #cbd5e1; }
-
-        @keyframes shimmer { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-    </style>
+</style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <div class="warning-bar">
-            <span>⚠</span> Atenção: Esta oferta expira ao fechar a página
-        </div>
+<div class="sticky-bar">
+  🔒 OFERTA ÚNICA: O PREÇO SUBIRÁ EM <span id="timer">04:59</span>
+</div>
 
-        <div class="main-card">
-            <div class="progress-bar">
-                <div class="progress-text">PASSO 2 DE 2</div>
-                <div class="progress-fill"></div>
-            </div>
+<div class="container">
+  <div class="progress-container">
+    <div class="progress-bar">PEDIDO 85% CONCLUÍDO</div>
+  </div>
 
-            <h1>ESPERE! <br>Não deixe o trabalho <span class="highlight-text">pela metade...</span></h1>
-            
-            <p class="description">
-                Você já tem o "O Que Falar" (Guia 1). Mas sem a <strong>Reversão de Polaridade</strong>, você corre o risco dele responder hoje e <strong>sumir amanhã</strong>.
-            </p>
+  <h1>ESPERE! AINDA NÃO ACABOU...</h1>
+  <h2>Você quer que ele volte... mas quer ter certeza absoluta que ele <span style="text-decoration: underline;">NUNCA MAIS</span> vá embora?</h2>
 
-            <div class="benefit-box">
-                <div class="benefit-item">
-                    <span class="check">★</span>
-                    <div class="text">
-                        <strong class="text-white text-sm block">Gatilho da Obsessão</strong>
-                        <span class="text-xs text-slate-400">Instale um "loop" na mente dele que o obriga a pensar em você a cada 5 minutos.</span>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <span class="check">★</span>
-                    <div class="text">
-                        <strong class="text-white text-sm block">O Fim do Vácuo</strong>
-                        <span class="text-xs text-slate-400">A técnica exata para que ELE sinta ansiedade se você demorar para responder.</span>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <span class="check">★</span>
-                    <div class="text">
-                        <strong class="text-white text-sm block">Blindagem Emocional</strong>
-                        <span class="text-xs text-slate-400">Pare de tremer esperando notificação. Assuma o controle total da dinâmica.</span>
-                    </div>
-                </div>
-            </div>
+  <div class="mural-box">
+    <p>Preste muita atenção, pois essa oportunidade não vai aparecer de novo.</p>
+    <p>A estatística é clara: <span class="bold-red">80% dos homens voltam, mas acabam "esfriando"</span> semanas depois se não sentirem uma mudança real.</p>
+    <p>Você não quer apenas uma noite. Você quer <span class="highlight">Obsessão</span>. Você quer que ele sinta um <strong>vício emocional</strong> em você.</p>
+    <p>O que estou liberando agora é a chave para <strong>BLINDAR SEU RESULTADO</strong> e garantir que ele fique aos seus pés, com medo de te perder.</p>
+  </div>
 
-            <div class="price-tag">
-                Adicione ao pedido por: <s>R$ 197</s> <strong>R$ 47,00</strong>
-            </div>
+  <a href="https://pay.kiwify.com.br/7B4m9iI" class="btn-pulsing">
+    SIM! QUERO TORNAR ELE OBCECADO E FIEL
+    <span class="btn-subtext">(Adicionar Blindagem ao meu pedido agora)</span>
+  </a>
 
-            <button id="btn-upsell-yes" class="btn-cta">
-                SIM, QUERO BLINDAR MEU RESULTADO 🔓
-            </button>
+  <a href="#" class="no-thanks">
+    🔓 Não, obrigado. Aceito o risco de ele esfriar novamente e perderei essa chance de blindar meu resultado.
+  </a>
 
-            <button id="btn-upsell-no" class="btn-no">
-                Não, obrigado. Aceito o risco de ele esfriar novamente e perderei essa chance.
-            </button>
+</div>
 
-            <div class="mt-6 flex items-center justify-center gap-2 opacity-50">
-                <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
-                <span class="text-[10px] text-slate-400 uppercase tracking-widest">Ambiente 100% Seguro</span>
-            </div>
-        </div>
-    </div>
+<script>
+  // Script simples para o cronômetro
+  function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      display.textContent = minutes + ":" + seconds;
+      if (--timer < 0) { timer = duration; }
+    }, 1000);
+  }
+  window.onload = function () {
+    var fiveMinutes = 60 * 5,
+        display = document.querySelector('#timer');
+    startTimer(fiveMinutes, display);
+  };
+</script>
 
-    <script>
-        // === CONFIGURAÇÃO DOS LINKS ===
-        const LINKS = {
-            checkout: "https://pay.kiwify.com.br/SEU_LINK_DO_CHECKOUT_AQUI", // <--- COLOQUE O LINK DO PRODUTO DE R$ 47 AQUI
-            dashboard: "./index.html"
-        };
-
-        const btnYes = document.getElementById('btn-upsell-yes');
-        const btnNo = document.getElementById('btn-upsell-no');
-
-        btnYes.addEventListener('click', () => {
-            btnYes.innerHTML = "REDIRECIONANDO...";
-            // Rastreamento
-            if(window.customTrack) window.customTrack('upsell_click_yes');
-            
-            setTimeout(() => {
-                window.location.href = LINKS.checkout;
-            }, 500);
-        });
-
-        btnNo.addEventListener('click', () => {
-            btnNo.innerHTML = "Voltando...";
-            // Rastreamento
-            if(window.customTrack) window.customTrack('upsell_click_no');
-            
-            setTimeout(() => {
-                window.location.href = LINKS.dashboard;
-            }, 500);
-        });
-    </script>
 </body>
 </html>
