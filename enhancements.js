@@ -101,21 +101,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
     const btnAdmin = document.getElementById('btn-admin-action');
 
-    // Escuta mudanças no banco de dados para redirecionar para o Upsell automaticamente
+    // Monitoramento em tempo real do status para redirecionamento automático
     onAuthStateChanged(auth, (user) => {
         if (user) {
             if (ADMIN_EMAILS.includes(user.email)) {
                 btnAdmin.classList.remove('hidden-force');
             }
 
-            // Monitora o status em tempo real
+            // OUVINTE EM TEMPO REAL: Detecta se o status virou "premium" no Firebase
             onSnapshot(doc(db, "users", user.email), (snapshot) => {
                 const data = snapshot.data();
-                // Se pagou o diagnóstico mas não o protocolo, joga para a aba do Upsell
+                // Se pagou o diagnóstico mas não o protocolo, envia para a aba de Upsell
                 if (data && data.status === "premium" && data.protocol !== "active") {
                     if (window.switchTab) {
                         console.log("Status Premium detectado. Redirecionando para Upsell...");
-                        setTimeout(() => window.switchTab('protocolo'), 1000);
+                        // Removemos o reload aqui para manter o estado da página
+                        setTimeout(() => window.switchTab('protocolo'), 800);
                     }
                 }
             });
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const user = result.user;
 
                 if (ADMIN_EMAILS.includes(user.email)) {
-                    alert("Modo Admin Ativado!");
+                    alert("Modo Admin Ativado! Use o botão secreto para simular.");
                     btnAdmin.classList.remove('hidden-force');
                     btnLogin.innerHTML = originalText;
                     return;
@@ -144,9 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (docSnap.exists() && docSnap.data().status === 'premium') {
                     btnLogin.innerHTML = "Sucesso! Entrando...";
+                    // Mantido reload rápido apenas para login manual de quem já pagou
                     setTimeout(() => window.location.reload(), 500);
                 } else {
-                    alert("Pagamento não encontrado. Se pagou agora, aguarde 1 minuto.");
+                    alert(`Pagamento não encontrado para ${user.email}. Se pagou agora, aguarde 1 minuto.`);
                     btnLogin.innerHTML = "Tentar Novamente";
                 }
             } catch (error) {
@@ -165,9 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 btnAdmin.innerHTML = "Processando...";
                 const userRef = doc(db, "users", user.email);
+                
+                // GRAVA NO BANCO: O onSnapshot acima vai detectar isso e trocar de aba sozinho!
                 await setDoc(userRef, { status: "premium" }, { merge: true });
-                alert("✅ Compra Simulada!");
-                window.location.reload();
+                
+                alert("✅ Compra Simulada! O sistema vai te redirecionar em 1 segundo.");
+                
+                // RESET DO BOTÃO (Sem dar reload na página inteira)
+                btnAdmin.innerHTML = "👑 Admin: Simular Compra Aprovada";
+                
             } catch (error) {
                 alert("Erro: " + error.message);
                 btnAdmin.innerHTML = "Erro";
