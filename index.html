@@ -1,161 +1,44 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Núcleo Insight | Diagnóstico</title>
+<div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto">
+    <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2 uppercase">Portal de Resgate Neural</h2>
+    <p class="text-slate-400 mb-8">Bem-vinda de volta. Seu plano de ação estratégico está liberado abaixo.</p>
     
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '757989490676159');
-    fbq('track', 'PageView');
-    </script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; }
-        .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-soft { animation: pulse-soft 3s infinite; }
-        @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
-        .hidden { display: none !important; }
-    </style>
-</head>
-<body class="min-h-screen bg-gradient-mystic">
-
-    <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
-        
-        <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
-            <div class="mb-8 flex items-center justify-between">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
-                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        <div class="space-y-6">
+            <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30">
+                <h3 class="text-white font-bold mb-6 text-xs uppercase tracking-widest">Monitoramento do Alvo</h3>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase"><span>Obsessão dele</span><span class="text-purple-400">Baixo</span></div>
+                        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[12%]"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase"><span>Risco de Perda</span><span class="text-red-400">Crítico</span></div>
+                        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-red-500 w-[92%]"></div></div>
+                    </div>
                 </div>
             </div>
-            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white min-h-[90px]">Carregando análise...</h2>
-            <div id="answers-box" class="space-y-3"></div>
-        </div>
 
-        <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-24 h-24 mx-auto mb-8">
-                <div class="absolute inset-0 rounded-full border-4 border-white/5 border-t-purple-500 animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm" id="process-pct">0%</div>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Cruzando Dados...</h3>
-        </div>
-
-        <div id="result-container" class="hidden w-full max-w-md glass-card rounded-3xl text-center fade-in overflow-hidden border border-purple-500/20">
-            <div class="bg-black/40 p-6 border-b border-white/5">
-                <p class="text-[10px] text-purple-400 font-bold uppercase mb-2">Diagnóstico Concluído</p>
-                <h2 class="text-2xl font-bold text-white">Seu Padrão: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
-            </div>
-            <div class="p-6">
-                <p id="result-description" class="text-slate-300 text-sm mb-6 leading-relaxed">...</p>
-                <div class="bg-red-500/10 p-3 rounded-xl border border-red-500/20 mb-6 flex justify-center items-center gap-2">
-                    <p class="text-[10px] text-red-300 font-bold uppercase tracking-widest text-center">A oferta expira em: <span id="countdown-timer" class="text-white font-mono">10:00</span></p>
+            <div class="glass-card p-5 rounded-3xl border border-white/5">
+                <h4 class="text-white text-xs font-bold mb-4 uppercase tracking-tighter">Materiais de Apoio</h4>
+                <div class="space-y-3">
+                    <a href="#" class="block p-3 bg-white/5 rounded-xl text-[11px] text-slate-300 hover:bg-white/10 transition border border-white/5">📂 PDF: O Guia da Resposta Imediata</a>
+                    <a href="#" class="block p-3 bg-white/5 rounded-xl text-[11px] text-slate-300 hover:bg-white/10 transition border border-white/5">📂 PDF: Dicionário de Gatilhos Mentais</a>
                 </div>
-                <a href="https://pay.kiwify.com.br/cAMh7az" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 pulse-soft transition active:scale-95">
-                    <span>Baixar Guia de Resgate Neural</span>
-                </a>
-                <button id="btn-login-manual" class="mt-6 text-[10px] text-slate-500 uppercase tracking-widest hover:text-white transition">Já sou aluno? Entrar no Portal</button>
             </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-6">
+            <div class="glass-card p-4 rounded-3xl border border-white/10">
+                <div class="aspect-video bg-black/40 rounded-2xl flex flex-col items-center justify-center p-4">
+                    <img id="aula-slide" src="https://via.placeholder.com/800x450/0f0c29/e2e8f0?text=Slide+01:+O+Início+da+Reversão" class="rounded-xl mb-4 w-full object-cover">
+                    <div class="flex gap-2">
+                        <button onclick="changeSlide(1)" class="w-3 h-3 rounded-full bg-purple-500"></button>
+                        <button onclick="changeSlide(2)" class="w-3 h-3 rounded-full bg-white/20 hover:bg-white/40"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="upsell-container"></div>
         </div>
     </div>
-
-    <div id="protocolo" class="hidden w-full max-w-6xl px-4 py-8 fade-in mx-auto">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">PORTAL RESGATE NEURAL</h2>
-            <p class="text-slate-400 mt-2">Área de Membros | Plano de Ação Estratégico</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-7">
-                <div class="glass-card p-6 rounded-[2rem] border border-white/10">
-                    <h3 class="text-white font-bold mb-4 flex items-center gap-2">
-                        <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-[10px]">AULA 01</span>
-                        Invertendo a Polaridade
-                    </h3>
-                    <div class="aspect-video bg-black/60 rounded-2xl overflow-hidden border border-white/5 mb-6">
-                        <img id="aula-slide" src="https://via.placeholder.com/800x450/0f0c29/e2e8f0?text=Slide+01:+O+Início+da+Reversão" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="changeSlide(1)" class="flex-1 bg-white/5 py-3 rounded-xl text-xs font-bold hover:bg-white/10 transition">Slide Anterior</button>
-                        <button onclick="changeSlide(2)" class="flex-1 bg-purple-600 py-3 rounded-xl text-xs font-bold hover:bg-purple-500 transition">Próximo Passo</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-5 space-y-6">
-                <div class="glass-card p-6 rounded-[2rem] border border-purple-500/20">
-                    <h4 class="text-white text-sm font-bold mb-6 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> Análise Neural do Alvo
-                    </h4>
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase"><span>Obsessão Dele</span><span class="text-purple-400">12%</span></div>
-                            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-purple-500 w-[12%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase"><span>Sua Escassez</span><span class="text-red-400">Alerta: Crítico</span></div>
-                            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-red-500 w-[5%]"></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="upsell-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="./enhancements.js"></script>
-    <script>
-        function changeSlide(n) {
-            const img = document.getElementById('aula-slide');
-            img.src = n === 1 ? "https://via.placeholder.com/800x450/0f0c29/e2e8f0?text=Slide+01:+O+Início+da+Reversão" 
-                             : "https://via.placeholder.com/800x450/0f0c29/e2e8f0?text=Slide+02:+Ativando+a+Escassez";
-        }
-
-        const questions = [
-            { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
-            { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
-            { t: "Você já deixou de fazer algo seu para ficar disponível pra ele?", a: ["Várias vezes", "Raramente", "Nunca", "Sim, cancelei compromissos"] }
-        ];
-
-        let currentIdx = 0;
-        let userAnswers = [];
-
-        function runQuiz(idx) {
-            const bar = document.getElementById('progress-bar');
-            if(bar) bar.style.width = `${(idx / questions.length) * 100}%`;
-            
-            if(idx >= questions.length) {
-                if(window.finishQuizFlow) window.finishQuizFlow(userAnswers);
-                return;
-            }
-
-            document.getElementById('question-text').innerText = questions[idx].t;
-            const box = document.getElementById('answers-box');
-            box.innerHTML = '';
-            
-            questions[idx].a.forEach(ans => {
-                const b = document.createElement('button');
-                b.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl border border-white/10 transition";
-                b.innerText = ans;
-                b.onclick = () => { userAnswers.push(ans); runQuiz(idx + 1); };
-                box.appendChild(b);
-            });
-        }
-        runQuiz(0);
-    </script>
-</body>
-</html>
+</div>
