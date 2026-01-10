@@ -1,10 +1,10 @@
 /*
- * enhancements.js - Cérebro Central (Quiz, Timer, Login e Admin)
+ * enhancements.js - Versão Final Anti-Erro
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, updateDoc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -22,21 +22,52 @@ const db = getFirestore(app);
 const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
 
 // ============================================================================
-// 1. LÓGICA DO QUIZ
+// A FUNÇÃO QUE VAI FAZER FUNCIONAR NA MARRA
 // ============================================================================
-const RESULTS = {
-    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou que seu tempo vale menos." },
-    controladora: { title: "A Investigadora Emocional", desc: "Sufocamento silencioso detectado." },
-    desvalorizada: { title: "A Doadora Excessiva", desc: "Você dá 100% e recebe 20%." }
-};
+function LIBERAR_PROTOCOLO_AGORA() {
+    console.log("Limpando interface e liberando protocolo...");
+    
+    // 1. Esconde TUDO que for do Quiz/Resultado usando Style Direto (Mais forte que classes)
+    const fluxos = ['quiz-flow', 'quiz-container', 'processing-container', 'result-container', 'paywall-overlay'];
+    fluxos.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.setAttribute('style', 'display: none !important');
+            el.classList.add('hidden');
+        }
+    });
 
+    // 2. Procura a seção do Protocolo e FORÇA ela a aparecer
+    // Tentamos os 3 IDs possíveis que você pode ter usado
+    const secoes = ['protocolo', 'protocolo-container', 'premium-content'];
+    let achou = false;
+
+    secoes.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.setAttribute('style', 'display: block !important; opacity: 1 !important; visibility: visible !important');
+            el.classList.remove('hidden', 'blur-secret');
+            achou = true;
+        }
+    });
+
+    if(!achou) {
+        alert("Acesso Liberado! O conteúdo está logo abaixo ou na aba Protocolo.");
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================================
+// LÓGICA DO QUIZ
+// ============================================================================
 window.finishQuizFlow = function(answers) {
-    const quizContainer = document.getElementById('quiz-container');
-    const processingContainer = document.getElementById('processing-container');
-    const resultContainer = document.getElementById('result-container');
+    const quiz = document.getElementById('quiz-container');
+    const proc = document.getElementById('processing-container');
+    const res = document.getElementById('result-container');
 
-    if(quizContainer) quizContainer.classList.add('hidden');
-    if(processingContainer) processingContainer.classList.remove('hidden');
+    if(quiz) quiz.classList.add('hidden');
+    if(proc) proc.classList.remove('hidden');
 
     let p = 0;
     const int = setInterval(() => {
@@ -44,55 +75,26 @@ window.finishQuizFlow = function(answers) {
         if(document.getElementById('process-pct')) document.getElementById('process-pct').innerText = p + '%';
         if(p >= 100) {
             clearInterval(int);
-            const perfil = defineProfile(answers);
-            if(document.getElementById('result-title')) document.getElementById('result-title').innerHTML = perfil.title;
-            if(document.getElementById('result-description')) document.getElementById('result-description').innerHTML = perfil.desc;
-
-            if(processingContainer) processingContainer.classList.add('hidden');
-            if(resultContainer) resultContainer.classList.remove('hidden');
+            if(proc) proc.classList.add('hidden');
+            if(res) res.classList.remove('hidden');
             
-            // Inicia o timer
-            var display = document.getElementById('countdown-timer');
-            var timer = 600;
+            // Pega o título do resultado (simples para não dar erro)
+            const title = document.getElementById('result-title');
+            if(title) title.innerText = "Análise Concluída";
+            
+            // Timer
+            var timer = 600, display = document.getElementById('countdown-timer');
             setInterval(() => {
-                var min = parseInt(timer / 60, 10);
-                var sec = parseInt(timer % 60, 10);
-                if(display) display.textContent = (min < 10 ? "0"+min : min) + ":" + (sec < 10 ? "0"+sec : sec);
+                var m = parseInt(timer / 60, 10), s = parseInt(timer % 60, 10);
+                if(display) display.textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
                 if (--timer < 0) timer = 0;
             }, 1000);
         }
     }, 200);
 };
 
-function defineProfile(answers) {
-    const text = answers.join(" ").toLowerCase();
-    if (text.includes("imediatamente")) return RESULTS.ansiosa;
-    if (text.includes("sei tudo")) return RESULTS.controladora;
-    return RESULTS.desvalorizada;
-}
-
 // ============================================================================
-// 2. LÓGICA DE NAVEGAÇÃO (AQUI ESTÁ A SOLUÇÃO DO CLIQUE)
-// ============================================================================
-function goToUpsell() {
-    console.log("Navegando para o Protocolo...");
-    // Tenta trocar a aba visualmente
-    const protocolSection = document.getElementById('protocolo') || document.getElementById('protocolo-container');
-    const resultSection = document.getElementById('result-container');
-
-    if (protocolSection) {
-        if (resultSection) resultSection.classList.add('hidden');
-        protocolSection.classList.remove('hidden');
-        protocolSection.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-        // Se a aba não existir no HTML, recarrega a página ou avisa
-        alert("Acesso Liberado! Role a página para ver o seu Protocolo.");
-    }
-}
-
-// ============================================================================
-// 3. LOGIN E ADMIN
+// EVENTOS DOS BOTÕES
 // ============================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnLogin = document.getElementById('btn-login-action');
@@ -107,9 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnLogin) {
         btnLogin.addEventListener("click", async (e) => {
             e.preventDefault();
-            const originalText = btnLogin.innerHTML;
             btnLogin.innerText = "Verificando...";
-            
             try {
                 const provider = new GoogleAuthProvider();
                 const result = await signInWithPopup(auth, provider);
@@ -117,20 +117,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const docSnap = await getDoc(doc(db, "users", user.email));
                 if (docSnap.exists() && docSnap.data().status === 'premium') {
-                    // PARA O CLIENTE: O botão fica verde e libera o acesso
-                    btnLogin.innerHTML = "🔓 ACESSAR MEU PROTOCOLO";
-                    btnLogin.style.backgroundColor = "#16a34a"; // Verde sucesso
-                    btnLogin.onclick = (event) => {
-                        event.preventDefault();
-                        goToUpsell();
-                    };
+                    btnLogin.innerHTML = "🔓 ACESSAR AGORA";
+                    btnLogin.style.cssText = "background-color: #16a34a !important; color: white !important; font-weight: bold;";
+                    btnLogin.onclick = (ev) => { ev.preventDefault(); LIBERAR_PROTOCOLO_AGORA(); };
                 } else {
-                    alert("Ainda não identificamos o pagamento para: " + user.email);
-                    btnLogin.innerHTML = originalText;
+                    alert("Pagamento não encontrado.");
+                    btnLogin.innerText = "Já fiz o pagamento";
                 }
-            } catch (error) {
-                btnLogin.innerHTML = originalText;
-            }
+            } catch (err) { btnLogin.innerText = "Erro ao logar"; }
         });
     }
 
@@ -138,23 +132,16 @@ document.addEventListener("DOMContentLoaded", () => {
         btnAdmin.addEventListener("click", async (e) => {
             e.preventDefault();
             const user = auth.currentUser;
-            if (!user) return alert("Logue primeiro no botão de cima.");
-            
-            btnAdmin.innerText = "Liberando...";
+            if(!user) return alert("Logue primeiro!");
+
             try {
+                btnAdmin.innerText = "Liberando...";
                 await setDoc(doc(db, "users", user.email), { status: "premium" }, { merge: true });
                 
-                // MUDANÇA VISUAL PARA O ADMIN TESTAR
-                btnAdmin.innerText = "✅ LIBERADO! CLIQUE AQUI PARA ENTRAR";
-                btnAdmin.style.backgroundColor = "#9333ea"; // Roxo admin
-                btnAdmin.onclick = (event) => {
-                    event.preventDefault();
-                    goToUpsell();
-                };
-            } catch (error) {
-                alert(error.message);
-                btnAdmin.innerText = "Simular Compra";
-            }
+                btnAdmin.innerHTML = "🔥 APROVADO! ENTRAR NO PROTOCOLO";
+                btnAdmin.style.cssText = "background-color: #9333ea !important; color: white !important; font-weight: bold;";
+                btnAdmin.onclick = (ev) => { ev.preventDefault(); LIBERAR_PROTOCOLO_AGORA(); };
+            } catch (err) { alert(err.message); }
         });
     }
 });
