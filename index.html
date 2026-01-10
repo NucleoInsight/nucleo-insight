@@ -20,14 +20,19 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
     /></noscript>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
+        
+        /* VISUAL MÍSTICO PREMIUM */
         .bg-gradient-mystic { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
         .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        
         .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
     </style>
@@ -66,11 +71,18 @@
             </div>
 
             <div class="p-6">
-                <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">
-                    ...
-                </p>
+                <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">...</p>
 
-                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6">
+                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6 relative overflow-hidden">
+                    
+                    <div class="bg-red-500/10 border-b border-red-500/20 p-2 -mx-5 -mt-5 mb-4 flex justify-center items-center gap-2">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        <p class="text-[10px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira em: <span id="countdown-timer" class="text-white font-mono">10:00</span></p>
+                    </div>
+
                     <h3 class="text-white font-bold text-sm mb-2 flex items-center justify-center gap-2">
                         <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         Plano de Quebra de Ciclo
@@ -81,7 +93,7 @@
                         <span>Baixar Guia Completo</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
-                    <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through">R$ 97</span> por <span class="text-emerald-400 font-bold">R$ 27</span></p>
+                    <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
                 </div>
             </div>
         </div>
@@ -107,20 +119,16 @@
         
         const qText = document.getElementById('question-text');
         const aBox = document.getElementById('answers-box');
-        
-        // Váriável global para armazenar respostas para o enhancements.js usar
         window.userAnswers = []; 
 
         function runQuiz(idx) {
             const pct = ((idx) / realQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            if(window.customTrack) {
-                window.customTrack("quiz_step", { step: idx + 1 });
-            }
+            if(window.customTrack) window.customTrack("quiz_step", { step: idx + 1 });
 
             if(idx >= realQuestions.length) {
-                // FIM DO QUIZ - Chama o novo arquivo de melhorias
+                // FIM DO QUIZ -> Chama o arquivo enhancements.js
                 if(window.finishQuizFlow) {
                     window.finishQuizFlow(window.userAnswers);
                 } else {
@@ -136,7 +144,7 @@
                 btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 hover:border-purple-500/50 text-slate-200 p-4 rounded-xl border border-white/10 active:scale-[0.98] transition duration-200";
                 btn.innerText = ans;
                 btn.onclick = () => {
-                    window.userAnswers.push(ans); // Salva a resposta
+                    window.userAnswers.push(ans);
                     runQuiz(idx + 1);
                 };
                 aBox.appendChild(btn);
