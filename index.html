@@ -20,8 +20,9 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
     /></noscript>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
@@ -32,6 +33,8 @@
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
+        
+        /* Estilo para o visualizador de Gatilhos */
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         .bonus-scroll::-webkit-scrollbar { width: 6px; }
         .bonus-scroll::-webkit-scrollbar-track { background: #1e1b4b; }
@@ -96,7 +99,7 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                 <div class="space-y-6">
-                    <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30">
+                    <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30 text-center md:text-left">
                         <h3 class="text-white font-bold mb-6 text-xs uppercase tracking-widest">Status da Análise</h3>
                         <div class="space-y-6">
                             <div>
@@ -111,7 +114,7 @@
                     </div>
 
                     <div class="glass-card p-5 rounded-3xl border border-white/5">
-                        <h4 class="text-white text-[10px] font-bold mb-4 uppercase tracking-widest">Acesso Rápido</h4>
+                        <h4 class="text-white text-[10px] font-bold mb-4 uppercase tracking-widest text-center md:text-left">Acesso Rápido</h4>
                         <div class="space-y-3">
                             <button onclick="showContent(1)" class="w-full text-left p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition group">
                                 <p class="text-[10px] text-purple-400 font-bold mb-1">MÓDULO 01</p>
@@ -133,149 +136,23 @@
                     <div class="glass-card p-8 rounded-3xl border border-white/10 min-h-[420px] flex flex-col justify-center" id="main-content-area">
                         <div id="content-placeholder" class="text-center">
                             <div class="aspect-video bg-black/40 rounded-2xl flex flex-col items-center justify-center p-4 mb-4">
-                                 <p class="text-purple-300 font-bold animate-pulse text-sm uppercase tracking-widest">Selecione uma lição ao lado...</p>
+                                 <p class="text-purple-300 font-bold animate-pulse text-sm">Selecione uma lição ao lado para aplicar agora...</p>
                             </div>
                         </div>
                     </div>
 
-                    <style>
-                      .upsell-dashboard-card {
-                        background: rgba(255, 255, 255, 0.03);
-                        backdrop-filter: blur(10px);
-                        -webkit-backdrop-filter: blur(10px);
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        border-radius: 16px;
-                        padding: 30px;
-                        margin-top: 20px;
-                        position: relative;
-                        overflow: hidden;
-                        color: white;
-                        font-family: 'Inter', sans-serif;
-                        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
-                        transition: all 0.5s ease;
-                      }
-                      .upsell-tag {
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        background: linear-gradient(90deg, #ef4444, #b91c1c);
-                        color: white;
-                        font-size: 11px;
-                        font-weight: 800;
-                        padding: 6px 16px;
-                        border-bottom-left-radius: 12px;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-                        box-shadow: -2px 2px 10px rgba(0,0,0,0.3);
-                      }
-                      .upsell-content-wrapper { display: flex; flex-direction: column; gap: 15px; }
-                      .upsell-headline {
-                        font-size: 20px; font-weight: 700; line-height: 1.3;
-                        background: linear-gradient(to right, #fff, #a5b4fc);
-                        -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;
-                      }
-                      .upsell-sub { font-size: 14px; color: #9ca3af; line-height: 1.5; margin-bottom: 10px; }
-                      .upsell-pillars { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
-                      .pillar-badge {
-                        background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);
-                        color: #ddd6fe; padding: 6px 12px; border-radius: 8px; font-size: 12px;
-                        font-weight: 600; display: flex; align-items: center; gap: 6px;
-                      }
-                      .pillar-badge span { color: #fbbf24; }
-                      .upsell-btn {
-                        background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%);
-                        color: white; border: none; width: 100%; padding: 16px; border-radius: 10px;
-                        font-size: 15px; font-weight: 700; text-transform: uppercase; cursor: pointer;
-                        transition: all 0.2s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-                        position: relative; overflow: hidden;
-                      }
-                      .upsell-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5); }
-                      .price-anchor { text-align: center; font-size: 12px; color: #6b7280; margin-top: 10px; }
-                      .price-anchor s { text-decoration: line-through; opacity: 0.7; }
-                      .price-anchor strong { color: #10b981; font-size: 14px; margin-left: 5px; }
-                    </style>
-                    
-                    <div class="upsell-dashboard-card" id="card-upsell">
-                      <div class="upsell-tag" id="tag-upsell">🔒 Acesso Bloqueado</div>
-                    
-                      <div class="upsell-content-wrapper">
-                        <h2 class="upsell-headline">
-                          Protocolo de Reversão: O Código da Obsessão
-                        </h2>
-                    
-                        <p class="upsell-sub">
-                          O Guia 1 foi o "Remédio". Este é a <strong>Cura Definitiva</strong>. Não apenas fale, faça ele sentir medo real de te perder usando a <em>Engenharia Reversa de Papéis</em>.
-                        </p>
-                    
-                        <div class="upsell-pillars">
-                          <div class="pillar-badge"><span>★</span> Atração Involuntária</div>
-                          <div class="pillar-badge"><span>★</span> Mistério Arquitetado</div>
-                          <div class="pillar-badge"><span>★</span> Recompensa Neural</div>
-                        </div>
-                    
-                        <button id="btn-upsell" class="upsell-btn" onclick="window.location.href='https://pay.kiwify.com.br/SEU_LINK_DO_UPSELL_AQUI'">
-                          Destravar Protocolo Completo 🔓
-                        </button>
-                    
-                        <div class="price-anchor" id="price-upsell">
-                          Oferta Única de Membros: <s>R$ 197</s> por <strong>R$ 47,00</strong>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
+                    <div id="upsell-container"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script type="module" src="./tracker.js"></script>
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === LÓGICA DE DESBLOQUEIO BASEADA NO BANCO DE DADOS ===
-        // Verifica se a URL contém os parâmetros das imagens:
-        // status="premium" OU protocol="active"
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            // Dados extraídos das imagens do banco:
-            const status = urlParams.get('status');     // Espera "premium"
-            const protocol = urlParams.get('protocol'); // Espera "active"
-
-            // Se qualquer um dos campos bater, libera o acesso
-            const isVip = (status === 'premium') || (protocol === 'active');
-
-            if (isVip) {
-                // 1. Muda a faixa para VERDE
-                const tag = document.getElementById('tag-upsell');
-                if(tag) {
-                    tag.innerText = "ACESSO LIBERADO";
-                    tag.style.background = "linear-gradient(90deg, #10b981, #059669)"; // Verde Sucesso
-                }
-
-                // 2. Muda o texto do botão e a ação (remove o link de pagamento)
-                const btn = document.getElementById('btn-upsell');
-                if(btn) {
-                    btn.innerText = "ACESSAR CONTEÚDO EXTRA 📂";
-                    btn.onclick = function(e) { 
-                        e.preventDefault();
-                        // AQUI VOCÊ COLOCA O LINK DO PDF OU VÍDEO DO UPSELL
-                        alert("Redirecionando para o Material Extra...");
-                        // window.location.href = "LINK_DO_CONTEUDO_SECRETO.pdf"; 
-                    };
-                    btn.style.background = "linear-gradient(90deg, #10b981, #059669)";
-                }
-
-                // 3. Esconde o preço
-                const price = document.getElementById('price-upsell');
-                if(price) price.style.display = 'none';
-            }
-        });
-
-        // --- FUNÇÕES DO CONTEÚDO (MANTIDAS) ---
         function showContent(module) {
             const area = document.getElementById('main-content-area');
-            area.innerHTML = ''; 
+            area.innerHTML = ''; // Limpa a área
             
             let html = '';
 
@@ -283,15 +160,15 @@
                 html = `
                     <div class="fade-in">
                         <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 01</span>
-                        <h3 class="text-2xl font-black text-white mt-2 mb-6 uppercase tracking-tighter">O Despertar da Escassez</h3>
+                        <h3 class="text-2xl font-black text-white mt-2 mb-6 uppercase">O Despertar da Escassez</h3>
                         <div class="space-y-4">
                             <div class="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl">
-                                <strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O Erro Fatal:</strong>
-                                <p class="text-slate-300 text-sm italic">"Responder mensagens em segundos e se justificar por demorar."</p>
+                                <strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O que NÃO fazer:</strong>
+                                <p class="text-slate-300 text-sm italic">"Estar sempre online e responder antes mesmo dele terminar de digitar."</p>
                             </div>
                             <div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
-                                <strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">A Mudança Neural:</strong>
-                                <p class="text-slate-300 text-sm">Aplique a <strong>Regra do 2x1</strong>. Se ele demorar 1 hora, você demorará 2. O silêncio gera valor.</p>
+                                <strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">Sua nova postura:</strong>
+                                <p class="text-slate-300 text-sm">Instale a <strong>Incerteza Neural</strong>. Ele precisa se perguntar por que você não visualizou ainda. O silêncio é sua ferramenta de poder.</p>
                             </div>
                         </div>
                     </div>`;
@@ -299,10 +176,10 @@
                 html = `
                     <div class="fade-in">
                         <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 02</span>
-                        <h3 class="text-2xl font-black text-white mt-2 mb-4 uppercase tracking-tighter">A Técnica do Vácuo</h3>
+                        <h3 class="text-2xl font-black text-white mt-2 mb-4 uppercase">A Técnica do Vácuo</h3>
                         <p class="text-slate-400 text-xs mb-6">Copie e envie este script se ele estiver frio há mais de 24h:</p>
                         <div class="p-6 bg-white/5 border border-white/10 rounded-3xl relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script Ativo</div>
+                            <div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script de Reativação</div>
                             <p class="text-white text-lg font-serif italic mb-6">"Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não."</p>
                             <button onclick="copiarTexto()" class="w-full bg-purple-600 text-white font-black py-4 rounded-xl hover:bg-purple-500 transition uppercase text-xs tracking-widest">Copiar Script</button>
                         </div>
@@ -313,25 +190,30 @@
                         <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
                             <div>
                                 <span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest">Acesso VIP</span>
-                                <h3 class="text-xl font-black text-white uppercase tracking-tighter">Guia de Gatilhos</h3>
+                                <h3 class="text-xl font-black text-white uppercase">Dicionário de Gatilhos</h3>
                             </div>
-                            <div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold uppercase">PDF Interno</div>
+                            <div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold">PDF MODO LEITURA</div>
                         </div>
                         
                         <div class="bonus-scroll pr-2 space-y-4">
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1 tracking-widest">Curiosidade</p>
+                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Curiosidade</p>
                                 <p class="text-slate-200 text-sm italic">"Preciso te contar uma coisa, mas tem que ser pessoalmente..."</p>
                             </div>
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1 tracking-widest">Escassez</p>
-                                <p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso hoje. Fica pra próxima?"</p>
+                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Escassez</p>
+                                <p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso incrível hoje. Fica pra próxima?"</p>
                             </div>
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1 tracking-widest">Desafio</p>
-                                <p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem o celular comigo."</p>
+                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Desafio</p>
+                                <p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem checar o celular comigo."</p>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Autoridade</p>
+                                <p class="text-slate-200 text-sm italic">"Eu sei exatamente o que você está tentando fazer... e não vai funcionar comigo."</p>
                             </div>
                         </div>
+                        <p class="text-[9px] text-slate-500 mt-4 text-center uppercase tracking-widest">Fim do Guia de Gatilhos Rápidos</p>
                     </div>`;
             }
             area.innerHTML = html;
@@ -340,7 +222,7 @@
         function copiarTexto() {
             const texto = "Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não.";
             navigator.clipboard.writeText(texto).then(() => {
-                alert('Script copiado com sucesso!');
+                alert('Script copiado! Agora é só colar no WhatsApp.');
             });
         }
 
@@ -378,15 +260,7 @@
                 btn.className = "w-full text-left bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl border border-white/10 transition duration-200";
                 btn.innerText = ans;
                 btn.onclick = () => { 
-                    window.userAnswers.push(ans);
-                    // INTEGRACAO TRACKER: Dispara evento a cada resposta
-                    if(window.customTrack) {
-                        window.customTrack("quiz_answer", { 
-                            question_number: idx + 1,
-                            question_text: realQuestions[idx].t,
-                            answer: ans 
-                        });
-                    }
+                    window.userAnswers.push(ans); 
                     runQuiz(idx + 1); 
                 };
                 aBox.appendChild(btn);
