@@ -32,8 +32,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
-        
-        /* Classe para esconder elementos (segurança visual) */
         .hidden-force { display: none !important; }
     </style>
 </head>
@@ -93,7 +91,12 @@
                         <span>Baixar Guia Completo</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
-                    <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
+                    <p class="text-[10px] text-slate-500 mt-2 mb-4">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
+
+                    <button id="btn-already-paid" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                        Já fiz o pagamento (Liberar Acesso)
+                    </button>
 
                     <button id="admin-test-btn" class="hidden-force mt-4 w-full border border-slate-700 text-slate-500 text-[10px] py-2 rounded hover:bg-white/10 hover:text-white transition uppercase tracking-widest cursor-pointer">
                         👑 Admin: Simular Compra Aprovada
@@ -103,7 +106,7 @@
             
             <div class="mt-4 pb-4">
                 <button id="admin-login-link" class="text-[9px] text-slate-700 hover:text-slate-500 cursor-pointer uppercase tracking-widest">
-                    Área Restrita
+                    Área Restrita (Admin)
                 </button>
             </div>
         </div>
@@ -111,68 +114,76 @@
     </div>
 
     <script type="module">
-        // Importa as funções necessárias do Firebase que já estão no cache do navegador (ou busca da CDN)
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // Estamos assumindo que o app já foi inicializado no enhancements.js ou tracker.js
-        // Mas para garantir, pegamos a instância global se estiver disponível, ou criamos lógica de espera.
-        
-        // LISTA DE EMAILS PERMITIDOS (SEGURANÇA)
-        const ADMIN_EMAILS = [
-            "gilvanxavierborges@gmail.com", 
-            "contatogilvannborges@gmail.com"
-        ];
-
-        // Função de Login (Caso esteja em aba anônima e precise testar)
-        document.getElementById('admin-login-link').onclick = async () => {
-             // Tenta pegar a instância de auth que o seu sistema já criou
-             // Se der erro, avisa no console
-             try {
-                // Tenta importar a app do enhancements se possível, ou usa a global se você expôs
-                // Solução mais simples: Redirecionar para o fluxo de login ou usar popup direto
-                const auth = getAuth(); // Pega a auth padrão do app
-                const provider = new GoogleAuthProvider();
-                await signInWithPopup(auth, provider);
-                alert("Login realizado! Se você for Admin, o botão aparecerá.");
-             } catch (e) {
-                 console.error("Erro no login admin:", e);
-                 alert("Erro ao abrir login. Verifique o console.");
-             }
-        };
-
-        // Monitora se o usuário logou
+        // Configuração
+        const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
         const auth = getAuth();
         const db = getFirestore();
 
+        // 1. Lógica do Cliente: Botão "Já Paguei"
+        document.getElementById('btn-already-paid').onclick = async () => {
+            const btn = document.getElementById('btn-already-paid');
+            btn.innerHTML = "Verificando pagamento...";
+            
+            try {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                // Verifica no banco se está pago
+                const docRef = doc(db, "users", user.email);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists() && docSnap.data().status === 'premium') {
+                    // Está pago! Recarrega a página e o enhancements.js vai abrir o conteúdo
+                    window.location.reload();
+                } else {
+                    alert("Ainda não identificamos seu pagamento ou você usou um e-mail diferente do Google. Se acabou de pagar, aguarde 1 minuto.");
+                    btn.innerHTML = "Tentar Liberar Novamente";
+                }
+            } catch (error) {
+                console.error(error);
+                btn.innerHTML = "Erro. Tente novamente.";
+            }
+        };
+
+        // 2. Lógica do Admin: Botão Área Restrita
+        document.getElementById('admin-login-link').onclick = async () => {
+             try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+             } catch (e) {
+                 console.error("Erro login admin:", e);
+             }
+        };
+
+        // 3. Monitoramento de Estado (Faz o botão Admin aparecer)
         onAuthStateChanged(auth, (user) => {
             if (user && ADMIN_EMAILS.includes(user.email)) {
-                // É o Gilvan! Libera o botão.
+                // É Admin!
                 const btn = document.getElementById('admin-test-btn');
                 btn.classList.remove('hidden-force');
                 
-                // Define a ação do botão
                 btn.onclick = async () => {
                     if(!confirm(`Simular pagamento de R$27 para ${user.email}?`)) return;
-                    
                     try {
                         btn.innerText = "Processando...";
-                        // Atualiza status para premium
                         const userRef = doc(db, "users", user.email);
-                        await updateDoc(userRef, {
-                            status: "premium"
+                        // Cria ou atualiza
+                        await updateDoc(userRef, { status: "premium" }).catch(async () => {
+                            // Se der erro porque doc não existe, cria um dummy (caso pule o quiz)
+                            const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"); 
+                            await setDoc(userRef, { status: "premium" });
                         });
                         
-                        alert("✅ Compra Simulada! Recarregando para aplicar redirecionamento...");
+                        alert("✅ Compra Simulada! Entrando...");
                         window.location.reload();
                     } catch (error) {
-                        alert("Erro ao simular: " + error.message);
-                        btn.innerText = "Erro (Tente novamente)";
+                        alert("Erro: " + error.message);
                     }
                 };
-            } else {
-                // Não é admin ou não está logado
-                document.getElementById('admin-test-btn').classList.add('hidden-force');
             }
         });
     </script>
@@ -205,11 +216,9 @@
             if(window.customTrack) window.customTrack("quiz_step", { step: idx + 1 });
 
             if(idx >= realQuestions.length) {
-                // FIM DO QUIZ -> Chama o arquivo enhancements.js
                 if(window.finishQuizFlow) {
                     window.finishQuizFlow(window.userAnswers);
                 } else {
-                    console.error("Enhancements.js não carregou");
                     document.getElementById('quiz-container').classList.add('hidden');
                     document.getElementById('result-container').classList.remove('hidden');
                 }
@@ -229,7 +238,6 @@
                 aBox.appendChild(btn);
             });
         }
-        
         runQuiz(0);
     </script>
 </body>
