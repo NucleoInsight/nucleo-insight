@@ -16,46 +16,39 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// TEXTOS ORIGINAIS RESTAURADOS
 const RESULTS = {
-    ansiosa: {
-        title: "A Ansiosa Disponível",
-        desc: "Você inconscientemente ensinou a ele que <strong>o seu tempo vale menos que o dele</strong>. Ao responder rápido demais e aceitar migalhas, você desligou o instinto de 'caça' no cérebro dele. A boa notícia? Esse é o padrão mais fácil de reverter."
-    },
-    controladora: {
-        title: "A Investigadora Emocional",
-        desc: "Sua necessidade de saber tudo gera um <strong>Sufocamento Silencioso</strong>. Ele sente que perdeu a liberdade e, por instinto, se afasta para respirar. Você precisa aprender a soltar a corda para ele vir até sua mão."
-    },
-    desvalorizada: {
-        title: "A Doadora Excessiva",
-        desc: "Você dá 100% e recebe 20%. O desequilíbrio está óbvio. Ele gosta de você, mas <strong>não te respeita como desafio</strong>. Você entregou o prêmio antes da corrida começar."
-    }
+    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou que seu tempo vale menos. Ao responder rápido demais, desligou o instinto de 'caça' dele." },
+    controladora: { title: "A Investigadora Emocional", desc: "Sua necessidade de controle gera um Sufocamento Silencioso. Ele se afasta para respirar." },
+    desvalorizada: { title: "A Doadora Excessiva", desc: "Você entrega o prêmio antes da corrida. Ele não te respeita como desafio porque já te tem por completo." }
 };
 
 function LIBERAR_CONTEUDO() {
+    // Esconde TUDO do fluxo do quiz e mostra o Portal Premium
+    const flow = document.getElementById('quiz-flow');
     const ids = ['quiz-container', 'processing-container', 'result-container'];
     ids.forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('hidden');
     });
+    
     const prot = document.getElementById('protocolo');
     if(prot) {
         prot.classList.remove('hidden');
-        prot.style.display = 'block';
+        prot.classList.add('fade-in');
     }
-    window.scrollTo(0,0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 window.finishQuizFlow = function(answers) {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('processing-container').classList.remove('hidden');
+    
     let p = 0;
     const int = setInterval(() => {
         p += 10;
         document.getElementById('process-pct').innerText = p + '%';
         if(p >= 100) {
             clearInterval(int);
-            // Lógica de perfil simples
             const textAnswers = answers.join(" ").toLowerCase();
             let perfil = RESULTS.ansiosa;
             if (textAnswers.includes("imediatamente")) perfil = RESULTS.ansiosa;
@@ -77,6 +70,7 @@ window.finishQuizFlow = function(answers) {
     }, 200);
 };
 
+// VIGILANTE DE ACESSO: Se logar e tiver pago, abre o Portal na hora
 onAuthStateChanged(auth, (user) => {
     if (user) {
         onSnapshot(doc(db, "users", user.email), (snapshot) => {
