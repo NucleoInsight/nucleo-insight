@@ -33,9 +33,8 @@
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
         
-        /* Estilos do Upsell (Ponte) - Estilo Idêntico à Imagem */
         .upsell-bridge-card {
-            background: linear-gradient(180deg, #2e0249 0%, #0f0c29 100%); /* Gradiente Roxo Escuro */
+            background: linear-gradient(180deg, #2e0249 0%, #0f0c29 100%);
             border: 1px solid rgba(139, 92, 246, 0.2);
             border-radius: 20px;
             padding: 25px;
@@ -58,7 +57,6 @@
         }
         .upsell-btn-action:hover { transform: scale(1.02); }
         
-        /* Scrollbar */
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         .bonus-scroll::-webkit-scrollbar { width: 6px; }
         .bonus-scroll::-webkit-scrollbar-track { background: #1e1b4b; }
@@ -166,45 +164,7 @@
                     </div>
 
                     <div id="upsell-container">
-                        
-                        <div id="card-upsell-bridge" class="upsell-bridge-card">
-                          <div class="upsell-badge">Acesso Restrito</div>
-                          
-                          <p class="text-[9px] text-pink-400 font-bold uppercase tracking-widest mb-1">Oportunidade Única</p>
-                          
-                          <h2 class="font-bold text-white text-xl leading-tight mb-2 font-inter">
-                            Protocolo Secreto 2.0:<br>
-                            <span class="text-pink-300">Reversão de Polaridade</span>
-                          </h2>
-
-                          <p class="text-slate-300 text-xs mb-5 leading-relaxed">
-                            O Guia 1 parou seus erros. O <strong>Protocolo 2.0</strong> é a arma final para <strong>forçar o contato dele em até 24h</strong>, invertendo o jogo e fazendo ele implorar por sua atenção.
-                          </p>
-
-                          <button onclick="window.location.href='./upsell.html'" class="upsell-btn-action">
-                            ATIVAR PROTOCOLO 2.0
-                          </button>
-
-                          <div class="text-center text-xs text-slate-400 mt-3">
-                            De <s style="opacity: 0.7">R$ 197</s> por apenas <strong class="text-emerald-400 text-sm">R$ 47</strong>
-                          </div>
                         </div>
-
-                        <div id="card-upsell-unlocked" class="hidden mt-6 bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-2xl">
-                            <div class="flex items-start gap-4">
-                                <div class="bg-emerald-500 rounded-full p-1 mt-1">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-emerald-400 font-bold text-lg mb-1">Protocolo Secreto Liberado</h3>
-                                    <p class="text-slate-300 text-sm mb-4">Você agora tem acesso à Reversão de Polaridade.</p>
-                                    <p class="text-xs text-slate-400"><strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas.</p>
-                                    <button onclick="alert('Abrindo Conteúdo VIP...')" class="mt-4 text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition font-bold uppercase tracking-wide">ACESSAR MATERIAL 📂</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
             </div>
         </div>
@@ -214,24 +174,6 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === LÓGICA DE LIBERAÇÃO (Pontes) ===
-        // Lê a URL em busca de ?status=premium OU ?protocol=active
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            const protocol = urlParams.get('protocol');
-
-            const cardBridge = document.getElementById('card-upsell-bridge');
-            const cardUnlocked = document.getElementById('card-upsell-unlocked');
-
-            // Se for premium, esconde o Roxo e mostra o Verde
-            if (status === 'premium' || protocol === 'active') {
-                if(cardBridge) cardBridge.classList.add('hidden');
-                if(cardUnlocked) cardUnlocked.classList.remove('hidden');
-            }
-        });
-
-        // --- FUNÇÕES DE CONTEÚDO (MANTIDAS) ---
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
@@ -251,7 +193,6 @@
             navigator.clipboard.writeText(texto).then(() => { alert('Script copiado!'); });
         }
 
-        // QUIZ LOGIC
         const realQuestions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
