@@ -37,14 +37,14 @@ function LIBERAR_CONTEUDO(userData) {
         prot.style.display = 'block';
     }
 
-    // 3. Lógica do Upsell (Ponte vs Liberado)
+    // 3. Lógica do Upsell (TRAVA DE SEGURANÇA)
     const upsellBox = document.getElementById('upsell-container');
     
-    // --- CORREÇÃO AQUI: Removemos 'OR status === premium' para não liberar para quem só tem o curso básico ---
+    // SÓ MOSTRA O VERDE SE TIVER "protocol" COMO "active"
+    // Se tiver apenas "status: premium" (comprou só o básico), CAI NO ELSE (ROXO)
     if(userData.protocol === "active") {
         
-        // --- CENÁRIO VIP (LINKA PARA O NOVO PROTOCOLO.HTML) ---
-        // Exibe o Card Verde apenas para quem COMPROU o Upsell
+        // --- CENÁRIO VIP (LIBERADO) ---
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-r from-emerald-900/40 to-black p-6 rounded-3xl border border-emerald-500/40 relative overflow-hidden group hover:border-emerald-400 transition-all duration-500">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -73,8 +73,8 @@ function LIBERAR_CONTEUDO(userData) {
                 </div>
             </div>`;
     } else {
-        // --- CENÁRIO BÁSICO (O DESIGN ANTIGO ROXO QUE VOCÊ PEDIU) ---
-        // Exibe o Botão de Compra para quem NÃO tem o protocolo ativo
+        // --- CENÁRIO BLOQUEADO (ROXO ORIGINAL) ---
+        // Aqui está exatamente o link e o design que você pediu para voltar
         upsellBox.innerHTML = `
             <div class="bg-gradient-to-br from-purple-900 via-black to-purple-900 p-8 rounded-3xl border-2 border-purple-400/50 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-pink-600 text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Acesso Restrito</div>
