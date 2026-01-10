@@ -33,8 +33,6 @@
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
-        
-        /* Estilo para o visualizador de Gatilhos */
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         .bonus-scroll::-webkit-scrollbar { width: 6px; }
         .bonus-scroll::-webkit-scrollbar-track { background: #1e1b4b; }
@@ -99,7 +97,7 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                 <div class="space-y-6">
-                    <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30 text-center md:text-left">
+                    <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30">
                         <h3 class="text-white font-bold mb-6 text-xs uppercase tracking-widest">Status da Análise</h3>
                         <div class="space-y-6">
                             <div>
@@ -114,7 +112,7 @@
                     </div>
 
                     <div class="glass-card p-5 rounded-3xl border border-white/5">
-                        <h4 class="text-white text-[10px] font-bold mb-4 uppercase tracking-widest text-center md:text-left">Acesso Rápido</h4>
+                        <h4 class="text-white text-[10px] font-bold mb-4 uppercase tracking-widest">Acesso Rápido</h4>
                         <div class="space-y-3">
                             <button onclick="showContent(1)" class="w-full text-left p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition group">
                                 <p class="text-[10px] text-purple-400 font-bold mb-1">MÓDULO 01</p>
@@ -136,12 +134,45 @@
                     <div class="glass-card p-8 rounded-3xl border border-white/10 min-h-[420px] flex flex-col justify-center" id="main-content-area">
                         <div id="content-placeholder" class="text-center">
                             <div class="aspect-video bg-black/40 rounded-2xl flex flex-col items-center justify-center p-4 mb-4">
-                                 <p class="text-purple-300 font-bold animate-pulse text-sm">Selecione uma lição ao lado para aplicar agora...</p>
+                                 <p class="text-purple-300 font-bold animate-pulse text-sm uppercase tracking-widest">Selecione uma lição ao lado...</p>
                             </div>
                         </div>
                     </div>
 
-                    <div id="upsell-container"></div>
+                    <div id="upsell-container" class="glass-card p-6 rounded-3xl border border-purple-500/40 relative overflow-hidden bg-gradient-to-br from-purple-900/20 to-black/40">
+                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-600/10 rounded-full blur-3xl"></div>
+                        
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-purple-500 p-2 rounded-lg shadow-lg shadow-purple-500/40">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </div>
+                            <h4 class="text-white font-extrabold text-sm uppercase tracking-tighter">Protocolo de Reversão de Polaridade</h4>
+                        </div>
+
+                        <p class="text-slate-300 text-xs leading-relaxed mb-6">
+                            Você liberou o básico. Mas se quiser que ele sinta medo real de te perder e comece a te priorizar acima de tudo, você precisa do <strong>Cifrão de Obsessão</strong>.
+                        </p>
+
+                        <div class="grid grid-cols-1 gap-3 mb-6">
+                            <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                                <span class="text-emerald-400">✓</span>
+                                <span class="text-[11px] text-slate-200 uppercase tracking-tighter font-bold">Gatilho da Negação (Reação em 24h)</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                                <span class="text-emerald-400">✓</span>
+                                <span class="text-[11px] text-slate-200 uppercase tracking-tighter font-bold">O Código do Desejo Incontrolável</span>
+                            </div>
+                        </div>
+
+                        <a href="https://pay.kiwify.com.br/SEU_LINK_UPSELL" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-purple-500/20 hover:scale-[1.02] transition pulse-soft">
+                            <span>LIBERAR ACESSO COMPLETO AGORA</span>
+                        </a>
+                        
+                        <div class="mt-4 flex justify-center items-center gap-2 opacity-50">
+                            <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                            <span class="text-[9px] uppercase tracking-widest font-bold">Compra 100% Protegida</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,7 +183,7 @@
     <script>
         function showContent(module) {
             const area = document.getElementById('main-content-area');
-            area.innerHTML = ''; // Limpa a área
+            area.innerHTML = ''; 
             
             let html = '';
 
@@ -163,12 +194,12 @@
                         <h3 class="text-2xl font-black text-white mt-2 mb-6 uppercase">O Despertar da Escassez</h3>
                         <div class="space-y-4">
                             <div class="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl">
-                                <strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O que NÃO fazer:</strong>
-                                <p class="text-slate-300 text-sm italic">"Estar sempre online e responder antes mesmo dele terminar de digitar."</p>
+                                <strong class="text-red-400 text-[10px] block mb-2 uppercase tracking-widest">O Erro Fatal:</strong>
+                                <p class="text-slate-300 text-sm italic">"Responder mensagens em segundos e se justificar por demorar."</p>
                             </div>
                             <div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
-                                <strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">Sua nova postura:</strong>
-                                <p class="text-slate-300 text-sm">Instale a <strong>Incerteza Neural</strong>. Ele precisa se perguntar por que você não visualizou ainda. O silêncio é sua ferramenta de poder.</p>
+                                <strong class="text-emerald-400 text-[10px] block mb-2 uppercase tracking-widest">A Mudança Neural:</strong>
+                                <p class="text-slate-300 text-sm">Aplique a <strong>Regra do 2x1</strong>. Se ele demorar 1 hora, você demorará 2. Sem explicações, sem cobranças.</p>
                             </div>
                         </div>
                     </div>`;
@@ -179,7 +210,7 @@
                         <h3 class="text-2xl font-black text-white mt-2 mb-4 uppercase">A Técnica do Vácuo</h3>
                         <p class="text-slate-400 text-xs mb-6">Copie e envie este script se ele estiver frio há mais de 24h:</p>
                         <div class="p-6 bg-white/5 border border-white/10 rounded-3xl relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script de Reativação</div>
+                            <div class="absolute top-0 right-0 bg-purple-500/20 px-3 py-1 text-[8px] font-bold text-purple-300 rounded-bl-xl uppercase">Script Ativo</div>
                             <p class="text-white text-lg font-serif italic mb-6">"Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não."</p>
                             <button onclick="copiarTexto()" class="w-full bg-purple-600 text-white font-black py-4 rounded-xl hover:bg-purple-500 transition uppercase text-xs tracking-widest">Copiar Script</button>
                         </div>
@@ -190,9 +221,9 @@
                         <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
                             <div>
                                 <span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest">Acesso VIP</span>
-                                <h3 class="text-xl font-black text-white uppercase">Dicionário de Gatilhos</h3>
+                                <h3 class="text-xl font-black text-white uppercase">Guia de Gatilhos</h3>
                             </div>
-                            <div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold">PDF MODO LEITURA</div>
+                            <div class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-1 rounded font-bold uppercase">Manual de Uso</div>
                         </div>
                         
                         <div class="bonus-scroll pr-2 space-y-4">
@@ -202,18 +233,14 @@
                             </div>
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
                                 <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Escassez</p>
-                                <p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso incrível hoje. Fica pra próxima?"</p>
+                                <p class="text-slate-200 text-sm italic">"Adoraria ir, mas já tenho um compromisso hoje. Fica pra próxima?"</p>
                             </div>
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
                                 <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Desafio</p>
-                                <p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem checar o celular comigo."</p>
-                            </div>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
-                                <p class="text-pink-400 text-[10px] font-bold uppercase mb-1">Gatilho de Autoridade</p>
-                                <p class="text-slate-200 text-sm italic">"Eu sei exatamente o que você está tentando fazer... e não vai funcionar comigo."</p>
+                                <p class="text-slate-200 text-sm italic">"Duvido que você aguentaria passar uma hora sem o celular comigo."</p>
                             </div>
                         </div>
-                        <p class="text-[9px] text-slate-500 mt-4 text-center uppercase tracking-widest">Fim do Guia de Gatilhos Rápidos</p>
+                        <p class="text-[9px] text-slate-500 mt-4 text-center uppercase tracking-widest">Role para ver mais...</p>
                     </div>`;
             }
             area.innerHTML = html;
@@ -222,7 +249,7 @@
         function copiarTexto() {
             const texto = "Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não.";
             navigator.clipboard.writeText(texto).then(() => {
-                alert('Script copiado! Agora é só colar no WhatsApp.');
+                alert('Script copiado com sucesso!');
             });
         }
 
