@@ -93,7 +93,7 @@
                     </a>
                     <p class="text-[10px] text-slate-500 mt-2 mb-4">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg ml-1">R$ 27</span></p>
 
-                    <button id="btn-already-paid" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2">
+                    <button id="btn-already-paid" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-slate-300 text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 cursor-pointer">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                         Já fiz o pagamento (Liberar Acesso)
                     </button>
@@ -103,87 +103,89 @@
                     </button>
                 </div>
             </div>
-            
-            <div class="mt-4 pb-4">
-                <button id="admin-login-link" class="text-[9px] text-slate-700 hover:text-slate-500 cursor-pointer uppercase tracking-widest">
-                    Área Restrita (Admin)
-                </button>
-            </div>
         </div>
-
     </div>
 
     <script type="module">
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // Configuração
+        // --- CONFIGURAÇÃO ---
         const ADMIN_EMAILS = ["gilvanxavierborges@gmail.com", "contatogilvannborges@gmail.com"];
         const auth = getAuth();
         const db = getFirestore();
 
-        // 1. Lógica do Cliente: Botão "Já Paguei"
-        document.getElementById('btn-already-paid').onclick = async () => {
-            const btn = document.getElementById('btn-already-paid');
-            btn.innerHTML = "Verificando pagamento...";
-            
-            try {
-                const provider = new GoogleAuthProvider();
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
+        // 1. Ação do Botão "Já Paguei"
+        // Usamos addEventListener para garantir que o clique seja capturado corretamente
+        const btnLogin = document.getElementById('btn-already-paid');
+        
+        if(btnLogin) {
+            btnLogin.addEventListener('click', async () => {
+                const originalText = btnLogin.innerHTML;
+                btnLogin.innerHTML = "Verificando...";
                 
-                // Verifica no banco se está pago
-                const docRef = doc(db, "users", user.email);
-                const docSnap = await getDoc(docRef);
+                try {
+                    const provider = new GoogleAuthProvider();
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    
+                    console.log("Logado como:", user.email);
 
-                if (docSnap.exists() && docSnap.data().status === 'premium') {
-                    // Está pago! Recarrega a página e o enhancements.js vai abrir o conteúdo
-                    window.location.reload();
-                } else {
-                    alert("Ainda não identificamos seu pagamento ou você usou um e-mail diferente do Google. Se acabou de pagar, aguarde 1 minuto.");
-                    btn.innerHTML = "Tentar Liberar Novamente";
+                    // Verifica se é Admin na hora do login
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        alert("Bem-vindo, Admin! O botão de teste foi liberado.");
+                        document.getElementById('admin-test-btn').classList.remove('hidden-force');
+                        btnLogin.innerHTML = originalText;
+                        return; // Para aqui e deixa o admin usar o botão de teste
+                    }
+
+                    // Se não for admin, verifica pagamento no banco
+                    const docRef = doc(db, "users", user.email);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists() && docSnap.data().status === 'premium') {
+                        // Pagamento encontrado!
+                        btnLogin.innerHTML = "Sucesso! Redirecionando...";
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        // Pagamento não encontrado
+                        alert("O sistema ainda não identificou o pagamento para o e-mail: " + user.email + ".\n\nSe você acabou de pagar no Pix, aguarde 1 minuto e tente novamente.");
+                        btnLogin.innerHTML = "Tentar Novamente";
+                    }
+
+                } catch (error) {
+                    console.error("Erro no login:", error);
+                    alert("Erro ao conectar com Google. Tente novamente.");
+                    btnLogin.innerHTML = originalText;
                 }
-            } catch (error) {
-                console.error(error);
-                btn.innerHTML = "Erro. Tente novamente.";
-            }
-        };
+            });
+        }
 
-        // 2. Lógica do Admin: Botão Área Restrita
-        document.getElementById('admin-login-link').onclick = async () => {
-             try {
-                const provider = new GoogleAuthProvider();
-                await signInWithPopup(auth, provider);
-             } catch (e) {
-                 console.error("Erro login admin:", e);
-             }
-        };
-
-        // 3. Monitoramento de Estado (Faz o botão Admin aparecer)
+        // 2. Monitoramento Contínuo (Caso já esteja logado)
         onAuthStateChanged(auth, (user) => {
             if (user && ADMIN_EMAILS.includes(user.email)) {
-                // É Admin!
-                const btn = document.getElementById('admin-test-btn');
-                btn.classList.remove('hidden-force');
+                // Se já estiver logado como admin, mostra o botão
+                const btnAdmin = document.getElementById('admin-test-btn');
+                btnAdmin.classList.remove('hidden-force');
                 
-                btn.onclick = async () => {
+                // Configura o clique do Admin
+                btnAdmin.addEventListener('click', async () => {
                     if(!confirm(`Simular pagamento de R$27 para ${user.email}?`)) return;
+                    
                     try {
-                        btn.innerText = "Processando...";
+                        btnAdmin.innerText = "Processando...";
                         const userRef = doc(db, "users", user.email);
-                        // Cria ou atualiza
-                        await updateDoc(userRef, { status: "premium" }).catch(async () => {
-                            // Se der erro porque doc não existe, cria um dummy (caso pule o quiz)
-                            const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"); 
-                            await setDoc(userRef, { status: "premium" });
-                        });
+                        
+                        // Atualiza ou Cria o documento
+                        await setDoc(userRef, { status: "premium" }, { merge: true });
                         
                         alert("✅ Compra Simulada! Entrando...");
                         window.location.reload();
                     } catch (error) {
                         alert("Erro: " + error.message);
+                        btnAdmin.innerText = "Tentar Novamente";
                     }
-                };
+                });
             }
         });
     </script>
