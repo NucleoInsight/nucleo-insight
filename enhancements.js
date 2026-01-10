@@ -1,99 +1,47 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// ... (Dentro da função LIBERAR_CONTEUDO) ...
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
-  authDomain: "nucleoinsight-e4566.firebaseapp.com",
-  projectId: "nucleoinsight-e4566",
-  storageBucket: "nucleoinsight-e4566.firebasestorage.app",
-  messagingSenderId: "650150743348",
-  appId: "1:650150743348:web:f62f3cc95a38a5e90ca961",
-  measurementId: "G-M24P3TBP5J"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const RESULTS = {
-    ansiosa: { title: "A Ansiosa Disponível", desc: "Você ensinou a ele que seu tempo vale menos que o dele. Ao responder rápido demais, desligou o instinto de 'caça' no cérebro dele." },
-    controladora: { title: "A Investigadora Emocional", desc: "Sua necessidade de saber tudo gera um Sufocamento Silencioso. Ele se afasta para respirar por instinto." },
-    desvalorizada: { title: "A Doadora Excessiva", desc: "Você dá 100% e recebe 20%. Ele não te respeita como desafio porque você entregou o prêmio antes da corrida começar." }
-};
-
-function LIBERAR_CONTEUDO(userData) {
-    const ids = ['quiz-container', 'processing-container', 'result-container'];
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.add('hidden');
-    });
-    
-    const prot = document.getElementById('protocolo');
-    if(prot) {
-        prot.classList.remove('hidden');
-        prot.style.display = 'block';
-    }
-
-    // LÓGICA DO UPSELL DINÂMICO
-    const upsellBox = document.getElementById('upsell-container');
-    if(userData.protocol === "active") {
-        upsellBox.innerHTML = `
-            <div class="glass-card p-8 rounded-3xl border border-emerald-500/30">
-                <h2 class="text-xl font-bold text-emerald-400 mb-4">✅ Protocolo Secreto Liberado</h2>
-                <p class="text-slate-300 text-sm leading-relaxed">Você agora tem acesso à Reversão de Polaridade. <br><br> <strong>Próximo Passo:</strong> Use o gatilho da negação nas próximas 24 horas para forçar o contato.</p>
-            </div>`;
-    } else {
-        upsellBox.innerHTML = `
-            <div class="bg-gradient-to-r from-purple-900/60 to-pink-900/60 p-8 rounded-3xl border border-purple-400/30">
-                <span class="text-pink-300 text-[10px] font-bold uppercase tracking-widest">Expansão Neural</span>
-                <h2 class="text-xl font-bold text-white mt-2 mb-4">O Protocolo Secreto 2.0</h2>
-                <p class="text-slate-300 text-sm mb-6">A técnica de <strong>Reversão de Polaridade</strong> força uma resposta em menos de 24h.</p>
-                <a href="https://pay.kiwify.com.br/LINK_DO_UPSELL" class="inline-block bg-white text-purple-900 font-extrabold px-6 py-3 rounded-xl">Quero o Protocolo</a>
-            </div>`;
-    }
-    window.scrollTo(0,0);
-}
-
-window.finishQuizFlow = function(answers) {
-    document.getElementById('quiz-container').classList.add('hidden');
-    document.getElementById('processing-container').classList.remove('hidden');
-    let p = 0;
-    const int = setInterval(() => {
-        p += 10;
-        document.getElementById('process-pct').innerText = p + '%';
-        if(p >= 100) {
-            clearInterval(int);
-            const perfil = (answers.join(" ").length % 3 === 0) ? RESULTS.ansiosa : RESULTS.desvalorizada;
-            document.getElementById('processing-container').classList.add('hidden');
-            document.getElementById('result-container').classList.remove('hidden');
-            document.getElementById('result-title').innerText = perfil.title;
-            document.getElementById('result-description').innerHTML = perfil.desc;
-            
-            var t = 600, d = document.getElementById('countdown-timer');
-            setInterval(() => {
-                var m = parseInt(t/60), s = parseInt(t%60);
-                if(d) d.textContent = (m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
-                if(--t < 0) t = 0;
-            }, 1000);
-        }
-    }, 200);
-};
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        onSnapshot(doc(db, "users", user.email), (snapshot) => {
-            const data = snapshot.data();
-            if (data && data.status === 'premium') {
-                LIBERAR_CONTEUDO(data);
-            }
-        });
-    }
-});
-
-const btnLogin = document.getElementById('btn-login-manual');
-if (btnLogin) {
-    btnLogin.onclick = async () => {
-        try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { console.error(e); }
-    };
+const upsellBox = document.getElementById('upsell-container');
+if(userData.protocol === "active") {
+    // SE COMPROU O PRODUTO 2 (O COMPLEMENTO)
+    upsellBox.innerHTML = `
+        <div class="glass-card p-8 rounded-[2rem] border border-emerald-500/30 fade-in">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Ativado</span>
+                <h2 class="text-2xl font-bold text-white">O Protocolo Secreto 2.0</h2>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                <strong>Fase Final: A Reversão de Polaridade.</strong><br>
+                O objetivo aqui não é apenas ele te mandar mensagem, é ele sentir um <strong>pânico subconsciente de te perder</strong>. Siga as instruções abaixo:
+            </p>
+            <div class="space-y-4">
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <p class="text-white font-bold text-sm mb-1">Passo 01: O Gatilho da Negação</p>
+                    <p class="text-slate-400 text-xs">Mande exatamente esta frase se ele visualizar e não responder...</p>
+                </div>
+                </div>
+        </div>`;
+} else {
+    // SE NÃO COMPROU O PRODUTO 2 (VENDA AGRESSIVA)
+    upsellBox.innerHTML = `
+        <div class="bg-gradient-to-br from-purple-600 via-purple-900 to-black p-8 rounded-[2rem] border-2 border-purple-400/50 shadow-[0_0_50px_rgba(168,85,247,0.3)] relative overflow-hidden fade-in">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 text-pink-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
+                    Falta uma peça no seu quebra-cabeça
+                </div>
+                <h2 class="text-3xl font-extrabold text-white mb-4 leading-tight">O Protocolo Secreto:<br>A Reversão de Polaridade</h2>
+                <p class="text-slate-200 text-sm mb-6 leading-relaxed">
+                    O Produto 1 te ensinou a parar de errar. Mas o <strong>Protocolo Secreto</strong> é o que faz ele agir. Sem ele, você apenas parou de ser ansiosa, mas continua sendo ignorada.
+                </p>
+                <ul class="space-y-3 mb-8 text-sm text-slate-300">
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Como forçar uma resposta dele em menos de 24h.</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> A técnica do "Story Fantasma" (Impossível não stalkear).</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Como inverter o jogo e fazer ELE ter medo de te perder.</li>
+                </ul>
+                <a href="https://pay.kiwify.com.br/cAMh7az" class="block w-full bg-white text-purple-900 text-center font-black py-4 rounded-2xl hover:scale-[1.02] transition shadow-2xl">
+                    ADICIONAR PROTOCOLO SECRETO AO MEU ACESSO
+                </a>
+                <p class="text-center text-[10px] text-purple-300 mt-4 uppercase font-bold animate-pulse">Acesso vitalício liberado por tempo limitado</p>
+            </div>
+        </div>`;
 }
