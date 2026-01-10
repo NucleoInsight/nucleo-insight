@@ -5,22 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Núcleo Insight | Diagnóstico</title>
     
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '757989490676159');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=757989490676159&ev=PageView&noscript=1"
-    /></noscript>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -32,76 +16,134 @@
         .pulse-soft { animation: pulse-soft 3s infinite; }
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         .hidden { display: none !important; }
+        .bar-glow { box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gradient-mystic pb-10 text-slate-200 font-sans">
+<body class="min-h-screen flex flex-col bg-gradient-mystic pb-10">
+
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
         
         <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
-            <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
-            <div class="mb-8 flex items-center justify-between relative z-10">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
-                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div></div>
+            <div class="mb-8 flex items-center justify-between">
+                <span class="text-[10px] font-bold text-purple-300 uppercase">Análise Neural</span>
+                <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div>
+                </div>
             </div>
-            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
-            <div id="answers-box" class="space-y-3 relative z-10"></div>
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white min-h-[90px]">...</h2>
+            <div id="answers-box" class="space-y-3"></div>
         </div>
 
         <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-24 h-24 mx-auto mb-8">
-                <div class="absolute inset-0 rounded-full border-4 border-white/5"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm animate-pulse" id="process-pct">0%</div>
-            </div>
+            <div class="w-16 h-16 border-4 border-t-purple-500 border-white/10 rounded-full animate-spin mx-auto mb-8"></div>
             <h3 class="text-xl font-bold text-white mb-2">Calculando Padrão...</h3>
-            <p id="process-text" class="text-sm text-slate-400">Cruzando suas respostas com o banco de dados...</p>
+            <p id="process-pct" class="text-purple-300">0%</p>
         </div>
 
-        <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center fade-in border-t border-purple-500/20 overflow-hidden">
+        <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center overflow-hidden fade-in">
             <div class="bg-black/40 p-6 border-b border-white/5">
-                <p class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
-                <h2 class="text-2xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
+                <p class="text-[10px] text-purple-400 font-bold uppercase mb-2">Diagnóstico Concluído</p>
+                <h2 class="text-2xl font-bold text-white"><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
             </div>
             <div class="p-6">
                 <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6">...</p>
-                
-                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30 mb-6 relative overflow-hidden">
-                    <div class="bg-red-500/10 border-b border-red-500/20 p-2 -mx-5 -mt-5 mb-4 flex justify-center items-center gap-2">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                        </span>
-                        <p class="text-[10px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira em: <span id="countdown-timer" class="text-white font-mono">10:00</span></p>
-                    </div>
-                    
-                    <h3 class="text-white font-bold text-sm mb-2 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Plano de Quebra de Ciclo
-                    </h3>
-                    <p class="text-[11px] text-slate-400 mb-4">Saber o padrão é o primeiro passo. Para fazer ele sentir sua falta e correr atrás, você precisa do <strong>Guia de Resgate Neural</strong>.</p>
-                    
-                    <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition transform active:scale-[0.98] pulse-soft mb-4">
-                        <span>Baixar Guia Completo</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
-                    <p class="text-[10px] text-slate-500 mt-2">Oferta Especial: <span class="line-through text-red-400">R$ 97</span> por <span class="text-emerald-400 font-bold text-lg">R$ 27</span></p>
-                    
-                    <button id="btn-login-manual" class="mt-4 text-[9px] text-slate-500 uppercase tracking-widest hover:text-white transition">Já sou aluno? Liberar Acesso</button>
+                <div class="bg-gradient-to-br from-purple-900/40 to-slate-900/40 p-5 rounded-xl border border-purple-500/30">
+                    <p class="text-[10px] text-red-400 font-bold uppercase mb-4">Oferta Expira em: <span id="countdown-timer">10:00</span></p>
+                    <a href="https://pay.kiwify.com.br/cAMh7az" class="block w-full bg-purple-600 text-white font-bold py-3.5 rounded-xl mb-4 pulse-soft">Baixar Guia Completo</a>
+                    <button id="btn-login-manual" class="text-[9px] text-slate-500 uppercase tracking-widest hover:text-white transition">Já sou aluno? Liberar Acesso</button>
                 </div>
             </div>
         </div>
 
-        <div id="protocolo" class="hidden w-full max-w-3xl glass-card p-8 rounded-3xl fade-in text-center">
-            <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-6">Acesso Liberado!</h2>
-            <div class="aspect-video bg-black/40 rounded-2xl border border-white/10 flex items-center justify-center mb-8">
-                 <p class="text-slate-500 italic">Área Premium do Protocolo</p>
+        <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in">
+            
+            <div class="text-center mb-10">
+                <span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest border border-purple-500/30">Portal Restrito</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white mt-4">Protocolo de Resgate Neural</h1>
+                <p class="text-slate-400 mt-2">Bem-vinda de volta. Seu plano de ação está liberado.</p>
             </div>
-            <p class="text-slate-300">Seu plano está pronto para ser aplicado.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="md:col-span-1 space-y-6">
+                    <div class="glass-card p-6 rounded-3xl border-t border-purple-500/30">
+                        <h3 class="text-white font-bold mb-6 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Monitoramento Neural
+                        </h3>
+                        
+                        <div class="mb-6">
+                            <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase font-bold">
+                                <span>Obsessão dele</span>
+                                <span class="text-purple-400">Low</span>
+                            </div>
+                            <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 w-[15%] bar-glow"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase font-bold">
+                                <span>Risco de Perda</span>
+                                <span class="text-red-400">High</span>
+                            </div>
+                            <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-red-500 w-[85%] bar-glow"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-[10px] text-slate-400 mb-2 uppercase font-bold">
+                                <span>Sua Escassez</span>
+                                <span class="text-emerald-400">Critical</span>
+                            </div>
+                            <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-500 w-[5%] bar-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl text-center">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-2">Status da Conta</p>
+                        <p class="text-emerald-400 font-bold text-sm flex items-center justify-center gap-2">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Premium Ativo
+                        </p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 space-y-6">
+                    
+                    <div class="glass-card p-2 rounded-[2rem] overflow-hidden border border-white/10">
+                        <div class="aspect-video bg-black/60 rounded-[1.8rem] flex flex-col items-center justify-center relative group cursor-pointer overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <div class="z-10 w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition transition-all">
+                                <svg class="w-8 h-8 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <p class="z-10 mt-4 font-bold text-white tracking-wide">AULA 01: O Despertar do Desejo</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-900/60 to-pink-900/60 p-8 rounded-[2rem] border border-purple-400/30 relative overflow-hidden group">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
+                        
+                        <div class="relative z-10">
+                            <span class="text-pink-300 text-[10px] font-bold uppercase tracking-[0.2em]">Expansão Neural</span>
+                            <h2 class="text-2xl font-bold text-white mt-2 mb-4">O Protocolo Secreto 2.0</h2>
+                            <p class="text-slate-300 text-sm mb-6 max-w-md">Para casos onde ele já esfriou completamente ou bloqueou. A técnica de <strong>Reversão de Polaridade</strong> força uma resposta em menos de 24h.</p>
+                            
+                            <a href="https://pay.kiwify.com.br/LINK_DO_SEU_UPSELL" class="inline-flex items-center gap-3 bg-white text-purple-900 font-extrabold px-8 py-4 rounded-2xl hover:bg-purple-100 transition transform active:scale-95 shadow-2xl">
+                                Quero o Protocolo Secreto
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
+
     <script type="module" src="./enhancements.js"></script>
-    <script type="module" src="./tracker.js"></script>
     <script>
         const realQuestions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
