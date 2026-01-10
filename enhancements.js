@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -16,7 +16,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Função para pular direto para o conteúdo
 function LIBERAR_CONTEUDO() {
+    const loader = document.getElementById('initial-auth-check');
+    if(loader) loader.classList.add('hidden');
+    
+    const flow = document.getElementById('quiz-flow');
+    if(flow) flow.classList.remove('hidden');
+
     const ids = ['quiz-container', 'processing-container', 'result-container'];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -27,9 +34,33 @@ function LIBERAR_CONTEUDO() {
         prot.classList.remove('hidden');
         prot.style.display = 'block';
     }
-    window.scrollTo(0,0);
 }
 
+// Lógica de monitoramento de Login
+onAuthStateChanged(auth, (user) => {
+    const loader = document.getElementById('initial-auth-check');
+    const flow = document.getElementById('quiz-flow');
+
+    if (user) {
+        // Usuário logado: Checa status no banco
+        onSnapshot(doc(db, "users", user.email), (snapshot) => {
+            if (snapshot.exists() && snapshot.data().status === 'premium') {
+                // É PREMIUM: Pula tudo
+                LIBERAR_CONTEUDO();
+            } else {
+                // LOGADO MAS NÃO COMPROU: Mostra o Quiz normal
+                if(loader) loader.classList.add('hidden');
+                if(flow) flow.classList.remove('hidden');
+            }
+        });
+    } else {
+        // NÃO LOGADO: Mostra o Quiz normal imediatamente
+        if(loader) loader.classList.add('hidden');
+        if(flow) flow.classList.remove('hidden');
+    }
+});
+
+// Lógica do Quiz
 window.finishQuizFlow = function(answers) {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('processing-container').classList.remove('hidden');
@@ -41,8 +72,8 @@ window.finishQuizFlow = function(answers) {
             clearInterval(int);
             document.getElementById('processing-container').classList.add('hidden');
             document.getElementById('result-container').classList.remove('hidden');
-            document.getElementById('result-title').innerText = "Análise Neural Concluída";
-            document.getElementById('result-description').innerText = "Identificamos padrões de alta reatividade emocional no seu perfil.";
+            document.getElementById('result-title').innerText = "Diagnóstico Pronto";
+            document.getElementById('result-description').innerText = "Análise concluída com base no seu comportamento neural.";
             
             var t = 600, d = document.getElementById('countdown-timer');
             setInterval(() => {
@@ -53,26 +84,3 @@ window.finishQuizFlow = function(answers) {
         }
     }, 200);
 };
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Monitora o status no banco de dados. 
-        // Se já for premium (seu caso), o LIBERAR_CONTEUDO() abre a tela na hora.
-        onSnapshot(doc(db, "users", user.email), (snapshot) => {
-            if (snapshot.exists() && snapshot.data().status === 'premium') {
-                LIBERAR_CONTEUDO();
-            }
-        });
-    }
-});
-
-const btnLogin = document.getElementById('btn-login-action');
-if (btnLogin) {
-    btnLogin.onclick = async () => {
-        try {
-            await signInWithPopup(auth, new GoogleAuthProvider());
-        } catch (e) {
-            console.error("Erro no login");
-        }
-    };
-}
