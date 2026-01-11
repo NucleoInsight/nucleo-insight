@@ -41,7 +41,7 @@
                     <p class="text-[10px] text-slate-500 uppercase">Status do Sistema</p>
                     <div class="flex items-center gap-2 justify-end">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span class="text-xs text-emerald-400 font-bold">ONLINE</span>
+                        <span class="text-xs text-emerald-400 font-bold">ONLINE (Modo Real)</span>
                     </div>
                 </div>
                 <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">
@@ -121,8 +121,8 @@
         // --- LÓGICA DE INTELIGÊNCIA ---
         window.initSystem = async () => {
             const eventsRef = collection(db, "analytics_events");
-            // Pega os últimos 500 eventos para ter amostra boa
-            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(500));
+            // Pega os últimos 600 eventos para ter amostra boa
+            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(600));
             const snapshot = await getDocs(q);
 
             // 1. PROCESSAR SESSÕES (Agrupar eventos por pessoa)
@@ -130,7 +130,13 @@
             
             snapshot.forEach(doc => {
                 const data = doc.data();
-                // Usa sessionId se existir, senão usa IP ou cria um fake baseado no timestamp (fallback)
+                
+                // === FILTRO DE SEGURANÇA ===
+                // Se for teste (?mode=test), IGNORA COMPLETAMENTE
+                if (data.isTest === true) return; 
+                // ============================
+
+                // Usa sessionId se existir, senão usa fallback
                 const sid = data.sessionId || 'anonymous'; 
                 
                 if (!sessions[sid]) {
@@ -205,7 +211,7 @@
                 const totalConv = total > 0 ? ((step.count / total) * 100).toFixed(1) : 0;
                 
                 // Largura da barra baseada na % do total
-                const width = Math.max(totalConv, 1); // Minimo 1% pra aparecer
+                const width = Math.max(totalConv, 1); 
 
                 html += `
                 <div class="funnel-step active">
