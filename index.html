@@ -30,12 +30,10 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         
-        /* FUNDO OTIMIZADO (Leve e Rápido) */
         .bg-tech { background-color: #0b0c15; background-image: radial-gradient(at 50% 0%, #1e1b4b 0px, transparent 50%), radial-gradient(at 100% 0%, #312e81 0px, transparent 50%); }
         
-        /* CARD SÓLIDO (Carregamento Instantâneo) */
         .solid-card { 
-            background-color: #1e293b; /* Slate 800 */
+            background-color: #1e293b; 
             border: 1px solid #334155; 
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
         }
@@ -47,8 +45,6 @@
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(192, 132, 252, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); } }
         
         .hidden { display: none !important; }
-        
-        /* Scroll Otimizado */
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
     </style>
 </head>
@@ -78,7 +74,6 @@
             </div>
 
             <h2 id="question-text" class="text-xl font-bold mb-6 text-white leading-snug min-h-[60px]">...</h2>
-            
             <div id="answers-box" class="space-y-3"></div>
         </div>
 
@@ -99,19 +94,15 @@
             </div>
             <div class="p-6">
                 <p id="result-description" class="text-slate-300 text-xs leading-relaxed mb-6">...</p>
-                
                 <div class="bg-slate-800/50 p-4 rounded-xl border border-purple-500/20 mb-4">
                     <div class="flex justify-center items-center gap-2 mb-3">
                         <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                         <p class="text-[9px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira: <span id="countdown-timer" class="font-mono text-white">10:00</span></p>
                     </div>
-                    
                     <p class="text-[11px] text-slate-300 mb-4">O padrão foi identificado. Aplique o antídoto neural agora para <strong>quebrar o gelo hoje</strong>.</p>
-                    
                     <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-[0.98] pulse-soft">
                         <span>🔓 DESBLOQUEAR PROTOCOLO 24H</span>
                     </a>
-                    
                     <p class="text-[9px] text-slate-500 mt-3">De <span class="line-through">R$ 97</span> por <strong class="text-emerald-400">R$ 27</strong></p>
                 </div>
                 <button id="btn-login-manual" class="text-[9px] text-slate-600 uppercase tracking-widest hover:text-slate-400">Já sou aluno? Entrar</button>
@@ -119,8 +110,16 @@
         </div>
 
         <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto">
-            <h2 class="text-2xl font-bold text-white mb-2">Portal de Resgate</h2>
-            <p class="text-slate-500 mb-6 uppercase text-[9px] tracking-[0.2em]">Área Segura</p>
+            
+            <div class="flex justify-between items-start mb-6">
+                <div class="text-left">
+                    <h2 class="text-2xl font-bold text-white leading-none">Portal de Resgate</h2>
+                    <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura</p>
+                </div>
+                <button onclick="window.location.reload()" class="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase border border-red-900/30 bg-red-950/20 px-3 py-2 rounded-lg transition flex items-center gap-1">
+                    Sair ✕
+                </button>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                 <div class="space-y-4">
@@ -175,13 +174,12 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // CONTEÚDO ATUALIZADO: Scripts Práticos e Comandos
+        // CONTEÚDO ATUALIZADO: "Alta Conversão" REMOVIDO -> "Alto Impacto" ADICIONADO
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
             let html = '';
             
-            // MÓDULO 1: POSTURA (Comandos de Ação)
             if(module === 1) {
                 html = `
                 <div class="fade-in">
@@ -208,8 +206,8 @@
                 </div>`;
             } 
             
-            // MÓDULO 2: SCRIPT PRÁTICO DO VÁCUO
             else if(module === 2) {
+                // AQUI ESTÁ A CORREÇÃO DO TEXTO DO SELO
                 html = `
                 <div class="fade-in">
                     <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
@@ -218,7 +216,7 @@
                     <p class="text-slate-400 text-xs mb-4">Use este script APENAS se ele estiver frio ou sumido há mais de 24h. Isso vai bugar a mente dele por curiosidade.</p>
                     
                     <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">Script de Alta Conversão</div>
+                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">⚡ GATILHO DE ALTO IMPACTO</div>
                         <p class="text-white text-sm font-serif italic mb-6 mt-2">"Nossa... acabei de ver uma coisa aqui que me lembrou muito você... mas pensando bem, melhor nem te contar kkk deixa pra lá."</p>
                         
                         <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">
@@ -230,7 +228,6 @@
                 </div>`;
             } 
             
-            // MÓDULO 3: DICIONÁRIO DE RESPOSTAS
             else if(module === 3) {
                 html = `
                 <div class="fade-in">
@@ -242,12 +239,10 @@
                             <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele te convidar de última hora (23h):</p>
                             <p class="text-slate-200 text-xs italic">"Humm, adoraria! Mas já tenho planos pra agora. Se tivesse avisado antes..."</p>
                         </div>
-                        
                         <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
                             <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele perguntar por que você sumiu:</p>
                             <p class="text-slate-200 text-xs italic">"Eu sumi? Nossa, a semana foi tão corrida que nem percebi o tempo passar. Tudo bem por aí?"</p>
                         </div>
-                        
                         <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
                             <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele mandar apenas um emoji ou "oi":</p>
                             <p class="text-slate-200 text-xs italic">(Não responda nada. Apenas curta a mensagem 6 horas depois).</p>
@@ -294,7 +289,6 @@
             
             realQuestions[idx].a.forEach(ans => {
                 const btn = document.createElement('button');
-                // Botão Otimizado: Sólido, sem blur, resposta tátil rápida
                 btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 p-4 rounded-xl border border-slate-700 active:border-purple-500 transition duration-150 text-sm";
                 btn.innerText = ans;
                 btn.onclick = () => { 
