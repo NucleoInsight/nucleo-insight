@@ -19,33 +19,46 @@
         .metric-value { font-size: 1.5rem; font-weight: 800; color: white; }
         .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
         
-        /* Barra de Progresso do Funil */
         .progress-bar-bg { background: #1e293b; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px; }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); width: 0%; transition: width 1s; }
         
         .loading-pulse { animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* Toggle Switch */
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
 
     <div class="max-w-7xl mx-auto">
         
-        <header class="flex justify-between items-end mb-10 border-b border-indigo-900/30 pb-4">
+        <header class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-indigo-900/30 pb-4 gap-4">
             <div>
                 <h1 class="text-3xl font-black text-white tracking-tight">SNIPER <span class="text-indigo-500">ANALYTICS</span></h1>
                 <p class="text-xs text-indigo-400 mt-1">Rastreamento de Sessão Única & Funil de Conversão</p>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
+            
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg border border-slate-700">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold">Modo Teste</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-test" class="sr-only peer" onchange="initSystem()">
+                        <div class="w-9 h-5 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                    </label>
+                </div>
+
+                <div class="text-right hidden md:block">
                     <p class="text-[10px] text-slate-500 uppercase">Status do Sistema</p>
                     <div class="flex items-center gap-2 justify-end">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span class="text-xs text-emerald-400 font-bold">ONLINE (Modo Real)</span>
+                        <span id="system-status" class="text-xs text-emerald-400 font-bold">ONLINE (Real)</span>
                     </div>
                 </div>
+
                 <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">
-                    🔄 ATUALIZAR DADOS
+                    🔄 ATUALIZAR
                 </button>
             </div>
         </header>
@@ -57,7 +70,6 @@
                     <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                     FUNIL DE RETENÇÃO (Sessões Únicas)
                 </h2>
-                
                 <div id="funnel-container" class="space-y-6">
                     <div class="text-center text-slate-600 text-xs py-10 loading-pulse">Calculando taxas de conversão...</div>
                 </div>
@@ -90,11 +102,11 @@
             </div>
 
             <div class="glass-panel p-0 overflow-hidden flex flex-col h-[600px]">
-                <div class="p-4 border-b border-white/5 bg-slate-900/50">
-                    <h3 class="text-xs font-bold text-white">📡 FEED DE SESSÕES (Quem está online?)</h3>
+                <div class="p-4 border-b border-white/5 bg-slate-900/50 flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-white">📡 FEED DE SESSÕES</h3>
+                    <span id="feed-badge" class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">DADOS REAIS</span>
                 </div>
-                <div class="overflow-y-auto p-4 space-y-3" id="live-feed">
-                    </div>
+                <div class="overflow-y-auto p-4 space-y-3" id="live-feed"></div>
             </div>
 
         </div>
@@ -118,25 +130,45 @@
         const db = getFirestore(app);
         let myChart = null;
 
-        // --- LÓGICA DE INTELIGÊNCIA ---
         window.initSystem = async () => {
+            // VERIFICA O BOTÃO DE TESTE
+            const showTestMode = document.getElementById('toggle-test').checked;
+            
+            // ATUALIZA VISUAL DO STATUS
+            const statusEl = document.getElementById('system-status');
+            const badgeEl = document.getElementById('feed-badge');
+            
+            if(showTestMode) {
+                statusEl.innerText = "MODO TESTE (SandBox)";
+                statusEl.className = "text-xs text-amber-400 font-bold";
+                badgeEl.innerText = "EXIBINDO TESTES";
+                badgeEl.className = "text-[9px] bg-amber-500/20 text-amber-400 px-2 py-1 rounded";
+            } else {
+                statusEl.innerText = "ONLINE (Real)";
+                statusEl.className = "text-xs text-emerald-400 font-bold";
+                badgeEl.innerText = "DADOS REAIS";
+                badgeEl.className = "text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded";
+            }
+
             const eventsRef = collection(db, "analytics_events");
-            // Pega os últimos 600 eventos para ter amostra boa
             const q = query(eventsRef, orderBy("timestamp", "desc"), limit(600));
             const snapshot = await getDocs(q);
 
-            // 1. PROCESSAR SESSÕES (Agrupar eventos por pessoa)
             const sessions = {};
             
             snapshot.forEach(doc => {
                 const data = doc.data();
                 
-                // === FILTRO DE SEGURANÇA ===
-                // Se for teste (?mode=test), IGNORA COMPLETAMENTE
-                if (data.isTest === true) return; 
+                // === FILTRO INTELIGENTE ===
+                // Se o botão está ativado (showTestMode = true), SÓ MOSTRA o que tem isTest=true
+                // Se o botão está desativado (showTestMode = false), SÓ MOSTRA o que NÃO tem isTest (ou isTest=false)
+                
+                const isTestData = data.isTest === true;
+                
+                if (showTestMode && !isTestData) return; // Quer teste, mas dado é real -> PULA
+                if (!showTestMode && isTestData) return; // Quer real, mas dado é teste -> PULA
                 // ============================
 
-                // Usa sessionId se existir, senão usa fallback
                 const sid = data.sessionId || 'anonymous'; 
                 
                 if (!sessions[sid]) {
@@ -152,7 +184,6 @@
                 }
                 sessions[sid].events.push(data);
 
-                // Analisa profundidade
                 if (data.eventName === 'quiz_answer') {
                     const qNum = data.data.question_number || 0;
                     if (qNum > sessions[sid].maxStep) sessions[sid].maxStep = qNum;
@@ -162,30 +193,17 @@
                 }
             });
 
-            // 2. CALCULAR FUNIL (Baseado em SESSÕES ÚNICAS, não cliques)
             const totalSessions = Object.keys(sessions).length;
-            const funnel = {
-                visitors: 0,
-                startedQuiz: 0,
-                midQuiz: 0, // Chegou na metade
-                finishedQuiz: 0, // Respondeu ultima
-                clickedCheckout: 0
-            };
-
+            const funnel = { visitors: 0, startedQuiz: 0, midQuiz: 0, finishedQuiz: 0, clickedCheckout: 0 };
             const sourcesCount = {};
 
             Object.values(sessions).forEach(s => {
                 funnel.visitors++;
-                
-                // Contagem de Origem
                 sourcesCount[s.source] = (sourcesCount[s.source] || 0) + 1;
-
-                // Lógica do Funil
                 const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer');
-                
                 if (hasQuizEvent) funnel.startedQuiz++;
                 if (s.maxStep >= 5) funnel.midQuiz++;
-                if (s.maxStep >= 9) funnel.finishedQuiz++; // Assumindo 9 ou 10 perguntas
+                if (s.maxStep >= 9) funnel.finishedQuiz++; 
                 if (s.reachedCheckout) funnel.clickedCheckout++;
             });
 
@@ -193,9 +211,7 @@
         };
 
         function renderDashboard(funnel, total, sessions, sources) {
-            // 1. Renderizar Funil Visual
             const container = document.getElementById('funnel-container');
-            
             const steps = [
                 { label: "Visitas na Página", count: funnel.visitors, color: "text-white" },
                 { label: "Iniciou Quiz", count: funnel.startedQuiz, color: "text-indigo-400" },
@@ -209,8 +225,6 @@
                 const prevCount = index === 0 ? step.count : steps[index-1].count;
                 const conversion = prevCount > 0 ? ((step.count / prevCount) * 100).toFixed(1) : 0;
                 const totalConv = total > 0 ? ((step.count / total) * 100).toFixed(1) : 0;
-                
-                // Largura da barra baseada na % do total
                 const width = Math.max(totalConv, 1); 
 
                 html += `
@@ -231,35 +245,31 @@
             });
             container.innerHTML = html;
 
-            // 2. Atualizar KPIs
             document.getElementById('kpi-unique').innerText = total;
-            
             const checkoutRate = funnel.finishedQuiz > 0 ? ((funnel.clickedCheckout / funnel.finishedQuiz) * 100).toFixed(1) : 0;
             document.getElementById('kpi-cr').innerText = checkoutRate + "%";
             document.getElementById('kpi-cr').className = `metric-value ${checkoutRate > 15 ? 'text-emerald-400' : 'text-red-400'}`;
-
             const retention = funnel.visitors > 0 ? ((funnel.finishedQuiz / funnel.visitors) * 100).toFixed(1) : 0;
             document.getElementById('kpi-retention').innerText = retention + "%";
-
-            // Melhor Origem
             const bestSource = Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b, '-');
             document.getElementById('kpi-source').innerText = bestSource.toUpperCase();
 
-            // 3. Renderizar Feed de Sessões
             const feed = document.getElementById('live-feed');
             feed.innerHTML = '';
             
-            // Ordenar sessões mais recentes primeiro (baseado no ultimo evento)
             const sortedSessions = Object.values(sessions).sort((a,b) => {
                 const timeA = a.events[0]?.timestamp || 0;
                 const timeB = b.events[0]?.timestamp || 0;
                 return timeB - timeA;
-            }).slice(0, 20); // Top 20
+            }).slice(0, 20); 
+
+            if(sortedSessions.length === 0) {
+                feed.innerHTML = '<div class="text-center text-slate-600 text-xs py-10">Nenhuma sessão encontrada neste modo.</div>';
+            }
 
             sortedSessions.forEach(s => {
                 const lastAction = s.events[0].eventName;
                 const time = new Date(s.events[0].timestamp.seconds * 1000).toLocaleTimeString();
-                
                 let badge = '<span class="bg-slate-700 text-white text-[9px] px-2 rounded">Visitante</span>';
                 if(s.reachedCheckout) badge = '<span class="bg-emerald-500 text-black font-bold text-[9px] px-2 rounded">HOT LEAD 🔥</span>';
                 else if(s.maxStep > 5) badge = '<span class="bg-indigo-500 text-white text-[9px] px-2 rounded">Engajado</span>';
@@ -280,14 +290,12 @@
                 </div>`;
             });
 
-            // 4. Gráfico
             renderChart(sources);
         }
 
         function renderChart(data) {
             const ctx = document.getElementById('sourceChart').getContext('2d');
             if(myChart) myChart.destroy();
-            
             myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -304,8 +312,7 @@
                 }
             });
         }
-
-        // Auto start
+        
         initSystem();
     </script>
 </body>
