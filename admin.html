@@ -3,197 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Master | Núcleo Insight</title>
+    <title>Sniper Analytics | Núcleo Insight</title>
     
-    <script type="module" src="./tracker.js"></script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #cbd5e1; font-family: 'JetBrains Mono', monospace; }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 20px; }
-        .test-row { opacity: 0.5; border-left: 3px solid #f59e0b; }
+        body { background-color: #0b0c15; color: #a5b4fc; font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; }
+        .funnel-step { position: relative; padding-left: 20px; border-left: 2px solid #334155; margin-bottom: 20px; }
+        .funnel-step.active { border-left-color: #10b981; }
+        .funnel-step::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; background: #334155; border-radius: 50%; }
+        .funnel-step.active::before { background: #10b981; box-shadow: 0 0 10px #10b981; }
         
-        /* Abas */
-        .tab-btn { cursor: pointer; padding: 10px 20px; border-bottom: 2px solid transparent; opacity: 0.6; transition: all 0.3s; }
-        .tab-btn:hover { opacity: 1; color: white; }
-        .tab-btn.active { border-bottom: 2px solid #10b981; opacity: 1; color: #10b981; font-weight: bold; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Tabela ROI */
-        .roi-positive { color: #34d399; }
-        .roi-negative { color: #f87171; }
+        .metric-value { font-size: 1.5rem; font-weight: 800; color: white; }
+        .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
+        
+        /* Barra de Progresso do Funil */
+        .progress-bar-bg { background: #1e293b; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); width: 0%; transition: width 1s; }
+        
+        .loading-pulse { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-8 min-h-screen">
 
     <div class="max-w-7xl mx-auto">
         
-        <header class="flex justify-between items-center mb-8 border-b border-slate-700 pb-2">
+        <header class="flex justify-between items-end mb-10 border-b border-indigo-900/30 pb-4">
             <div>
-                <h1 class="text-2xl font-bold text-emerald-400">COMMAND CENTER v2.0</h1>
-                <p class="text-xs text-slate-500">Analytics & Financial Manager</p>
+                <h1 class="text-3xl font-black text-white tracking-tight">SNIPER <span class="text-indigo-500">ANALYTICS</span></h1>
+                <p class="text-xs text-indigo-400 mt-1">Rastreamento de Sessão Única & Funil de Conversão</p>
             </div>
-            <div class="flex gap-6">
-                <div onclick="switchAdminTab('tracker')" id="btn-tracker" class="tab-btn active">📡 RASTREADOR (SPY)</div>
-                <div onclick="switchAdminTab('traffic')" id="btn-traffic" class="tab-btn">💰 GESTÃO DE TRÁFEGO</div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500 uppercase">Status do Sistema</p>
+                    <div class="flex items-center gap-2 justify-end">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs text-emerald-400 font-bold">ONLINE</span>
+                    </div>
+                </div>
+                <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">
+                    🔄 ATUALIZAR DADOS
+                </button>
             </div>
         </header>
 
-        <div id="view-tracker" class="tab-content active">
-            <div class="flex justify-end mb-4 gap-4 items-center">
-                <label class="flex items-center gap-2 text-xs cursor-pointer select-none bg-slate-800 px-3 py-2 rounded border border-slate-600">
-                    <input type="checkbox" id="show-tests" onchange="loadTrackerData()">
-                    <span class="text-amber-400">Mostrar Testes (?mode=test)</span>
-                </label>
-                <button onclick="loadTrackerData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-xs font-bold transition">ATUALIZAR AGORA</button>
-            </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="card border-l-4 border-l-blue-500">
-                    <h3 class="text-xs text-slate-400 uppercase">Visitas Reais</h3>
-                    <p id="kpi-views" class="text-2xl font-bold text-white mt-1">0</p>
-                </div>
-                <div class="card border-l-4 border-l-purple-500">
-                    <h3 class="text-xs text-slate-400 uppercase">Quiz Iniciados</h3>
-                    <p id="kpi-quiz" class="text-2xl font-bold text-white mt-1">0</p>
-                </div>
-                <div class="card border-l-4 border-l-emerald-500">
-                    <h3 class="text-xs text-slate-400 uppercase">Cliques Checkout</h3>
-                    <p id="kpi-clicks" class="text-2xl font-bold text-white mt-1">0</p>
-                </div>
-                <div class="card border-l-4 border-l-pink-500">
-                    <h3 class="text-xs text-slate-400 uppercase">Melhor Origem</h3>
-                    <p id="kpi-campaign" class="text-sm font-bold text-white mt-2 truncate">...</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="md:col-span-2 card h-[600px] overflow-y-auto">
-                    <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LIVE FEED (Tempo Real)
-                    </h3>
-                    <table class="w-full text-left text-xs">
-                        <thead class="sticky top-0 bg-[#1e293b] z-10">
-                            <tr class="border-b border-slate-700 text-slate-400">
-                                <th class="pb-2 pl-2">Hora</th>
-                                <th class="pb-2">Evento</th>
-                                <th class="pb-2">Detalhe</th>
-                                <th class="pb-2">Origem (UTM)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="event-feed" class="divide-y divide-slate-800">
-                            <tr><td colspan="4" class="py-4 text-center text-slate-600">Carregando dados...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="space-y-6">
-                    <div class="card">
-                        <h3 class="text-xs font-bold text-white mb-2">Funil de Eventos</h3>
-                        <canvas id="chart-events"></canvas>
-                    </div>
-                    <div class="card">
-                        <h3 class="text-xs font-bold text-white mb-2">Origem de Tráfego</h3>
-                        <div id="traffic-sources" class="text-xs space-y-2"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-traffic" class="tab-content">
-            
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="glass-panel p-6">
+                <h2 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    FUNIL DE RETENÇÃO (Sessões Únicas)
+                </h2>
                 
-                <div class="md:col-span-3">
-                    <div class="card bg-slate-800 border-slate-600 sticky top-4">
-                        <h3 class="text-sm font-bold text-emerald-400 mb-4 border-b border-white/10 pb-2">➕ Novo Registro Diário</h3>
-                        <form id="roi-form" onsubmit="addDailyStat(event)" class="space-y-3">
-                            <div>
-                                <label class="text-[10px] text-slate-400 uppercase">Data</label>
-                                <input type="date" id="inp-date" required class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs focus:border-emerald-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="text-[10px] text-slate-400 uppercase">Valor Gasto (Facebook) R$</label>
-                                <input type="number" step="0.01" id="inp-spend" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs focus:border-emerald-500 outline-none">
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-[10px] text-slate-400 uppercase">Cliques Link</label>
-                                    <input type="number" id="inp-clicks" required placeholder="0" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs outline-none">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] text-slate-400 uppercase">Checkout (IC)</label>
-                                    <input type="number" id="inp-ic" placeholder="0" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs outline-none">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-[10px] text-slate-400 uppercase">Qtd Vendas</label>
-                                    <input type="number" id="inp-sales" required placeholder="0" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs outline-none">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] text-slate-400 uppercase">Faturamento R$</label>
-                                    <input type="number" step="0.01" id="inp-revenue" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs outline-none">
-                                </div>
-                            </div>
-                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded text-xs mt-4 transition shadow-lg">SALVAR DADOS</button>
-                        </form>
-                    </div>
+                <div id="funnel-container" class="space-y-6">
+                    <div class="text-center text-slate-600 text-xs py-10 loading-pulse">Calculando taxas de conversão...</div>
                 </div>
-
-                <div class="md:col-span-9">
-                    <div class="grid grid-cols-4 gap-4 mb-6">
-                        <div class="card p-4">
-                            <p class="text-[10px] text-slate-500 uppercase">Lucro Total</p>
-                            <p id="total-profit" class="text-xl font-bold text-white">R$ 0,00</p>
-                        </div>
-                        <div class="card p-4">
-                            <p class="text-[10px] text-slate-500 uppercase">ROAS Médio</p>
-                            <p id="avg-roas" class="text-xl font-bold text-white">0.00</p>
-                        </div>
-                        <div class="card p-4">
-                            <p class="text-[10px] text-slate-500 uppercase">CPA Médio</p>
-                            <p id="avg-cpa" class="text-xl font-bold text-white">R$ 0,00</p>
-                        </div>
-                        <div class="card p-4">
-                            <p class="text-[10px] text-slate-500 uppercase">Conversão Página</p>
-                            <p id="avg-conv" class="text-xl font-bold text-white">0%</p>
-                        </div>
-                    </div>
-
-                    <div class="card overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-700 text-slate-400">
-                                    <th class="p-3">Data</th>
-                                    <th class="p-3">Gasto</th>
-                                    <th class="p-3">Visitas/IC</th>
-                                    <th class="p-3">CPC/CTR</th>
-                                    <th class="p-3">Vendas</th>
-                                    <th class="p-3">CPA</th>
-                                    <th class="p-3">ROAS</th>
-                                    <th class="p-3 text-right">LUCRO</th>
-                                    <th class="p-3"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="roi-table-body" class="divide-y divide-slate-800">
-                                <tr><td colspan="9" class="p-4 text-center text-slate-600">Nenhum dado registrado. Use o formulário ao lado.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
-        </div>
 
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-4 border-l-2 border-indigo-500">
+                        <p class="metric-label">Visitantes Únicos</p>
+                        <p id="kpi-unique" class="metric-value">0</p>
+                    </div>
+                    <div class="glass-panel p-4 border-l-2 border-emerald-500">
+                        <p class="metric-label">Taxa Checkout</p>
+                        <p id="kpi-cr" class="metric-value">0%</p>
+                    </div>
+                    <div class="glass-panel p-4 border-l-2 border-pink-500">
+                        <p class="metric-label">Retenção Quiz</p>
+                        <p id="kpi-retention" class="metric-value">0%</p>
+                    </div>
+                    <div class="glass-panel p-4 border-l-2 border-amber-500">
+                        <p class="metric-label">Lead Quente (UTM)</p>
+                        <p id="kpi-source" class="text-lg font-bold text-white truncate">...</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4">
+                    <h3 class="text-xs font-bold text-white mb-4">ORIGEM DO TRÁFEGO (Sessões)</h3>
+                    <canvas id="sourceChart" height="150"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel p-0 overflow-hidden flex flex-col h-[600px]">
+                <div class="p-4 border-b border-white/5 bg-slate-900/50">
+                    <h3 class="text-xs font-bold text-white">📡 FEED DE SESSÕES (Quem está online?)</h3>
+                </div>
+                <div class="overflow-y-auto p-4 space-y-3" id="live-feed">
+                    </div>
+            </div>
+
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -207,210 +116,191 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        let chartInstance = null;
+        let myChart = null;
 
-        // --- SISTEMA DE ABAS ---
-        window.switchAdminTab = (tab) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`view-${tab}`).classList.add('active');
-            document.getElementById(`btn-${tab}`).classList.add('active');
-
-            if(tab === 'tracker') loadTrackerData();
-            if(tab === 'traffic') loadTrafficData();
-        };
-
-        // ============================================================
-        // MÓDULO 1: RASTREADOR (SPY)
-        // ============================================================
-        window.loadTrackerData = async () => {
-            const showTests = document.getElementById('show-tests').checked;
+        // --- LÓGICA DE INTELIGÊNCIA ---
+        window.initSystem = async () => {
             const eventsRef = collection(db, "analytics_events");
-            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(100));
+            // Pega os últimos 500 eventos para ter amostra boa
+            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(500));
             const snapshot = await getDocs(q);
+
+            // 1. PROCESSAR SESSÕES (Agrupar eventos por pessoa)
+            const sessions = {};
             
-            const tbody = document.getElementById('event-feed');
-            tbody.innerHTML = '';
-
-            let stats = { views: 0, quiz: 0, clicks: 0 };
-            let sources = {};
-            let eventCounts = {};
-
             snapshot.forEach(doc => {
                 const data = doc.data();
-                if (data.isTest && !showTests) return;
-
-                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString() : 'N/A';
+                // Usa sessionId se existir, senão usa IP ou cria um fake baseado no timestamp (fallback)
+                const sid = data.sessionId || 'anonymous'; 
                 
-                // KPIs
-                if(data.eventName === 'page_view') stats.views++;
-                if(data.eventName === 'quiz_step' && data.data.step === 1) stats.quiz++;
-                if(data.eventName === 'click' && (data.data.label.includes('Destravar') || data.data.label.includes('Liberar'))) stats.clicks++;
-                
-                // Origem
-                const source = data.campaign?.source || 'direct';
-                sources[source] = (sources[source] || 0) + 1;
-                eventCounts[data.eventName] = (eventCounts[data.eventName] || 0) + 1;
+                if (!sessions[sid]) {
+                    sessions[sid] = {
+                        id: sid,
+                        startTime: data.timestamp,
+                        events: [],
+                        source: data.campaign?.source || 'direct',
+                        device: data.device?.platform || 'Mobile',
+                        maxStep: 0,
+                        reachedCheckout: false
+                    };
+                }
+                sessions[sid].events.push(data);
 
-                // Render
-                const row = `
-                    <tr class="hover:bg-slate-800 transition ${data.isTest ? 'test-row' : ''}">
-                        <td class="py-2 pl-2 text-slate-500 font-mono">${time}</td>
-                        <td class="py-2 font-bold ${getColor(data.eventName)}">${data.eventName} ${data.isTest ? '🧪' : ''}</td>
-                        <td class="py-2 text-slate-300 truncate max-w-[150px]">${formatData(data.data)}</td>
-                        <td class="py-2 text-slate-400 text-[10px] uppercase bg-slate-800/50 px-2 rounded w-fit">${source}</td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
+                // Analisa profundidade
+                if (data.eventName === 'quiz_answer') {
+                    const qNum = data.data.question_number || 0;
+                    if (qNum > sessions[sid].maxStep) sessions[sid].maxStep = qNum;
+                }
+                if (data.eventName === 'click' && (data.data.label.includes('Desbloquear') || data.data.id === 'btn-checkout')) {
+                    sessions[sid].reachedCheckout = true;
+                }
             });
 
-            document.getElementById('kpi-views').innerText = stats.views;
-            document.getElementById('kpi-clicks').innerText = stats.clicks;
-            document.getElementById('kpi-quiz').innerText = stats.quiz;
-            
-            const topSource = Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b, 'N/A');
-            document.getElementById('kpi-campaign').innerText = topSource.toUpperCase();
-
-            const sourcesHtml = Object.entries(sources).map(([k, v]) => `<div class="flex justify-between border-b border-slate-700 pb-1"><span>${k}</span><span class="font-bold text-white">${v}</span></div>`).join('');
-            document.getElementById('traffic-sources').innerHTML = sourcesHtml;
-
-            renderChart(eventCounts);
-        };
-
-        // ============================================================
-        // MÓDULO 2: GESTÃO DE TRÁFEGO (ROI)
-        // ============================================================
-        
-        // Salvar Novo Dia
-        window.addDailyStat = async (e) => {
-            e.preventDefault();
-            const payload = {
-                date: document.getElementById('inp-date').value,
-                spend: parseFloat(document.getElementById('inp-spend').value),
-                clicks: parseInt(document.getElementById('inp-clicks').value),
-                ic: parseInt(document.getElementById('inp-ic').value) || 0,
-                sales: parseInt(document.getElementById('inp-sales').value),
-                revenue: parseFloat(document.getElementById('inp-revenue').value),
-                timestamp: new Date()
+            // 2. CALCULAR FUNIL (Baseado em SESSÕES ÚNICAS, não cliques)
+            const totalSessions = Object.keys(sessions).length;
+            const funnel = {
+                visitors: 0,
+                startedQuiz: 0,
+                midQuiz: 0, // Chegou na metade
+                finishedQuiz: 0, // Respondeu ultima
+                clickedCheckout: 0
             };
 
-            try {
-                await addDoc(collection(db, "daily_stats"), payload);
-                alert("✅ Dados salvos com sucesso!");
-                document.getElementById('roi-form').reset();
-                loadTrafficData(); // Recarrega a tabela
-            } catch (error) {
-                console.error("Erro ao salvar:", error);
-                alert("Erro ao salvar dados.");
-            }
-        };
+            const sourcesCount = {};
 
-        // Carregar Tabela e Calcular Métricas
-        window.loadTrafficData = async () => {
-            const statsRef = collection(db, "daily_stats");
-            const q = query(statsRef, orderBy("date", "desc"));
-            const snapshot = await getDocs(q);
-            
-            const tbody = document.getElementById('roi-table-body');
-            tbody.innerHTML = '';
-
-            let totalProfit = 0;
-            let totalSpend = 0;
-            let totalRevenue = 0;
-            let totalSales = 0;
-            let totalClicks = 0;
-
-            snapshot.forEach(docSnap => {
-                const item = docSnap.data();
-                const id = docSnap.id;
-
-                // Cálculos
-                const profit = item.revenue - item.spend;
-                const roas = item.spend > 0 ? (item.revenue / item.spend).toFixed(2) : 0;
-                const cpa = item.sales > 0 ? (item.spend / item.sales).toFixed(2) : 0;
-                const cpc = item.clicks > 0 ? (item.spend / item.clicks).toFixed(2) : 0;
+            Object.values(sessions).forEach(s => {
+                funnel.visitors++;
                 
-                // Acumuladores
-                totalProfit += profit;
-                totalSpend += item.spend;
-                totalRevenue += item.revenue;
-                totalSales += item.sales;
-                totalClicks += item.clicks;
+                // Contagem de Origem
+                sourcesCount[s.source] = (sourcesCount[s.source] || 0) + 1;
 
-                // Render Linha
-                const profitClass = profit >= 0 ? 'roi-positive' : 'roi-negative';
-                const row = `
-                    <tr class="hover:bg-slate-800 transition group">
-                        <td class="p-3 text-white font-bold">${formatDate(item.date)}</td>
-                        <td class="p-3 text-slate-300">R$ ${item.spend.toFixed(2)}</td>
-                        <td class="p-3 text-slate-400">${item.clicks} / ${item.ic}</td>
-                        <td class="p-3 text-slate-400 text-[10px]">CPC: ${cpc}</td>
-                        <td class="p-3 text-white font-bold">${item.sales}</td>
-                        <td class="p-3 text-slate-300">R$ ${cpa}</td>
-                        <td class="p-3 ${roas >= 1.5 ? 'text-emerald-400' : 'text-yellow-400'} font-bold">${roas}x</td>
-                        <td class="p-3 text-right font-bold ${profitClass}">R$ ${profit.toFixed(2)}</td>
-                        <td class="p-3 text-right">
-                            <button onclick="deleteStat('${id}')" class="text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-xs">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
+                // Lógica do Funil
+                const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer');
+                
+                if (hasQuizEvent) funnel.startedQuiz++;
+                if (s.maxStep >= 5) funnel.midQuiz++;
+                if (s.maxStep >= 9) funnel.finishedQuiz++; // Assumindo 9 ou 10 perguntas
+                if (s.reachedCheckout) funnel.clickedCheckout++;
             });
 
-            // Atualiza Resumo
-            const avgRoas = totalSpend > 0 ? (totalRevenue / totalSpend).toFixed(2) : 0;
-            const avgCpa = totalSales > 0 ? (totalSpend / totalSales).toFixed(2) : 0;
-            const convRate = totalClicks > 0 ? ((totalSales / totalClicks) * 100).toFixed(1) : 0;
-
-            document.getElementById('total-profit').innerText = `R$ ${totalProfit.toFixed(2)}`;
-            document.getElementById('total-profit').className = `text-xl font-bold ${totalProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
-            document.getElementById('avg-roas').innerText = `${avgRoas}x`;
-            document.getElementById('avg-cpa').innerText = `R$ ${avgCpa}`;
-            document.getElementById('avg-conv').innerText = `${convRate}%`;
+            renderDashboard(funnel, totalSessions, sessions, sourcesCount);
         };
 
-        window.deleteStat = async (id) => {
-            if(confirm("Tem certeza que quer apagar esse registro?")) {
-                await deleteDoc(doc(db, "daily_stats", id));
-                loadTrafficData();
-            }
-        };
+        function renderDashboard(funnel, total, sessions, sources) {
+            // 1. Renderizar Funil Visual
+            const container = document.getElementById('funnel-container');
+            
+            const steps = [
+                { label: "Visitas na Página", count: funnel.visitors, color: "text-white" },
+                { label: "Iniciou Quiz", count: funnel.startedQuiz, color: "text-indigo-400" },
+                { label: "Engajados (+5 Pergs)", count: funnel.midQuiz, color: "text-purple-400" },
+                { label: "Finalizou Quiz", count: funnel.finishedQuiz, color: "text-fuchsia-400" },
+                { label: "Clicou Checkout", count: funnel.clickedCheckout, color: "text-emerald-400" }
+            ];
 
-        // Utils
-        function formatDate(dateString) {
-            const [y, m, d] = dateString.split('-');
-            return `${d}/${m}`;
-        }
+            let html = '';
+            steps.forEach((step, index) => {
+                const prevCount = index === 0 ? step.count : steps[index-1].count;
+                const conversion = prevCount > 0 ? ((step.count / prevCount) * 100).toFixed(1) : 0;
+                const totalConv = total > 0 ? ((step.count / total) * 100).toFixed(1) : 0;
+                
+                // Largura da barra baseada na % do total
+                const width = Math.max(totalConv, 1); // Minimo 1% pra aparecer
 
-        function formatData(data) {
-            if (data.label) return data.label;
-            if (data.step) return `Pergunta ${data.step}`;
-            return JSON.stringify(data).substring(0, 20);
-        }
+                html += `
+                <div class="funnel-step active">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] uppercase text-slate-500 font-bold">${step.label}</p>
+                            <p class="text-xl font-black ${step.color}">${step.count}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-bold text-slate-400">${conversion}% <span class="text-[9px] font-normal opacity-50">passo anterior</span></p>
+                        </div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${totalConv}%"></div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
 
-        function getColor(name) {
-            if(name === 'page_view') return 'text-blue-400';
-            if(name === 'click') return 'text-emerald-400';
-            if(name === 'quiz_step') return 'text-purple-400';
-            return 'text-white';
+            // 2. Atualizar KPIs
+            document.getElementById('kpi-unique').innerText = total;
+            
+            const checkoutRate = funnel.finishedQuiz > 0 ? ((funnel.clickedCheckout / funnel.finishedQuiz) * 100).toFixed(1) : 0;
+            document.getElementById('kpi-cr').innerText = checkoutRate + "%";
+            document.getElementById('kpi-cr').className = `metric-value ${checkoutRate > 15 ? 'text-emerald-400' : 'text-red-400'}`;
+
+            const retention = funnel.visitors > 0 ? ((funnel.finishedQuiz / funnel.visitors) * 100).toFixed(1) : 0;
+            document.getElementById('kpi-retention').innerText = retention + "%";
+
+            // Melhor Origem
+            const bestSource = Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b, '-');
+            document.getElementById('kpi-source').innerText = bestSource.toUpperCase();
+
+            // 3. Renderizar Feed de Sessões
+            const feed = document.getElementById('live-feed');
+            feed.innerHTML = '';
+            
+            // Ordenar sessões mais recentes primeiro (baseado no ultimo evento)
+            const sortedSessions = Object.values(sessions).sort((a,b) => {
+                const timeA = a.events[0]?.timestamp || 0;
+                const timeB = b.events[0]?.timestamp || 0;
+                return timeB - timeA;
+            }).slice(0, 20); // Top 20
+
+            sortedSessions.forEach(s => {
+                const lastAction = s.events[0].eventName;
+                const time = new Date(s.events[0].timestamp.seconds * 1000).toLocaleTimeString();
+                
+                let badge = '<span class="bg-slate-700 text-white text-[9px] px-2 rounded">Visitante</span>';
+                if(s.reachedCheckout) badge = '<span class="bg-emerald-500 text-black font-bold text-[9px] px-2 rounded">HOT LEAD 🔥</span>';
+                else if(s.maxStep > 5) badge = '<span class="bg-indigo-500 text-white text-[9px] px-2 rounded">Engajado</span>';
+
+                feed.innerHTML += `
+                <div class="p-3 bg-white/5 rounded border border-white/5 hover:border-indigo-500/50 transition">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-mono text-slate-400">${time}</span>
+                        ${badge}
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-300">Origem: <strong class="text-white uppercase">${s.source}</strong></span>
+                        <span class="text-slate-500">${s.events.length} ações</span>
+                    </div>
+                    <div class="mt-2 text-[10px] text-slate-500 truncate">
+                        Ultima ação: ${lastAction}
+                    </div>
+                </div>`;
+            });
+
+            // 4. Gráfico
+            renderChart(sources);
         }
 
         function renderChart(data) {
-            const ctx = document.getElementById('chart-events').getContext('2d');
-            if(chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
+            const ctx = document.getElementById('sourceChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
                 data: {
                     labels: Object.keys(data),
-                    datasets: [{ label: 'Eventos', data: Object.values(data), backgroundColor: '#10b981', borderRadius: 4 }]
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#6366f1', '#10b981', '#f43f5e', '#f59e0b'],
+                        borderWidth: 0
+                    }]
                 },
-                options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#334155' } }, y: { grid: { display: false } } } }
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 10 } } } }
+                }
             });
         }
 
-        // Auto Load Tracker on Start
-        loadTrackerData();
+        // Auto start
+        initSystem();
     </script>
 </body>
 </html>
