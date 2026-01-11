@@ -46,12 +46,26 @@
         
         <div id="quiz-container" class="w-full max-w-md glass-card p-6 rounded-3xl shadow-2xl fade-in relative overflow-hidden">
             <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(139,92,246,0.1)_0%,transparent_50%)] pointer-events-none"></div>
-            <div class="mb-8 flex items-center justify-between relative z-10">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-purple-300 uppercase">Análise Neural</span>
+            
+            <div class="mb-6 flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold tracking-[0.2em] text-emerald-400 uppercase">Sistema Online</span>
+                </div>
                 <div class="h-1 w-24 bg-white/5 rounded-full overflow-hidden">
                     <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 10%"></div>
                 </div>
             </div>
+
+            <div class="relative z-10 mb-6 border-l-2 border-purple-500 pl-4 py-1">
+                <p class="text-[9px] text-purple-400 font-bold uppercase tracking-widest mb-1">
+                    ⚡ ETAPA 1: MAPEAMENTO DE PADRÕES
+                </p>
+                <p class="text-xs text-slate-300 leading-relaxed font-light">
+                    As perguntas a seguir detectam se ele está usando <strong>Manipulação Emocional</strong>. Responda com honestidade para o algoritmo funcionar.
+                </p>
+            </div>
+
             <h2 id="question-text" class="text-xl md:text-2xl font-bold mb-8 text-white leading-snug min-h-[90px] relative z-10">...</h2>
             <div id="answers-box" class="space-y-3 relative z-10"></div>
         </div>
@@ -62,8 +76,8 @@
                 <div class="absolute inset-0 rounded-full border-4 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent animate-spin"></div>
                 <div class="absolute inset-0 flex items-center justify-center font-bold text-purple-300 text-sm animate-pulse" id="process-pct">0%</div>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Calculando Padrão...</h3>
-            <p id="process-text" class="text-sm text-slate-400">Cruzando suas respostas com o banco de dados...</p>
+            <h3 class="text-xl font-bold text-white mb-2">Decodificando Mente...</h3>
+            <p id="process-text" class="text-sm text-slate-400">Cruzando suas respostas com 10.000 padrões masculinos...</p>
         </div>
 
         <div id="result-container" class="hidden w-full max-w-md glass-card p-0 rounded-3xl text-center fade-in border-t border-purple-500/20 overflow-hidden">
