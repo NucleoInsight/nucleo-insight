@@ -30,10 +30,10 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         
-        /* FUNDO OTIMIZADO (Mais leve que gradiente complexo) */
+        /* FUNDO OTIMIZADO (Leve e Rápido) */
         .bg-tech { background-color: #0b0c15; background-image: radial-gradient(at 50% 0%, #1e1b4b 0px, transparent 50%), radial-gradient(at 100% 0%, #312e81 0px, transparent 50%); }
         
-        /* CARD SÓLIDO (Carrega Instantâneo - Sem Blur Pesado) */
+        /* CARD SÓLIDO (Carregamento Instantâneo) */
         .solid-card { 
             background-color: #1e293b; /* Slate 800 */
             border: 1px solid #334155; 
@@ -175,17 +175,85 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // FUNÇÕES DO SISTEMA (Lógica mantida, visual leve)
+        // CONTEÚDO ATUALIZADO: Scripts Práticos e Comandos
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
             let html = '';
+            
+            // MÓDULO 1: POSTURA (Comandos de Ação)
             if(module === 1) {
-                html = `<div class="fade-in"><span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 01</span><h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Escassez</h3><div class="space-y-4"><div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl"><strong class="text-red-400 text-[10px] block mb-1 uppercase">O erro:</strong><p class="text-slate-300 text-xs italic">"Responder rápido demais e matar o mistério."</p></div><div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl"><strong class="text-emerald-400 text-[10px] block mb-1 uppercase">Correção:</strong><p class="text-slate-300 text-xs">Instale a <strong>Incerteza Neural</strong>. Deixe ele esperar.</p></div></div></div>`;
-            } else if(module === 2) {
-                html = `<div class="fade-in"><span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Lição 02</span><h3 class="text-xl font-bold text-white mt-2 mb-4">A Técnica do Vácuo</h3><div class="p-5 bg-slate-800 border border-slate-700 rounded-xl"><p class="text-white text-sm font-serif italic mb-4">"Nossa, vi algo que me lembrou você... mas deixa pra lá."</p><button onclick="copiarTexto()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg text-xs uppercase">Copiar Script</button></div></div>`;
-            } else if(module === 3) {
-                html = `<div class="fade-in"><h3 class="text-xl font-bold text-white mb-4">Dicionário de Gatilhos</h3><div class="bonus-scroll pr-2 space-y-3"><div class="p-3 bg-slate-800 rounded-lg border border-slate-700"><p class="text-pink-400 text-[9px] font-bold uppercase">Curiosidade</p><p class="text-slate-300 text-xs italic">"Tenho que te contar pessoalmente..."</p></div><div class="p-3 bg-slate-800 rounded-lg border border-slate-700"><p class="text-pink-400 text-[9px] font-bold uppercase">Escassez</p><p class="text-slate-300 text-xs italic">"Hoje não dá, já tenho planos."</p></div></div></div>`;
+                html = `
+                <div class="fade-in">
+                    <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 01: Postura</span>
+                    <h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Escassez</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl">
+                            <strong class="text-red-400 text-[10px] block mb-1 uppercase">⛔ ERRO COMUM (Pare Agora):</strong>
+                            <p class="text-slate-300 text-xs">"Ficar online assim que ele manda mensagem ou visualizar os stories dele nos primeiros 5 minutos."</p>
+                        </div>
+                        
+                        <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
+                            <strong class="text-emerald-400 text-[10px] block mb-1 uppercase">✅ AÇÃO RECOMENDADA:</strong>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Instale a <strong>Incerteza Neural</strong>.
+                                <br><br>
+                                1. Desative o "Visto por Último".<br>
+                                2. Se ele mandar mensagem, aguarde exatamente <strong>o triplo do tempo</strong> que ele demorou para te responder na última vez.<br>
+                                3. Nunca termine a conversa com uma pergunta. Seja a pessoa que encerra o assunto.
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+            } 
+            
+            // MÓDULO 2: SCRIPT PRÁTICO DO VÁCUO
+            else if(module === 2) {
+                html = `
+                <div class="fade-in">
+                    <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
+                    <h3 class="text-xl font-bold text-white mt-2 mb-4">A Técnica do Vácuo (Quebra de Padrão)</h3>
+                    
+                    <p class="text-slate-400 text-xs mb-4">Use este script APENAS se ele estiver frio ou sumido há mais de 24h. Isso vai bugar a mente dele por curiosidade.</p>
+                    
+                    <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">Script de Alta Conversão</div>
+                        <p class="text-white text-sm font-serif italic mb-6 mt-2">"Nossa... acabei de ver uma coisa aqui que me lembrou muito você... mas pensando bem, melhor nem te contar kkk deixa pra lá."</p>
+                        
+                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">
+                            COPIAR SCRIPT PARA O WHATSAPP
+                        </button>
+                    </div>
+                    
+                    <p class="text-slate-500 text-[10px] mt-4 text-center">⚠️ Atenção: Quando ele perguntar "O que foi?", NÃO responda por pelo menos 3 horas.</p>
+                </div>`;
+            } 
+            
+            // MÓDULO 3: DICIONÁRIO DE RESPOSTAS
+            else if(module === 3) {
+                html = `
+                <div class="fade-in">
+                    <h3 class="text-xl font-bold text-white mb-4">Dicionário de Respostas Rápidas</h3>
+                    <p class="text-slate-400 text-xs mb-4">Não sabe o que falar? Copie e cole.</p>
+                    
+                    <div class="bonus-scroll pr-2 space-y-3">
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
+                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele te convidar de última hora (23h):</p>
+                            <p class="text-slate-200 text-xs italic">"Humm, adoraria! Mas já tenho planos pra agora. Se tivesse avisado antes..."</p>
+                        </div>
+                        
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
+                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele perguntar por que você sumiu:</p>
+                            <p class="text-slate-200 text-xs italic">"Eu sumi? Nossa, a semana foi tão corrida que nem percebi o tempo passar. Tudo bem por aí?"</p>
+                        </div>
+                        
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
+                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele mandar apenas um emoji ou "oi":</p>
+                            <p class="text-slate-200 text-xs italic">(Não responda nada. Apenas curta a mensagem 6 horas depois).</p>
+                        </div>
+                    </div>
+                </div>`;
             }
             area.innerHTML = html;
         }
