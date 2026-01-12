@@ -68,6 +68,10 @@
                 </div>
 
                 <div class="flex gap-2 no-print">
+                    <a href="https://nucleoinsight.github.io/nucleo-insight/?mode=test" target="_blank" class="bg-purple-900/50 hover:bg-purple-800 text-purple-200 border border-purple-700 px-3 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center" title="Abrir Site em Modo Teste">
+                        🧪 ABRIR TESTE
+                    </a>
+
                     <button onclick="copyReport()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition" title="Copiar para IA">
                         📋 COPIAR
                     </button>
@@ -194,8 +198,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let myChart = null;
-        let globalFunnelData = {}; // Para copiar
-        let globalSourceData = {}; // Para copiar
+        let globalFunnelData = {}; 
+        let globalSourceData = {}; 
 
         // --- SISTEMA DE GERAÇÃO DE LINKS (Encurtador) ---
         window.generateLinkCode = () => {
@@ -259,11 +263,8 @@ ${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}
 
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                // Lógica de filtro idêntica ao initSystem
                 const docIsTest = data.isTest === true;
                 
-                // Se estamos no modo teste, apaga só o que é teste
-                // Se estamos no modo real, apaga só o que NÃO é teste
                 if ((isTest && docIsTest) || (!isTest && !docIsTest)) {
                     deletePromises.push(deleteDoc(doc(db, "analytics_events", docSnap.id)));
                     count++;
@@ -273,14 +274,13 @@ ${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}
             await Promise.all(deletePromises);
             
             statusEl.innerText = `Sucesso! ${count} registros apagados do ${modeName}.`;
-            setTimeout(() => initSystem(), 1500); // Recarrega
+            setTimeout(() => initSystem(), 1500); 
         };
 
         // --- SISTEMA PRINCIPAL DE DADOS ---
         window.initSystem = async () => {
             const showTestMode = document.getElementById('toggle-test').checked;
             
-            // Atualiza UI
             const statusEl = document.getElementById('system-status');
             const badgeEl = document.getElementById('feed-badge');
             
@@ -306,7 +306,6 @@ ${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}
                 const data = doc.data();
                 const isTestData = data.isTest === true;
                 
-                // Filtro Mestre
                 if (showTestMode && !isTestData) return; 
                 if (!showTestMode && isTestData) return; 
 
@@ -340,16 +339,14 @@ ${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}
             Object.values(sessions).forEach(s => {
                 funnel.visitors++;
                 sourcesCount[s.source] = (sourcesCount[s.source] || 0) + 1;
-                const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer'); // Melhor detecção
+                const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer'); 
                 
-                // Correção de lógica: Se engajou ou finalizou, obrigatoriamente iniciou
                 if (hasQuizEvent || s.maxStep > 0) funnel.startedQuiz++;
                 if (s.maxStep >= 5) funnel.midQuiz++;
                 if (s.maxStep >= 9) funnel.finishedQuiz++; 
                 if (s.reachedCheckout) funnel.clickedCheckout++;
             });
 
-            // Salva globais para o botão Copiar
             globalFunnelData = funnel;
             globalSourceData = sourcesCount;
 
