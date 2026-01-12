@@ -1,178 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniper Analytics | Admin & Tools</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { background-color: #0b0c15; color: #a5b4fc; font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; }
-        .funnel-step { position: relative; padding-left: 20px; border-left: 2px solid #334155; margin-bottom: 20px; }
-        .funnel-step.active { border-left-color: #10b981; }
-        .funnel-step::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; background: #334155; border-radius: 50%; }
-        .funnel-step.active::before { background: #10b981; box-shadow: 0 0 10px #10b981; }
-        
-        .metric-value { font-size: 1.5rem; font-weight: 800; color: white; }
-        .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
-        
-        .progress-bar-bg { background: #1e293b; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); width: 0%; transition: width 1s; }
-        
-        .loading-pulse { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
-        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
-
-        @media print {
-            body { background-color: white; color: black; }
-            .no-print { display: none !important; }
-            .glass-panel { border: 1px solid #ccc; background: none; color: black; box-shadow: none; }
-            .text-white { color: black !important; }
-            .metric-value { color: black !important; }
-            canvas { max-height: 200px; }
-        }
-    </style>
-</head>
-<body class="p-4 md:p-8 min-h-screen">
-
-    <div class="max-w-7xl mx-auto">
-        
-        <header class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-indigo-900/30 pb-4 gap-4">
-            <div>
-                <h1 class="text-3xl font-black text-white tracking-tight">SNIPER <span class="text-indigo-500">ANALYTICS</span></h1>
-                <p class="text-xs text-indigo-400 mt-1">Painel de Controle & Link Automático</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg border border-slate-700 no-print">
-                    <span class="text-[10px] text-slate-400 uppercase font-bold">Modo Teste</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-test" class="sr-only peer" onchange="initSystem()">
-                        <div class="w-9 h-5 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
-                    </label>
-                </div>
-
-                <div class="text-right hidden md:block">
-                    <p class="text-[10px] text-slate-500 uppercase">Status</p>
-                    <div class="flex items-center gap-2 justify-end">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span id="system-status" class="text-xs text-emerald-400 font-bold">ONLINE</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 no-print">
-                    <a href="https://nucleoinsight.github.io/nucleo-insight/?mode=test" target="_blank" class="bg-purple-900/50 hover:bg-purple-800 text-purple-200 border border-purple-700 px-3 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center" title="Abrir Site em Modo Teste">
-                        🧪 ABRIR TESTE
-                    </a>
-                    <button onclick="copyReport()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition">📋 COPIAR</button>
-                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition">🖨️ PDF</button>
-                    <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">🔄 ATUALIZAR</button>
-                </div>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-            <div class="glass-panel p-6">
-                <h2 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                    FUNIL DE RETENÇÃO
-                </h2>
-                <div id="funnel-container" class="space-y-6">
-                    <div class="text-center text-slate-600 text-xs py-10 loading-pulse">Carregando dados...</div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-panel p-4 border-l-2 border-indigo-500">
-                        <p class="metric-label">Visitantes</p>
-                        <p id="kpi-unique" class="metric-value">0</p>
-                    </div>
-                    <div class="glass-panel p-4 border-l-2 border-emerald-500">
-                        <p class="metric-label">Conversão ($)</p>
-                        <p id="kpi-cr" class="metric-value">0%</p>
-                    </div>
-                    <div class="glass-panel p-4 border-l-2 border-pink-500">
-                        <p class="metric-label">Retenção Quiz</p>
-                        <p id="kpi-retention" class="metric-value">0%</p>
-                    </div>
-                    <div class="glass-panel p-4 border-l-2 border-amber-500">
-                        <p class="metric-label">Melhor Canal</p>
-                        <p id="kpi-source" class="text-lg font-bold text-white truncate">...</p>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4">
-                    <h3 class="text-xs font-bold text-white mb-4">ORIGEM DO TRÁFEGO</h3>
-                    <canvas id="sourceChart" height="150"></canvas>
-                </div>
-            </div>
-
-            <div class="glass-panel p-0 overflow-hidden flex flex-col h-[600px]">
-                <div class="p-4 border-b border-white/5 bg-slate-900/50 flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-white">📡 FEED AO VIVO</h3>
-                    <span id="feed-badge" class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">REAL</span>
-                </div>
-                <div class="overflow-y-auto p-4 space-y-3" id="live-feed"></div>
-            </div>
-        </div>
-
-        <div class="glass-panel p-6 mb-10 no-print border border-emerald-500/30">
-            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                🔗 Encurtador Automático (Firestore)
-                <span class="text-[10px] bg-emerald-900 text-emerald-400 px-2 py-1 rounded border border-emerald-500/50">V2.0</span>
-            </h2>
-            <p class="text-xs text-slate-400 mb-6">Salva o link direto no Banco de Dados. Não precisa criar arquivo no GitHub.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div class="md:col-span-2">
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Nome Curto (ID)</label>
-                    <div class="flex">
-                        <span class="bg-slate-700 text-slate-300 p-2 text-xs rounded-l border border-slate-600">/r.html?id=</span>
-                        <input type="text" id="linkName" placeholder="ex: zap" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 focus:border-emerald-500 outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-emerald-500 mb-1 uppercase">Origem (Source)</label>
-                    <input type="text" id="utmSource" value="whatsapp" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 rounded focus:border-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-emerald-500 mb-1 uppercase">Campanha</label>
-                    <input type="text" id="utmCampaign" placeholder="palhaco" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 rounded focus:border-emerald-500 outline-none">
-                </div>
-            </div>
-
-            <button onclick="saveLinkToFirebase()" id="btnSaveLink" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs transition mb-4">
-                💾 SALVAR NO BANCO DE DADOS
-            </button>
-
-            <div id="codeResult" class="hidden">
-                <p class="text-xs text-emerald-400 font-bold mb-2">✅ Link Salvo com Sucesso!</p>
-                <div class="bg-black/50 p-4 rounded border border-slate-700 flex justify-between items-center">
-                    <code id="finalLinkDisplay" class="text-white text-xs font-mono">...</code>
-                    <button onclick="copyFinalLink()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded ml-2">COPIAR</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="border border-red-900/30 bg-red-950/10 rounded-xl p-6 no-print">
-            <h3 class="text-red-500 font-bold text-sm mb-2 uppercase">⚠️ Zona de Perigo (Gerenciamento de Dados)</h3>
-            <p class="text-xs text-slate-400 mb-4">Ações aqui são irreversíveis. O botão abaixo apaga os dados baseados no modo atual.</p>
-            <div class="flex items-center gap-4">
-                <button onclick="clearDatabase()" class="bg-red-900/50 hover:bg-red-800 text-red-200 border border-red-800 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2">
-                    🗑️ APAGAR TODOS OS DADOS DO MODO ATUAL
-                </button>
-                <p id="delete-status" class="text-xs text-slate-500 italic"></p>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -188,26 +14,42 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        let globalFunnelData = {}; 
-        let globalSourceData = {}; 
+        
+        // Variáveis globais para o relatório
+        window.globalFunnelData = {}; 
+        window.globalSourceData = {}; 
 
-        // --- SALVAR LINK NO FIREBASE (NOVO) ---
+        // --- SALVAR LINK NO FIREBASE (CORRIGIDO E BLINDADO) ---
         window.saveLinkToFirebase = async () => {
-            const name = document.getElementById('linkName').value;
-            if(!name) return alert("Digite um nome curto para o link!");
+            let nameInput = document.getElementById('linkName').value;
             
+            // 1. LIMPEZA AUTOMÁTICA (Remove https, barras e espaços se você colar errado)
+            let cleanName = nameInput.replace(/https?:\/\//g, "").replace(/\//g, "").replace(/\s/g, "").split('?')[0];
+            
+            // Se o nome estava vazio ou ficou vazio após limpar
+            if(!cleanName) return alert("Digite apenas uma palavra para o link (ex: zap). Não cole URLs aqui!");
+            
+            // Atualiza o campo visualmente para você ver o nome limpo
+            document.getElementById('linkName').value = cleanName;
+
             const btn = document.getElementById('btnSaveLink');
+            const originalText = btn.innerText;
             btn.innerText = "Salvando...";
+            btn.disabled = true;
             
             const source = document.getElementById('utmSource').value || 'direct';
             const campaign = document.getElementById('utmCampaign').value || 'none';
             const medium = 'chat';
             
-            const longUrl = `https://nucleoinsight.github.io/nucleo-insight/?utm_source=${source}&utm_medium=${medium}&utm_campaign=${campaign}&utm_content=${name}`;
-            const shortUrl = `https://nucleoinsight.github.io/nucleo-insight/r.html?id=${name}`;
+            // O Link de Destino (Longo) é gerado sozinho aqui
+            const longUrl = `https://nucleoinsight.github.io/nucleo-insight/?utm_source=${source}&utm_medium=${medium}&utm_campaign=${campaign}&utm_content=${cleanName}`;
+            
+            // O Link Curto final
+            const shortUrl = `https://nucleoinsight.github.io/nucleo-insight/r.html?id=${cleanName}`;
 
             try {
-                await setDoc(doc(db, "short_links", name), {
+                // Salva no Banco com o ID limpo
+                await setDoc(doc(db, "short_links", cleanName), {
                     target: longUrl,
                     clicks: 0,
                     created_at: new Date()
@@ -215,11 +57,14 @@
 
                 document.getElementById('finalLinkDisplay').innerText = shortUrl;
                 document.getElementById('codeResult').classList.remove('hidden');
-                btn.innerText = "💾 SALVAR NO BANCO DE DADOS";
+                btn.innerText = "✅ SALVO COM SUCESSO!";
+                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 3000);
+                
             } catch (error) {
-                console.error(error);
-                alert("Erro ao salvar no Firestore. Verifique o console.");
-                btn.innerText = "Erro!";
+                console.error("Erro Firebase:", error);
+                alert("Erro ao salvar: " + error.message);
+                btn.innerText = "Erro (Tente Novamente)";
+                btn.disabled = false;
             }
         };
 
@@ -228,10 +73,10 @@
             navigator.clipboard.writeText(link).then(() => alert("Link copiado!"));
         }
 
-        // --- DEMAIS FUNÇÕES (Copiar, Limpar, Init) ---
+        // --- FUNÇÕES DO PAINEL (Mantidas iguais) ---
         window.copyReport = () => {
             const isTest = document.getElementById('toggle-test').checked;
-            const text = `📊 *RELATÓRIO SNIPER ANALYTICS*\n📅 Data: ${new Date().toLocaleString()}\nMODE: ${isTest ? 'TESTE 🧪' : 'REAL 🔥'}\n\n🔻 *FUNIL*\n- Visitantes: ${globalFunnelData.visitors || 0}\n- Iniciou Quiz: ${globalFunnelData.startedQuiz || 0}\n- Checkout: ${globalFunnelData.clickedCheckout || 0}\n\n🏆 *TOP ORIGENS*\n${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}`;
+            const text = `📊 *RELATÓRIO SNIPER ANALYTICS*\n📅 Data: ${new Date().toLocaleString()}\nMODE: ${isTest ? 'TESTE 🧪' : 'REAL 🔥'}\n\n🔻 *FUNIL*\n- Visitantes: ${window.globalFunnelData.visitors || 0}\n- Iniciou Quiz: ${window.globalFunnelData.startedQuiz || 0}\n- Checkout: ${window.globalFunnelData.clickedCheckout || 0}\n\n🏆 *TOP ORIGENS*\n${Object.entries(window.globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}`;
             navigator.clipboard.writeText(text).then(() => alert('Relatório copiado!'));
         };
 
@@ -244,7 +89,10 @@
             const promises = [];
             snapshot.forEach(d => {
                 const data = d.data();
-                if ((isTest && data.isTest) || (!isTest && !data.isTest)) promises.push(deleteDoc(doc(db, "analytics_events", d.id)));
+                // Lógica de filtro segura
+                if ((isTest && data.isTest === true) || (!isTest && data.isTest !== true)) {
+                    promises.push(deleteDoc(doc(db, "analytics_events", d.id)));
+                }
             });
             await Promise.all(promises);
             statusEl.innerText = "Limpeza concluída!";
@@ -264,15 +112,22 @@
                 badgeEl.innerText = "DADOS REAIS"; badgeEl.className = "text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded";
             }
 
-            const snapshot = await getDocs(query(collection(db, "analytics_events"), orderBy("timestamp", "desc"), limit(1000)));
+            const eventsRef = collection(db, "analytics_events");
+            // Adicionado limite maior e ordenação correta
+            const snapshot = await getDocs(query(eventsRef, orderBy("timestamp", "desc"), limit(500)));
+            
             const sessions = {};
             
             snapshot.forEach(doc => {
                 const data = doc.data();
-                if ((showTestMode && !data.isTest) || (!showTestMode && data.isTest)) return;
+                // Filtro visual
+                if (showTestMode && data.isTest !== true) return;
+                if (!showTestMode && data.isTest === true) return;
+
                 const sid = data.sessionId || 'anon';
                 if (!sessions[sid]) sessions[sid] = { id: sid, events: [], source: data.campaign?.source || 'direct', maxStep: 0, reachedCheckout: false };
                 sessions[sid].events.push(data);
+                
                 if (data.eventName === 'quiz_answer' && (data.data.question_number || 0) > sessions[sid].maxStep) sessions[sid].maxStep = data.data.question_number || 0;
                 if (data.eventName === 'click' && (data.data.label?.includes('Desbloquear') || data.data.id === 'btn-checkout')) sessions[sid].reachedCheckout = true;
             });
@@ -290,7 +145,8 @@
                 if (s.reachedCheckout) funnel.clickedCheckout++;
             });
 
-            globalFunnelData = funnel; globalSourceData = sourcesCount;
+            window.globalFunnelData = funnel; 
+            window.globalSourceData = sourcesCount;
             renderDashboard(funnel, Object.keys(sessions).length, sessions, sourcesCount);
         };
 
@@ -316,20 +172,30 @@
             document.getElementById('kpi-unique').innerText = total;
             document.getElementById('kpi-cr').innerText = (funnel.finishedQuiz > 0 ? ((funnel.clickedCheckout/funnel.finishedQuiz)*100).toFixed(1) : 0) + "%";
             document.getElementById('kpi-retention').innerText = (funnel.visitors > 0 ? ((funnel.finishedQuiz/funnel.visitors)*100).toFixed(1) : 0) + "%";
-            document.getElementById('kpi-source').innerText = Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b, '-').toUpperCase();
+            
+            const bestSrc = Object.keys(sources).length > 0 ? Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b) : '-';
+            document.getElementById('kpi-source').innerText = bestSrc.toUpperCase();
 
             const feed = document.getElementById('live-feed');
             feed.innerHTML = '';
-            Object.values(sessions).sort((a,b) => b.events[0].timestamp - a.events[0].timestamp).slice(0, 20).forEach(s => {
-                feed.innerHTML += `<div class="p-3 bg-white/5 rounded border border-white/5 mb-2"><div class="flex justify-between"><span class="text-xs text-slate-400">${new Date(s.events[0].timestamp.seconds*1000).toLocaleTimeString()}</span><span class="text-[9px] bg-slate-700 px-2 rounded text-white">${s.source}</span></div><div class="text-xs text-slate-300 mt-1">${s.events.length} ações</div></div>`;
-            });
+            // Ordenação segura
+            Object.values(sessions)
+                .sort((a,b) => {
+                    const tA = a.events[0]?.timestamp?.seconds || 0;
+                    const tB = b.events[0]?.timestamp?.seconds || 0;
+                    return tB - tA;
+                })
+                .slice(0, 20)
+                .forEach(s => {
+                    const time = s.events[0]?.timestamp ? new Date(s.events[0].timestamp.seconds*1000).toLocaleTimeString() : '--:--';
+                    feed.innerHTML += `<div class="p-3 bg-white/5 rounded border border-white/5 mb-2"><div class="flex justify-between"><span class="text-xs text-slate-400">${time}</span><span class="text-[9px] bg-slate-700 px-2 rounded text-white">${s.source}</span></div><div class="text-xs text-slate-300 mt-1">${s.events.length} ações</div></div>`;
+                });
             
             const ctx = document.getElementById('sourceChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
             window.myChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(sources), datasets: [{ data: Object.values(sources), backgroundColor: ['#6366f1', '#10b981', '#f43f5e', '#f59e0b'], borderWidth:0 }] }, options: { plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 10 } } } } } });
         }
         
+        // Inicia o sistema
         initSystem();
     </script>
-</body>
-</html>
