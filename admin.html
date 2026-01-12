@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniper Analytics | Núcleo Insight</title>
+    <title>Sniper Analytics | Admin & Tools</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -28,6 +28,16 @@
         /* Toggle Switch */
         .toggle-checkbox:checked { right: 0; border-color: #10b981; }
         .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+
+        /* Impressão PDF Limpa */
+        @media print {
+            body { background-color: white; color: black; }
+            .no-print { display: none !important; }
+            .glass-panel { border: 1px solid #ccc; background: none; color: black; box-shadow: none; }
+            .text-white { color: black !important; }
+            .metric-value { color: black !important; }
+            canvas { max-height: 200px; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen">
@@ -37,11 +47,11 @@
         <header class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-indigo-900/30 pb-4 gap-4">
             <div>
                 <h1 class="text-3xl font-black text-white tracking-tight">SNIPER <span class="text-indigo-500">ANALYTICS</span></h1>
-                <p class="text-xs text-indigo-400 mt-1">Rastreamento de Sessão Única & Funil de Conversão</p>
+                <p class="text-xs text-indigo-400 mt-1">Painel de Controle & Fábrica de Links</p>
             </div>
             
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg border border-slate-700">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2 bg-slate-800/50 p-2 rounded-lg border border-slate-700 no-print">
                     <span class="text-[10px] text-slate-400 uppercase font-bold">Modo Teste</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-test" class="sr-only peer" onchange="initSystem()">
@@ -50,39 +60,46 @@
                 </div>
 
                 <div class="text-right hidden md:block">
-                    <p class="text-[10px] text-slate-500 uppercase">Status do Sistema</p>
+                    <p class="text-[10px] text-slate-500 uppercase">Status</p>
                     <div class="flex items-center gap-2 justify-end">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span id="system-status" class="text-xs text-emerald-400 font-bold">ONLINE (Real)</span>
+                        <span id="system-status" class="text-xs text-emerald-400 font-bold">ONLINE</span>
                     </div>
                 </div>
 
-                <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">
-                    🔄 ATUALIZAR
-                </button>
+                <div class="flex gap-2 no-print">
+                    <button onclick="copyReport()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition" title="Copiar para IA">
+                        📋 COPIAR
+                    </button>
+                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition" title="Salvar PDF">
+                        🖨️ PDF
+                    </button>
+                    <button onclick="initSystem()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-lg shadow-indigo-500/20">
+                        🔄 ATUALIZAR
+                    </button>
+                </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
             <div class="glass-panel p-6">
                 <h2 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
                     <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                    FUNIL DE RETENÇÃO (Sessões Únicas)
+                    FUNIL DE RETENÇÃO
                 </h2>
                 <div id="funnel-container" class="space-y-6">
-                    <div class="text-center text-slate-600 text-xs py-10 loading-pulse">Calculando taxas de conversão...</div>
+                    <div class="text-center text-slate-600 text-xs py-10 loading-pulse">Carregando dados...</div>
                 </div>
             </div>
 
             <div class="space-y-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="glass-panel p-4 border-l-2 border-indigo-500">
-                        <p class="metric-label">Visitantes Únicos</p>
+                        <p class="metric-label">Visitantes</p>
                         <p id="kpi-unique" class="metric-value">0</p>
                     </div>
                     <div class="glass-panel p-4 border-l-2 border-emerald-500">
-                        <p class="metric-label">Taxa Checkout</p>
+                        <p class="metric-label">Conversão ($)</p>
                         <p id="kpi-cr" class="metric-value">0%</p>
                     </div>
                     <div class="glass-panel p-4 border-l-2 border-pink-500">
@@ -90,31 +107,79 @@
                         <p id="kpi-retention" class="metric-value">0%</p>
                     </div>
                     <div class="glass-panel p-4 border-l-2 border-amber-500">
-                        <p class="metric-label">Lead Quente (UTM)</p>
+                        <p class="metric-label">Melhor Canal</p>
                         <p id="kpi-source" class="text-lg font-bold text-white truncate">...</p>
                     </div>
                 </div>
 
                 <div class="glass-panel p-4">
-                    <h3 class="text-xs font-bold text-white mb-4">ORIGEM DO TRÁFEGO (Sessões)</h3>
+                    <h3 class="text-xs font-bold text-white mb-4">ORIGEM DO TRÁFEGO</h3>
                     <canvas id="sourceChart" height="150"></canvas>
                 </div>
             </div>
 
             <div class="glass-panel p-0 overflow-hidden flex flex-col h-[600px]">
                 <div class="p-4 border-b border-white/5 bg-slate-900/50 flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-white">📡 FEED DE SESSÕES</h3>
-                    <span id="feed-badge" class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">DADOS REAIS</span>
+                    <h3 class="text-xs font-bold text-white">📡 FEED AO VIVO</h3>
+                    <span id="feed-badge" class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">REAL</span>
                 </div>
                 <div class="overflow-y-auto p-4 space-y-3" id="live-feed"></div>
             </div>
-
         </div>
+
+        <div class="glass-panel p-6 mb-10 no-print border border-emerald-500/30">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                🏭 Fábrica de Links Rastreados
+                <span class="text-[10px] bg-emerald-900 text-emerald-400 px-2 py-1 rounded border border-emerald-500/50">NOVO</span>
+            </h2>
+            <p class="text-xs text-slate-400 mb-6">Crie links curtos (arquivos HTML) para rastrear WhatsApp, Bio e Anúncios.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Nome do Arquivo (Curto)</label>
+                    <div class="flex">
+                        <span class="bg-slate-700 text-slate-300 p-2 text-xs rounded-l border border-slate-600">/</span>
+                        <input type="text" id="linkName" placeholder="ex: zap" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 focus:border-emerald-500 outline-none">
+                        <span class="bg-slate-700 text-slate-300 p-2 text-xs rounded-r border border-slate-600">.html</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-500 mb-1 uppercase">Origem (Source)</label>
+                    <input type="text" id="utmSource" value="whatsapp" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 rounded focus:border-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-500 mb-1 uppercase">Campanha</label>
+                    <input type="text" id="utmCampaign" placeholder="palhaco" class="w-full bg-slate-900 border border-slate-600 text-white text-xs p-2 rounded focus:border-emerald-500 outline-none">
+                </div>
+            </div>
+
+            <button onclick="generateLinkCode()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs transition mb-4">
+                ✨ GERAR CÓDIGO DO ARQUIVO
+            </button>
+
+            <div id="codeResult" class="hidden">
+                <textarea id="htmlOutput" class="w-full h-24 bg-black/50 text-emerald-400 font-mono text-[10px] p-3 rounded border border-slate-700 mb-2" readonly></textarea>
+                <p class="text-[10px] text-slate-400">1. Copie o código acima. 2. Crie um arquivo no GitHub com o nome que você escolheu. 3. Seu link será: <strong id="finalUrlPreview" class="text-white">...</strong></p>
+            </div>
+        </div>
+
+        <div class="border border-red-900/30 bg-red-950/10 rounded-xl p-6 no-print">
+            <h3 class="text-red-500 font-bold text-sm mb-2 uppercase">⚠️ Zona de Perigo (Gerenciamento de Dados)</h3>
+            <p class="text-xs text-slate-400 mb-4">Ações aqui são irreversíveis. O botão abaixo apaga os dados baseados no modo atual (Teste ou Real).</p>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="clearDatabase()" class="bg-red-900/50 hover:bg-red-800 text-red-200 border border-red-800 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2">
+                    🗑️ APAGAR TODOS OS DADOS DO MODO ATUAL
+                </button>
+                <p id="delete-status" class="text-xs text-slate-500 italic"></p>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCFnz5Wis_b3CGGblNn-bfUjqEgTOlqGNE",
@@ -129,19 +194,100 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let myChart = null;
+        let globalFunnelData = {}; // Para copiar
+        let globalSourceData = {}; // Para copiar
 
+        // --- SISTEMA DE GERAÇÃO DE LINKS (Encurtador) ---
+        window.generateLinkCode = () => {
+            const name = document.getElementById('linkName').value || 'link';
+            const source = document.getElementById('utmSource').value || 'direct';
+            const campaign = document.getElementById('utmCampaign').value || 'none';
+            const medium = 'chat'; // Padrão
+            
+            const targetUrl = `https://nucleoinsight.github.io/nucleo-insight/?utm_source=${source}&utm_medium=${medium}&utm_campaign=${campaign}&utm_content=${name}`;
+            
+            const code = `<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=${targetUrl}">
+<script>window.location.href = "${targetUrl}";<\/script>
+<title>Redirecionando...</title></head><body>Aguarde...</body></html>`;
+
+            document.getElementById('htmlOutput').value = code;
+            document.getElementById('finalUrlPreview').innerText = `https://nucleoinsight.github.io/nucleo-insight/${name}.html`;
+            document.getElementById('codeResult').classList.remove('hidden');
+        };
+
+        // --- SISTEMA DE CÓPIA DE RELATÓRIO ---
+        window.copyReport = () => {
+            const isTest = document.getElementById('toggle-test').checked;
+            const text = `
+📊 *RELATÓRIO SNIPER ANALYTICS*
+📅 Data: ${new Date().toLocaleString()}
+MODE: ${isTest ? 'TESTE 🧪' : 'REAL 🔥'}
+
+🔻 *FUNIL DE CONVERSÃO*
+- Visitantes: ${globalFunnelData.visitors || 0}
+- Iniciou Quiz: ${globalFunnelData.startedQuiz || 0}
+- Engajados: ${globalFunnelData.midQuiz || 0}
+- Checkout (Clique): ${globalFunnelData.clickedCheckout || 0}
+
+📈 *TAXAS*
+- Retenção Quiz: ${document.getElementById('kpi-retention').innerText}
+- Conversão Venda: ${document.getElementById('kpi-cr').innerText}
+
+🏆 *TOP ORIGENS*
+${Object.entries(globalSourceData).map(([k,v]) => `- ${k}: ${v}`).join('\n')}
+            `;
+            navigator.clipboard.writeText(text).then(() => alert('Relatório copiado! Cole no chat da IA.'));
+        };
+
+        // --- SISTEMA DE LIMPEZA DE DADOS ---
+        window.clearDatabase = async () => {
+            const isTest = document.getElementById('toggle-test').checked;
+            const modeName = isTest ? "MODO TESTE" : "MODO REAL";
+            
+            if(!confirm(`⚠️ PERIGO!\n\nVocê tem certeza que deseja APAGAR TODOS os dados do ${modeName}?\n\nIsso não pode ser desfeito.`)) return;
+
+            const statusEl = document.getElementById('delete-status');
+            statusEl.innerText = "Apagando documentos... aguarde.";
+            
+            const eventsRef = collection(db, "analytics_events");
+            const snapshot = await getDocs(eventsRef);
+            
+            let count = 0;
+            const deletePromises = [];
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                // Lógica de filtro idêntica ao initSystem
+                const docIsTest = data.isTest === true;
+                
+                // Se estamos no modo teste, apaga só o que é teste
+                // Se estamos no modo real, apaga só o que NÃO é teste
+                if ((isTest && docIsTest) || (!isTest && !docIsTest)) {
+                    deletePromises.push(deleteDoc(doc(db, "analytics_events", docSnap.id)));
+                    count++;
+                }
+            });
+
+            await Promise.all(deletePromises);
+            
+            statusEl.innerText = `Sucesso! ${count} registros apagados do ${modeName}.`;
+            setTimeout(() => initSystem(), 1500); // Recarrega
+        };
+
+        // --- SISTEMA PRINCIPAL DE DADOS ---
         window.initSystem = async () => {
-            // VERIFICA O BOTÃO DE TESTE
             const showTestMode = document.getElementById('toggle-test').checked;
             
-            // ATUALIZA VISUAL DO STATUS
+            // Atualiza UI
             const statusEl = document.getElementById('system-status');
             const badgeEl = document.getElementById('feed-badge');
             
             if(showTestMode) {
                 statusEl.innerText = "MODO TESTE (SandBox)";
                 statusEl.className = "text-xs text-amber-400 font-bold";
-                badgeEl.innerText = "EXIBINDO TESTES";
+                badgeEl.innerText = "TESTES";
                 badgeEl.className = "text-[9px] bg-amber-500/20 text-amber-400 px-2 py-1 rounded";
             } else {
                 statusEl.innerText = "ONLINE (Real)";
@@ -151,23 +297,18 @@
             }
 
             const eventsRef = collection(db, "analytics_events");
-            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(600));
+            const q = query(eventsRef, orderBy("timestamp", "desc"), limit(1000));
             const snapshot = await getDocs(q);
 
             const sessions = {};
             
             snapshot.forEach(doc => {
                 const data = doc.data();
-                
-                // === FILTRO INTELIGENTE ===
-                // Se o botão está ativado (showTestMode = true), SÓ MOSTRA o que tem isTest=true
-                // Se o botão está desativado (showTestMode = false), SÓ MOSTRA o que NÃO tem isTest (ou isTest=false)
-                
                 const isTestData = data.isTest === true;
                 
-                if (showTestMode && !isTestData) return; // Quer teste, mas dado é real -> PULA
-                if (!showTestMode && isTestData) return; // Quer real, mas dado é teste -> PULA
-                // ============================
+                // Filtro Mestre
+                if (showTestMode && !isTestData) return; 
+                if (!showTestMode && isTestData) return; 
 
                 const sid = data.sessionId || 'anonymous'; 
                 
@@ -177,7 +318,6 @@
                         startTime: data.timestamp,
                         events: [],
                         source: data.campaign?.source || 'direct',
-                        device: data.device?.platform || 'Mobile',
                         maxStep: 0,
                         reachedCheckout: false
                     };
@@ -188,7 +328,7 @@
                     const qNum = data.data.question_number || 0;
                     if (qNum > sessions[sid].maxStep) sessions[sid].maxStep = qNum;
                 }
-                if (data.eventName === 'click' && (data.data.label.includes('Desbloquear') || data.data.id === 'btn-checkout')) {
+                if (data.eventName === 'click' && (data.data.label?.includes('Desbloquear') || data.data.id === 'btn-checkout')) {
                     sessions[sid].reachedCheckout = true;
                 }
             });
@@ -200,12 +340,18 @@
             Object.values(sessions).forEach(s => {
                 funnel.visitors++;
                 sourcesCount[s.source] = (sourcesCount[s.source] || 0) + 1;
-                const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer');
-                if (hasQuizEvent) funnel.startedQuiz++;
+                const hasQuizEvent = s.events.some(e => e.eventName === 'quiz_answer'); // Melhor detecção
+                
+                // Correção de lógica: Se engajou ou finalizou, obrigatoriamente iniciou
+                if (hasQuizEvent || s.maxStep > 0) funnel.startedQuiz++;
                 if (s.maxStep >= 5) funnel.midQuiz++;
                 if (s.maxStep >= 9) funnel.finishedQuiz++; 
                 if (s.reachedCheckout) funnel.clickedCheckout++;
             });
+
+            // Salva globais para o botão Copiar
+            globalFunnelData = funnel;
+            globalSourceData = sourcesCount;
 
             renderDashboard(funnel, totalSessions, sessions, sourcesCount);
         };
@@ -225,8 +371,7 @@
                 const prevCount = index === 0 ? step.count : steps[index-1].count;
                 const conversion = prevCount > 0 ? ((step.count / prevCount) * 100).toFixed(1) : 0;
                 const totalConv = total > 0 ? ((step.count / total) * 100).toFixed(1) : 0;
-                const width = Math.max(totalConv, 1); 
-
+                
                 html += `
                 <div class="funnel-step active">
                     <div class="flex justify-between items-end">
@@ -235,7 +380,7 @@
                             <p class="text-xl font-black ${step.color}">${step.count}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xs font-bold text-slate-400">${conversion}% <span class="text-[9px] font-normal opacity-50">passo anterior</span></p>
+                            <p class="text-xs font-bold text-slate-400">${conversion}% <span class="text-[9px] font-normal opacity-50">do anterior</span></p>
                         </div>
                     </div>
                     <div class="progress-bar-bg">
@@ -249,11 +394,18 @@
             const checkoutRate = funnel.finishedQuiz > 0 ? ((funnel.clickedCheckout / funnel.finishedQuiz) * 100).toFixed(1) : 0;
             document.getElementById('kpi-cr').innerText = checkoutRate + "%";
             document.getElementById('kpi-cr').className = `metric-value ${checkoutRate > 15 ? 'text-emerald-400' : 'text-red-400'}`;
+            
             const retention = funnel.visitors > 0 ? ((funnel.finishedQuiz / funnel.visitors) * 100).toFixed(1) : 0;
             document.getElementById('kpi-retention').innerText = retention + "%";
+            
             const bestSource = Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b, '-');
             document.getElementById('kpi-source').innerText = bestSource.toUpperCase();
 
+            renderFeed(sessions);
+            renderChart(sources);
+        }
+
+        function renderFeed(sessions) {
             const feed = document.getElementById('live-feed');
             feed.innerHTML = '';
             
@@ -261,7 +413,7 @@
                 const timeA = a.events[0]?.timestamp || 0;
                 const timeB = b.events[0]?.timestamp || 0;
                 return timeB - timeA;
-            }).slice(0, 20); 
+            }).slice(0, 30); 
 
             if(sortedSessions.length === 0) {
                 feed.innerHTML = '<div class="text-center text-slate-600 text-xs py-10">Nenhuma sessão encontrada neste modo.</div>';
@@ -285,12 +437,10 @@
                         <span class="text-slate-500">${s.events.length} ações</span>
                     </div>
                     <div class="mt-2 text-[10px] text-slate-500 truncate">
-                        Ultima ação: ${lastAction}
+                        Ação: ${lastAction}
                     </div>
                 </div>`;
             });
-
-            renderChart(sources);
         }
 
         function renderChart(data) {
@@ -302,7 +452,7 @@
                     labels: Object.keys(data),
                     datasets: [{
                         data: Object.values(data),
-                        backgroundColor: ['#6366f1', '#10b981', '#f43f5e', '#f59e0b'],
+                        backgroundColor: ['#6366f1', '#10b981', '#f43f5e', '#f59e0b', '#8b5cf6'],
                         borderWidth: 0
                     }]
                 },
