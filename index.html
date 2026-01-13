@@ -43,7 +43,6 @@
         
         #save-app-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; padding: 12px; display: flex; justify-content: space-between; items-center; z-index: 50; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
         
-        /* Modal de Saída */
         #exit-modal { backdrop-filter: blur(5px); }
     </style>
 </head>
@@ -92,7 +91,7 @@
 
             <div class="mb-6 border-l-4 border-red-600 bg-red-950/30 pl-4 py-3 rounded-r">
                 <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">⚠️ SEJA HONESTA</p>
-                <p class="text-xs text-red-200 leading-relaxed font-medium">Detectamos sinais de <strong>Manipulação Emocional</strong>. Responda com honestidade.</p>
+                <p class="text-xs text-red-200 leading-relaxed font-medium">Detectamos um <strong>Padrão de Afastamento</strong>. Responda com honestidade para o algoritmo funcionar.</p>
             </div>
 
             <h2 id="question-text" class="text-xl font-bold mb-6 text-white leading-snug min-h-[60px]">...</h2>
@@ -121,13 +120,22 @@
                         <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                         <p class="text-[9px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira: <span id="countdown-timer" class="font-mono text-white">10:00</span></p>
                     </div>
-                    <p class="text-[11px] text-slate-300 mb-4">O padrão foi identificado. Aplique o antídoto neural agora para <strong>quebrar o gelo hoje</strong>.</p>
                     
+                    <p class="text-[11px] text-slate-300 mb-4">O padrão foi identificado. Aplique a <strong>Técnica de Reversão</strong> agora para quebrar o gelo hoje.</p>
+                    
+                    <ul class="text-[10px] text-slate-300 space-y-1 mb-4 text-left pl-4 border-l border-white/10">
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> PDF Prático (Guia Passo a Passo)</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Scripts Prontos para Copiar e Colar</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Acesso Imediato e Vitalício</li>
+                    </ul>
+
                     <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-[0.98] pulse-soft">
                         <span>🔓 DESBLOQUEAR PROTOCOLO 24H</span>
                     </a>
 
                     <p class="text-[9px] text-slate-500 mt-3">De <span class="line-through">R$ 97</span> por <strong class="text-emerald-400">R$ 27</strong></p>
+                    
+                    <p class="text-[9px] text-slate-600 mt-2 italic">"Esse método já ajudou mais de 800 mulheres a retomarem o controle."</p>
                 </div>
                 
                 <button onclick="document.getElementById('btn-login-manual').click()" class="text-[9px] text-slate-600 uppercase tracking-widest hover:text-slate-400">
@@ -224,14 +232,13 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === VIGIA DO LOGIN (A CORREÇÃO MÁGICA) ===
-        // Este código fica olhando para a Área de Membros. Se ela aparecer, ele OBRIGA a Capa a sumir.
+        // === VIGIA DO LOGIN (CORREÇÃO DE CONFLITO) ===
+        // Monitora se o login foi feito e esconde a capa
         const targetNode = document.getElementById('protocolo');
         const observer = new MutationObserver((mutationsList) => {
             for(const mutation of mutationsList) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     if (!targetNode.classList.contains('hidden')) {
-                        // Se o protocolo apareceu, ESCONDA TUDO DO FUNIL
                         document.getElementById('quiz-flow').classList.add('hidden');
                     }
                 }
@@ -239,7 +246,7 @@
         });
         observer.observe(targetNode, { attributes: true });
 
-        // === BACK REDIRECT (POPUP AO VOLTAR) ===
+        // === BACK REDIRECT ===
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
             history.pushState(null, null, location.href);
@@ -253,7 +260,7 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // === CONTEÚDO DO PRODUTO (RESTAURADO) ===
+        // === CONTEÚDO DO PRODUTO ===
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
@@ -402,9 +409,15 @@
             const desc = document.getElementById('result-description');
             
             title.innerText = "A Dependência Invisível";
+            // TEXTO SUAVIZADO PARA META
             desc.innerHTML = "Você tem o perfil de <strong>Doadora Excessiva</strong>. Isso significa que você entrega tanta certeza para ele, que o cérebro dele perde o interesse. O protocolo vai reverter isso instalando a dúvida.";
 
             if(window.fbq) fbq('track', 'Lead'); 
+            
+            // TRACKING: VIEW OFFER (IMPORTANTE)
+            if(window.customTrack) window.customTrack("view_offer", { offer: "protocolo_24h", price: 27 });
+            if(window.fbq) fbq('trackCustom', 'ViewOffer');
+
             startTimer();
         }
 
