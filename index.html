@@ -38,11 +38,13 @@
         .hidden { display: none !important; }
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         
-        /* Estilos da Área de Membros e Rodapé */
         .module-btn { text-align: left; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; transition: all 0.2s; }
         .module-btn:hover { border-color: #8b5cf6; background: #2d3748; }
         
         #save-app-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; padding: 12px; display: flex; justify-content: space-between; items-center; z-index: 50; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
+        
+        /* Modal de Saída (Back Redirect) */
+        #exit-modal { backdrop-filter: blur(8px); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-tech pb-20 text-slate-200 font-sans antialiased">
@@ -73,7 +75,7 @@
             <p class="text-[9px] text-slate-600 mt-4">🔒 Seus dados estão 100% protegidos e anônimos.</p>
             
             <button id="btn-login-manual" class="mt-6 text-[10px] text-slate-500 hover:text-slate-300 underline uppercase tracking-widest">
-                Já sou aluna? Acessar Material
+                Já sou aluna? Entrar
             </button>
         </div>
 
@@ -195,6 +197,16 @@
         </div>
     </div>
 
+    <div id="exit-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4">
+        <div class="bg-red-950/90 border-2 border-red-500 rounded-2xl p-6 max-w-sm text-center shadow-[0_0_50px_rgba(220,38,38,0.5)]">
+            <h2 class="text-2xl font-black text-white mb-2 uppercase">⛔ ESPERE!</h2>
+            <p class="text-sm text-slate-200 mb-4">Se você sair agora, seu diagnóstico será perdido para sempre e o preço voltará ao normal.</p>
+            <button onclick="document.getElementById('exit-modal').classList.add('hidden')" class="w-full bg-white text-red-900 font-bold py-3 rounded-lg uppercase tracking-widest hover:bg-slate-200">
+                QUERO MEU ACESSO
+            </button>
+        </div>
+    </div>
+
     <div id="save-app-bar">
         <div class="flex items-center gap-3">
             <span class="text-xl">📲</span>
@@ -212,6 +224,14 @@
     <script type="module" src="./enhancements.js"></script>
 
     <script>
+        // === SCRIPT DE BACK REDIRECT (NOVO) ===
+        // Empurra um estado no histórico para quando a pessoa voltar, cair no modal
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.pushState(null, null, location.href);
+            document.getElementById('exit-modal').classList.remove('hidden');
+        };
+
         // === LÓGICA DO SALVAR APP (WHATSAPP) ===
         function salvarNoZap() {
             const link = window.location.href;
@@ -220,7 +240,7 @@
             window.open(url, '_blank');
         }
 
-        // === CONTEÚDO RESTAURADO DO PRODUTO ===
+        // === CONTEÚDO DO PRODUTO ===
         function showContent(module) {
             const area = document.getElementById('main-content-area');
             area.innerHTML = ''; 
@@ -231,13 +251,11 @@
                 <div class="fade-in">
                     <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 01: Postura</span>
                     <h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Escassez</h3>
-                    
                     <div class="space-y-4">
                         <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl">
                             <strong class="text-red-400 text-[10px] block mb-1 uppercase">⛔ ERRO COMUM (Pare Agora):</strong>
                             <p class="text-slate-300 text-xs">"Ficar online assim que ele manda mensagem ou visualizar os stories dele nos primeiros 5 minutos."</p>
                         </div>
-                        
                         <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
                             <strong class="text-emerald-400 text-[10px] block mb-1 uppercase">✅ AÇÃO RECOMENDADA:</strong>
                             <p class="text-slate-300 text-xs leading-relaxed">
@@ -255,18 +273,12 @@
                 <div class="fade-in">
                     <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
                     <h3 class="text-xl font-bold text-white mt-2 mb-4">A Técnica do Vácuo (Quebra de Padrão)</h3>
-                    
                     <p class="text-slate-400 text-xs mb-4">Use este script APENAS se ele estiver frio ou sumido há mais de 24h.</p>
-                    
                     <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative overflow-hidden group">
                         <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">⚡ GATILHO DE ALTO IMPACTO</div>
                         <p class="text-white text-sm font-serif italic mb-6 mt-2">"Nossa... acabei de ver uma coisa aqui que me lembrou muito você... mas pensando bem, melhor nem te contar kkk deixa pra lá."</p>
-                        
-                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">
-                            COPIAR SCRIPT PARA O WHATSAPP
-                        </button>
+                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">COPIAR SCRIPT PARA O WHATSAPP</button>
                     </div>
-                    
                     <p class="text-slate-500 text-[10px] mt-4 text-center">⚠️ Atenção: Quando ele perguntar "O que foi?", NÃO responda por pelo menos 3 horas.</p>
                 </div>`;
             } 
@@ -315,7 +327,6 @@
             document.getElementById('cover-screen').classList.add('hidden');
             document.getElementById('quiz-container').classList.remove('hidden');
             
-            // TRACKING NOVO MANTIDO
             if(window.customTrack) window.customTrack("start_quiz");
             if(window.fbq) fbq('trackCustom', 'StartQuiz');
             
@@ -327,7 +338,7 @@
             if(bar) bar.style.width = `${((idx + 1) / realQuestions.length) * 100}%`;
             
             if(idx >= realQuestions.length) {
-                // HOOK ESSENCIAL RESTAURADO: Avisa o enhancements.js que acabou
+                // HOOK ESSENCIAL: Mantido para o enhancements.js
                 if(window.finishQuizFlow) window.finishQuizFlow(window.userAnswers);
                 
                 document.getElementById('quiz-container').classList.add('hidden');
@@ -398,7 +409,6 @@
             }, 1000);
         }
 
-        // TRAVA DE DUPLO CLIQUE + RASTREAMENTO CHECKOUT
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('btn-checkout');
             let checkoutTracked = false;
