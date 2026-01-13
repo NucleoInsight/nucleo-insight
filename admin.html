@@ -342,16 +342,62 @@
             const bestSrc = Object.keys(sources).length > 0 ? Object.keys(sources).reduce((a, b) => sources[a] > sources[b] ? a : b) : '-';
             document.getElementById('kpi-source').innerText = bestSrc.toUpperCase();
 
+            // RENDER FEED COM BOTÃO EXPANDIR
             const feed = document.getElementById('live-feed');
             feed.innerHTML = '';
-            Object.values(sessions).sort((a,b) => {
-                const tA = a.events[0]?.timestamp?.seconds || 0;
-                const tB = b.events[0]?.timestamp?.seconds || 0;
-                return tB - tA;
-            }).slice(0, 20).forEach(s => {
-                const time = s.events[0]?.timestamp ? new Date(s.events[0].timestamp.seconds*1000).toLocaleTimeString() : '--:--';
-                feed.innerHTML += `<div class="p-3 bg-white/5 rounded border border-white/5 mb-2"><div class="flex justify-between"><span class="text-xs text-slate-400">${time}</span><span class="text-[9px] bg-slate-700 px-2 rounded text-white">${s.source}</span></div><div class="text-xs text-slate-300 mt-1">${s.events.length} ações</div></div>`;
-            });
+            
+            Object.values(sessions)
+                .sort((a,b) => {
+                    const tA = a.events[0]?.timestamp?.seconds || 0;
+                    const tB = b.events[0]?.timestamp?.seconds || 0;
+                    return tB - tA;
+                })
+                .slice(0, 30)
+                .forEach(s => {
+                    const time = s.events[0]?.timestamp ? new Date(s.events[0].timestamp.seconds*1000).toLocaleTimeString() : '--:--';
+                    const cardId = 'session-' + s.id;
+                    
+                    // Constrói os detalhes (eventos)
+                    let detailsHtml = '';
+                    s.events.sort((a,b) => b.timestamp - a.timestamp).forEach(e => {
+                        const eTime = new Date(e.timestamp.seconds*1000).toLocaleTimeString();
+                        let icon = '🔹';
+                        if(e.eventName === 'click') icon = '👆';
+                        if(e.eventName === 'quiz_answer') icon = '💬';
+                        if(e.eventName === 'page_view') icon = '👀';
+                        
+                        let label = e.eventName;
+                        if(e.data?.label) label += ` (${e.data.label})`;
+                        if(e.data?.answer) label += ` ("${e.data.answer}")`;
+
+                        detailsHtml += `
+                            <div class="flex justify-between items-center text-[10px] text-slate-400 py-1 border-b border-white/5 last:border-0">
+                                <span class="truncate w-3/4">${icon} ${label}</span>
+                                <span class="font-mono opacity-50">${eTime}</span>
+                            </div>`;
+                    });
+
+                    // Renderiza o Card
+                    feed.innerHTML += `
+                    <div class="p-3 bg-white/5 rounded border border-white/5 mb-2 hover:border-indigo-500/30 transition">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('${cardId}').classList.toggle('hidden')">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono text-slate-400">${time}</span>
+                                <span class="text-[9px] bg-slate-700 px-2 py-0.5 rounded text-white border border-slate-600">${s.source}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-300 font-bold">${s.events.length} ações</span>
+                                <button class="text-[10px] text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 bg-indigo-500/10 px-2 py-1 rounded">
+                                    EXPANDIR ▼
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="${cardId}" class="hidden mt-3 pl-2 border-l-2 border-white/10 space-y-1 bg-black/20 p-2 rounded">
+                            ${detailsHtml}
+                        </div>
+                    </div>`;
+                });
             
             const ctx = document.getElementById('sourceChart').getContext('2d');
             if(window.myChart) window.myChart.destroy();
