@@ -37,11 +37,6 @@
         @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
         .hidden { display: none !important; }
         .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
-        
-        /* Estilo da Área de Membros (Visual Tech) */
-        .module-btn { text-align: left; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; transition: all 0.2s; }
-        .module-btn:hover { border-color: #8b5cf6; background: #2d3748; }
-        .module-btn.active { border-color: #8b5cf6; background: #2d3748; box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-tech pb-10 text-slate-200 font-sans antialiased">
@@ -70,17 +65,13 @@
             </button>
             
             <p class="text-[9px] text-slate-600 mt-4">🔒 Seus dados estão 100% protegidos e anônimos.</p>
-            
-            <button onclick="openMembersArea()" class="mt-6 text-[10px] text-slate-500 hover:text-slate-300 underline uppercase tracking-widest">
-                Já sou aluna? Acessar Material
-            </button>
         </div>
 
         <div id="quiz-container" class="hidden w-full max-w-md solid-card p-6 rounded-2xl fade-in relative overflow-hidden">
             <div class="mb-5 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                    <span class="text-[10px] font-bold tracking-[0.15em] text-red-400 uppercase">Análise em Andamento</span>
+                    <span class="text-[10px] font-bold tracking-[0.15em] text-red-400 uppercase">Sistema Online</span>
                 </div>
                 <div class="h-1 w-20 bg-slate-700 rounded-full overflow-hidden">
                     <div id="progress-bar" class="h-full bg-red-500 transition-all duration-300" style="width: 10%"></div>
@@ -88,8 +79,8 @@
             </div>
 
             <div class="mb-6 border-l-4 border-red-600 bg-red-950/30 pl-4 py-3 rounded-r">
-                <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">⚠️ SEJA HONESTA</p>
-                <p class="text-xs text-red-200 leading-relaxed font-medium">Para o algoritmo detectar o padrão, precisamos da verdade.</p>
+                <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">⚠️ ALERTA DE PADRÃO</p>
+                <p class="text-xs text-red-200 leading-relaxed font-medium">Detectamos sinais de <strong>Manipulação Emocional</strong>. Responda com honestidade.</p>
             </div>
 
             <h2 id="question-text" class="text-xl font-bold mb-6 text-white leading-snug min-h-[60px]">...</h2>
@@ -102,8 +93,8 @@
                 <div class="absolute inset-0 rounded-full border-4 border-t-red-500 border-r-transparent border-b-red-500 border-l-transparent animate-spin"></div>
                 <div class="absolute inset-0 flex items-center justify-center font-bold text-red-400 text-xs" id="process-pct">0%</div>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Processando Padrões...</h3>
-            <p id="process-text" class="text-xs text-slate-400">Cruzando dados comportamentais...</p>
+            <h3 class="text-lg font-bold text-white mb-2">Processando...</h3>
+            <p id="process-text" class="text-xs text-slate-400">Analisando padrões comportamentais...</p>
         </div>
 
         <div id="result-container" class="hidden w-full max-w-md solid-card p-0 rounded-2xl text-center fade-in overflow-hidden border-t border-purple-500/30">
@@ -126,17 +117,20 @@
 
                     <p class="text-[9px] text-slate-500 mt-3">De <span class="line-through">R$ 97</span> por <strong class="text-emerald-400">R$ 27</strong></p>
                 </div>
-                <button onclick="openMembersArea()" class="text-[9px] text-slate-600 uppercase tracking-widest hover:text-slate-400">Já sou aluna? Acessar</button>
+                
+                <button id="btn-login-manual" class="text-[9px] text-slate-600 uppercase tracking-widest hover:text-slate-400">
+                    Já sou aluno? Entrar
+                </button>
             </div>
         </div>
     </div>
 
-    <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto min-h-screen">
+    <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto">
         
         <div class="flex justify-between items-start mb-6">
             <div class="text-left">
                 <h2 class="text-2xl font-bold text-white leading-none">Portal de Resgate</h2>
-                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura • Acesso Vitalício</p>
+                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura</p>
             </div>
             <button onclick="window.location.reload()" class="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase border border-red-900/30 bg-red-950/20 px-3 py-2 rounded-lg transition flex items-center gap-1">
                 Sair ✕
@@ -146,15 +140,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             <div class="space-y-4">
                 <div class="solid-card p-5 rounded-2xl">
-                    <h3 class="text-white font-bold mb-4 text-[10px] uppercase tracking-widest">Status da Aluna</h3>
+                    <h3 class="text-white font-bold mb-4 text-[10px] uppercase tracking-widest">Status</h3>
                     <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Progresso</span><span class="text-purple-400">15%</span></div>
+                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Obsessão</span><span class="text-purple-400">15%</span></div>
                             <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-purple-500 w-[15%]"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Risco</span><span class="text-emerald-400">Controlado</span></div>
-                            <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-emerald-500 w-[100%]"></div></div>
+                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Risco</span><span class="text-red-400">Alto</span></div>
+                            <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-red-500 w-[85%]"></div></div>
                         </div>
                     </div>
                 </div>
@@ -162,15 +156,15 @@
                 <div class="solid-card p-4 rounded-2xl">
                     <h4 class="text-slate-400 text-[9px] font-bold mb-3 uppercase tracking-widest">Módulos</h4>
                     <div class="space-y-2">
-                        <button onclick="showContent(1)" class="w-full module-btn group">
-                            <p class="text-[9px] text-purple-400 font-bold group-hover:text-white">MÓDULO 01</p>
-                            <p class="text-xs text-white group-hover:text-purple-300">O Despertar da Escassez</p>
+                        <button onclick="showContent(1)" class="w-full text-left p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition">
+                            <p class="text-[9px] text-purple-400 font-bold">MÓDULO 01</p>
+                            <p class="text-xs text-white">O Despertar da Escassez</p>
                         </button>
-                        <button onclick="showContent(2)" class="w-full module-btn group">
-                            <p class="text-[9px] text-purple-400 font-bold group-hover:text-white">MÓDULO 02</p>
-                            <p class="text-xs text-white group-hover:text-purple-300">A Técnica do Vácuo</p>
+                        <button onclick="showContent(2)" class="w-full text-left p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition">
+                            <p class="text-[9px] text-purple-400 font-bold">MÓDULO 02</p>
+                            <p class="text-xs text-white">A Técnica do Vácuo</p>
                         </button>
-                        <button onclick="showContent(3)" class="w-full module-btn border-pink-500/30 bg-pink-900/10 hover:bg-pink-900/20">
+                        <button onclick="showContent(3)" class="w-full text-left p-3 bg-pink-900/10 rounded-lg border border-pink-500/20 hover:border-pink-500/50 transition">
                             <p class="text-[9px] text-pink-400 font-bold">BÔNUS</p>
                             <p class="text-xs text-white">Gatilhos Mentais</p>
                         </button>
@@ -182,7 +176,7 @@
                 <div class="solid-card p-6 rounded-2xl min-h-[400px] flex flex-col justify-center" id="main-content-area">
                     <div id="content-placeholder" class="text-center">
                         <div class="p-4 bg-black/20 rounded-xl inline-block">
-                             <p class="text-purple-300 font-bold text-xs animate-pulse">👈 Selecione uma lição ao lado para começar</p>
+                             <p class="text-purple-300 font-bold text-xs animate-pulse">Selecione uma lição...</p>
                         </div>
                     </div>
                 </div>
@@ -192,34 +186,27 @@
     </div>
 
     <script type="module" src="./tracker.js"></script>
+    <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === FUNÇÃO DE "LOGIN" (Troca de Tela) ===
-        window.openMembersArea = function() {
-            // Esconde o funil de vendas
-            document.getElementById('quiz-flow').classList.add('hidden');
-            // Mostra a área de membros
-            document.getElementById('protocolo').classList.remove('hidden');
-            window.scrollTo(0,0);
-            
-            if(window.customTrack) window.customTrack("page_view", { label: "Area_Membros" });
-        }
-
-        // === CONTEÚDO DO PRODUTO (Seu código original melhorado) ===
-        window.showContent = function(module) {
+        // === CONTEÚDO RESTAURADO DO PRODUTO ===
+        function showContent(module) {
             const area = document.getElementById('main-content-area');
+            area.innerHTML = ''; 
             let html = '';
             
             if(module === 1) {
                 html = `
-                <div class="fade-in text-left">
+                <div class="fade-in">
                     <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 01: Postura</span>
                     <h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Escassez</h3>
+                    
                     <div class="space-y-4">
                         <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl">
                             <strong class="text-red-400 text-[10px] block mb-1 uppercase">⛔ ERRO COMUM (Pare Agora):</strong>
                             <p class="text-slate-300 text-xs">"Ficar online assim que ele manda mensagem ou visualizar os stories dele nos primeiros 5 minutos."</p>
                         </div>
+                        
                         <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
                             <strong class="text-emerald-400 text-[10px] block mb-1 uppercase">✅ AÇÃO RECOMENDADA:</strong>
                             <p class="text-slate-300 text-xs leading-relaxed">
@@ -234,21 +221,27 @@
             } 
             else if(module === 2) {
                 html = `
-                <div class="fade-in text-left">
+                <div class="fade-in">
                     <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
                     <h3 class="text-xl font-bold text-white mt-2 mb-4">A Técnica do Vácuo (Quebra de Padrão)</h3>
+                    
                     <p class="text-slate-400 text-xs mb-4">Use este script APENAS se ele estiver frio ou sumido há mais de 24h.</p>
+                    
                     <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative overflow-hidden group">
                         <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">⚡ GATILHO DE ALTO IMPACTO</div>
                         <p class="text-white text-sm font-serif italic mb-6 mt-2">"Nossa... acabei de ver uma coisa aqui que me lembrou muito você... mas pensando bem, melhor nem te contar kkk deixa pra lá."</p>
-                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">COPIAR SCRIPT PARA O WHATSAPP</button>
+                        
+                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">
+                            COPIAR SCRIPT PARA O WHATSAPP
+                        </button>
                     </div>
+                    
                     <p class="text-slate-500 text-[10px] mt-4 text-center">⚠️ Atenção: Quando ele perguntar "O que foi?", NÃO responda por pelo menos 3 horas.</p>
                 </div>`;
             } 
             else if(module === 3) {
                 html = `
-                <div class="fade-in text-left">
+                <div class="fade-in">
                     <h3 class="text-xl font-bold text-white mb-4">Dicionário de Respostas Rápidas</h3>
                     <div class="bonus-scroll pr-2 space-y-3">
                         <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
@@ -265,12 +258,11 @@
             area.innerHTML = html;
         }
 
-        window.copiarTexto = function() {
+        function copiarTexto() {
             const texto = "Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não.";
             navigator.clipboard.writeText(texto).then(() => { alert('Script copiado!'); });
         }
 
-        // === LÓGICA DO QUIZ (Novo) ===
         const realQuestions = [
             { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
             { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
@@ -286,12 +278,17 @@
 
         const qText = document.getElementById('question-text');
         const aBox = document.getElementById('answers-box');
+        window.userAnswers = []; 
 
+        // FUNÇÃO DE START CORRIGIDA (Com rastreamento novo + hooks antigos)
         window.startQuiz = function() {
             document.getElementById('cover-screen').classList.add('hidden');
             document.getElementById('quiz-container').classList.remove('hidden');
+            
+            // TRACKING NOVO
             if(window.customTrack) window.customTrack("start_quiz");
             if(window.fbq) fbq('trackCustom', 'StartQuiz');
+            
             runQuiz(0);
         }
 
@@ -300,6 +297,10 @@
             if(bar) bar.style.width = `${((idx + 1) / realQuestions.length) * 100}%`;
             
             if(idx >= realQuestions.length) {
+                // HOOK ESSENCIAL: Avisa o script enhancements.js que o quiz acabou
+                if(window.finishQuizFlow) window.finishQuizFlow(window.userAnswers);
+                
+                // Fallback visual caso o script externo falhe
                 document.getElementById('quiz-container').classList.add('hidden');
                 document.getElementById('processing-container').classList.remove('hidden');
                 simulateProcessing();
@@ -314,7 +315,10 @@
                 btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 p-4 rounded-xl border border-slate-700 active:border-purple-500 transition duration-150 text-sm font-medium text-slate-300";
                 btn.innerText = ans;
                 btn.onclick = () => { 
-                    if(window.customTrack) window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
+                    window.userAnswers.push(ans);
+                    if(window.customTrack) {
+                        window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
+                    }
                     runQuiz(idx + 1); 
                 };
                 aBox.appendChild(btn);
@@ -329,8 +333,10 @@
                 pct += Math.floor(Math.random() * 5) + 2;
                 if(pct > 100) pct = 100;
                 pctEl.innerText = pct + '%';
+                
                 if(pct > 30) txtEl.innerText = "Identificando gatilhos...";
                 if(pct > 70) txtEl.innerText = "Gerando perfil...";
+                
                 if(pct === 100) {
                     clearInterval(interval);
                     setTimeout(showResult, 500);
@@ -349,6 +355,7 @@
             desc.innerHTML = "Você tem o perfil de <strong>Doadora Excessiva</strong>. Isso significa que você entrega tanta certeza para ele, que o cérebro dele perde o interesse. O protocolo vai reverter isso instalando a dúvida.";
 
             if(window.fbq) fbq('track', 'Lead'); 
+            
             startTimer();
         }
 
@@ -365,16 +372,22 @@
             }, 1000);
         }
 
-        // TRAVA DE DUPLO CLIQUE E CHECKOUT
+        // TRAVA DE DUPLO CLIQUE + RASTREAMENTO CHECKOUT
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('btn-checkout');
             let checkoutTracked = false;
+
             if(btn) {
-                btn.addEventListener('click', () => {
-                    if(checkoutTracked) return;
-                    checkoutTracked = true;
-                    if(window.customTrack) window.customTrack("click", { id: "btn-checkout", label: "Checkout", value: 27.00 });
-                    if(window.fbq) fbq('track', 'InitiateCheckout', { value: 27.00, currency: 'BRL' });
+                btn.addEventListener('click', (e) => {
+                    if(checkoutTracked) return; 
+                    checkoutTracked = true;     
+
+                    if(window.customTrack) {
+                        window.customTrack("click", { id: "btn-checkout", label: "Checkout", value: 27.00 });
+                    }
+                    if(window.fbq) {
+                        fbq('track', 'InitiateCheckout', { value: 27.00, currency: 'BRL' });
+                    }
                 });
             }
         });
