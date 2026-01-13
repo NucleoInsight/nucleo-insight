@@ -163,7 +163,11 @@
             document.getElementById('cover-screen').classList.add('hidden');
             document.getElementById('quiz-container').classList.remove('hidden');
             
-            // CORREÇÃO 1: Evento Personalizado para não sujar o InitiateCheckout
+            // AJUSTE 2: Manda evento 'start_quiz' para o banco (Firebase)
+            if(window.customTrack) {
+                window.customTrack("start_quiz");
+            }
+            // Evento para o Facebook (Meta Pixel)
             if(window.fbq) fbq('trackCustom', 'StartQuiz');
             
             runQuiz(0);
@@ -190,7 +194,7 @@
                 btn.innerText = ans;
                 btn.onclick = () => { 
                     window.userAnswers.push(ans);
-                    // Rastreamento Opcional
+                    // Mantivemos 'quiz_answer' para não quebrar o dashboard
                     if(window.customTrack) {
                         window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
                     }
@@ -229,7 +233,6 @@
             title.innerText = "A Dependência Invisível";
             desc.innerHTML = "Você tem o perfil de <strong>Doadora Excessiva</strong>. Isso significa que você entrega tanta certeza para ele, que o cérebro dele perde o interesse no desafio. Ele não é mau, ele está entediado. O protocolo vai reverter isso instalando a dúvida.";
 
-            // Evento LEAD Mantido (Correto)
             if(window.fbq) fbq('track', 'Lead'); 
             
             startTimer();
@@ -248,16 +251,21 @@
             }, 1000);
         }
 
-        // CORREÇÃO 2: Rastreamento do Botão de Checkout (InitiateCheckout Real)
+        // AJUSTE 3: Trava de Duplo Clique + Rastreamento
         document.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById('btn-checkout');
+            let checkoutTracked = false; // Trava de segurança
+
             if(btn) {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', (e) => {
+                    if(checkoutTracked) return; // Se já clicou, ignora
+                    checkoutTracked = true;     // Ativa a trava
+
                     // Manda para o Sniper Analytics
                     if(window.customTrack) {
                         window.customTrack("click", { id: "btn-checkout", label: "Checkout", value: 27.00 });
                     }
-                    // Manda para o Facebook (Evento Otimizado para Compra)
+                    // Manda para o Facebook (Evento Otimizado)
                     if(window.fbq) {
                         fbq('track', 'InitiateCheckout', { value: 27.00, currency: 'BRL' });
                     }
