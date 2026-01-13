@@ -29,43 +29,41 @@
     
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
-        /* Fundo mais sóbrio e profissional (Azul Profundo, sem vermelhos agressivos) */
         .bg-tech { background-color: #0f172a; background-image: radial-gradient(at 50% 0%, #1e293b 0px, transparent 50%); }
         .solid-card { background-color: #1e293b; border: 1px solid #334155; box-shadow: 0 4px 20px -5px rgba(0,0,0,0.3); }
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none !important; }
-        
-        /* Botões mais suaves */
         .btn-soft { transition: all 0.2s; }
         .btn-soft:active { transform: scale(0.98); }
+        .module-btn { text-align: left; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; transition: all 0.2s; }
+        .module-btn:hover { border-color: #6366f1; background: #2d3748; }
+        .module-btn.active { border-color: #6366f1; background: #312e81; }
+        
+        #save-app-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; padding: 12px; display: flex; justify-content: space-between; items-center; z-index: 50; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
+        #exit-modal { backdrop-filter: blur(5px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-tech pb-10 text-slate-200 font-sans antialiased">
+<body class="min-h-screen flex flex-col bg-tech pb-20 text-slate-200 font-sans antialiased">
 
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
         
         <div id="cover-screen" class="w-full max-w-md solid-card p-8 rounded-2xl fade-in text-center relative overflow-hidden">
-            
             <div class="mb-6 inline-block p-4 bg-slate-800 rounded-full border border-slate-700">
-                <span class="text-4xl">🧠</span> </div>
-
+                <span class="text-4xl">🧠</span> 
+            </div>
             <h1 class="text-2xl font-bold text-white mb-3 leading-tight">
                 Chega de se sentir<br><span class="text-indigo-400">perdida e sem resposta</span>
             </h1>
-            
             <p class="text-slate-400 text-sm mb-8 px-2 leading-relaxed">
                 Muitas mulheres entram em um ciclo de confusão sem perceber. O silêncio e o afastamento dele não são aleatórios.
                 <br><br>
                 Faça uma análise racional do comportamento dele e retome sua clareza.
             </p>
-
             <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg text-sm uppercase tracking-wide btn-soft">
                 INICIAR DIAGNÓSTICO
             </button>
-            
             <p class="text-[10px] text-slate-600 mt-4">🔒 Análise comportamental sigilosa.</p>
-            
             <button id="btn-login-manual" class="mt-6 text-[11px] text-slate-500 hover:text-slate-300 underline">
                 Já tenho acesso? Entrar
             </button>
@@ -78,7 +76,6 @@
                 </div>
                 <p class="text-[10px] text-slate-500 text-right mt-2 font-medium">ANÁLISE EM ANDAMENTO</p>
             </div>
-
             <h2 id="question-text" class="text-lg font-semibold mb-6 text-white leading-relaxed min-h-[60px]">...</h2>
             <div id="answers-box" class="space-y-3"></div>
         </div>
@@ -97,19 +94,16 @@
                 <p class="text-[10px] text-indigo-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
                 <h2 class="text-xl font-bold text-white leading-tight">Seu Padrão: <br><span id="result-title" class="text-indigo-300">...</span></h2>
             </div>
-            
             <div class="p-6">
                 <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6 text-left">...</p>
                 
                 <div id="offer-box" class="bg-slate-800/30 p-5 rounded-xl border border-indigo-500/10 mb-4">
                     <p class="text-xs text-slate-200 mb-4 text-left"><strong>O próximo passo é opcional:</strong> Se você quiser interromper esse ciclo hoje, preparamos um plano prático.</p>
-                    
                     <ul class="text-[11px] text-slate-400 space-y-2 mb-5 text-left pl-2">
                         <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> Entenda o que ele pensa (Sem perguntar)</li>
                         <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> Scripts para retomar sua postura</li>
                         <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> PDF Prático + Acesso Vitalício</li>
                     </ul>
-
                     <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 btn-soft">
                         <span>🔓 DESTRAVAR PROTOCOLO (R$ 27)</span>
                     </a>
@@ -127,76 +121,184 @@
             <p class="text-sm text-slate-300 leading-relaxed mb-6">
                 Identificamos que este pode não ser o melhor momento para você tomar decisões financeiras ou emocionais complexas sozinha.
                 <br><br>
-                <strong>Nossa recomendação:</strong> Foque em você agora. Respire fundo e não tome nenhuma atitude impulsiva em relação a ele hoje. Sua tranquilidade vale mais que qualquer resposta.
+                <strong>Nossa recomendação:</strong> Foque em você agora. Respire fundo e não tome nenhuma atitude impulsiva em relação a ele hoje.
             </p>
             <a href="https://www.google.com" class="text-indigo-400 text-xs underline">Sair e fechar</a>
         </div>
-
     </div>
 
     <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto min-h-screen">
+        
         <div class="flex justify-between items-start mb-6">
             <div class="text-left">
                 <h2 class="text-2xl font-bold text-white leading-none">Portal de Resgate</h2>
-                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura</p>
+                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura • Acesso Vitalício</p>
             </div>
             <button onclick="window.location.reload()" class="text-[10px] text-indigo-400 border border-indigo-900/30 bg-indigo-950/20 px-3 py-2 rounded-lg">Sair ✕</button>
         </div>
-        <div class="text-slate-400 text-sm">Carregando conteúdo seguro...</div>
-        <div id="main-content-area"></div>
-        <div id="upsell-container"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <div class="space-y-4">
+                <div class="solid-card p-5 rounded-2xl">
+                    <h3 class="text-white font-bold mb-4 text-[10px] uppercase tracking-widest">Status da Aluna</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Progresso</span><span class="text-indigo-400">Iniciado</span></div>
+                            <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-indigo-500 w-[5%]"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="solid-card p-4 rounded-2xl">
+                    <h4 class="text-slate-400 text-[9px] font-bold mb-3 uppercase tracking-widest">Seus Módulos</h4>
+                    <div class="space-y-2">
+                        <button onclick="showContent(1)" class="w-full module-btn group">
+                            <p class="text-[9px] text-indigo-400 font-bold group-hover:text-white">MÓDULO 01</p>
+                            <p class="text-xs text-white group-hover:text-indigo-300">O Despertar</p>
+                        </button>
+                        <button onclick="showContent(2)" class="w-full module-btn group">
+                            <p class="text-[9px] text-indigo-400 font-bold group-hover:text-white">MÓDULO 02</p>
+                            <p class="text-xs text-white group-hover:text-indigo-300">A Técnica do Vácuo</p>
+                        </button>
+                        <button onclick="showContent(3)" class="w-full module-btn border-pink-500/30 bg-pink-900/10 hover:bg-pink-900/20">
+                            <p class="text-[9px] text-pink-400 font-bold">BÔNUS</p>
+                            <p class="text-xs text-white">Gatilhos Mentais</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 space-y-6">
+                <div class="solid-card p-6 rounded-2xl min-h-[300px] flex flex-col justify-start" id="main-content-area">
+                    <div id="content-placeholder" class="text-center mt-10">
+                        <div class="p-4 bg-black/20 rounded-xl inline-block">
+                             <p class="text-indigo-300 font-bold text-xs animate-pulse">Carregando conteúdo...</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="upsell-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="exit-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4">
+        <div class="bg-indigo-950/90 border-2 border-indigo-500 rounded-2xl p-6 max-w-sm text-center shadow-[0_0_50px_rgba(79,70,229,0.5)] fade-in">
+            <h2 class="text-2xl font-bold text-white mb-2 uppercase">⛔ Espere!</h2>
+            <p class="text-sm text-slate-200 mb-4">Se você sair agora, perderá o acesso à oferta especial.</p>
+            <button onclick="document.getElementById('exit-modal').classList.add('hidden')" class="w-full bg-white text-indigo-900 font-bold py-3 rounded-lg uppercase tracking-widest hover:bg-slate-200 shadow-lg">
+                VOLTAR AO ACESSO
+            </button>
+        </div>
+    </div>
+
+    <div id="save-app-bar">
+        <div class="flex items-center gap-3">
+            <span class="text-xl">📲</span>
+            <div>
+                <p class="text-xs font-bold text-white">Salve seu Acesso</p>
+                <p class="text-[10px] text-slate-400">Não perca o link.</p>
+            </div>
+        </div>
+        <button onclick="salvarNoZap()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold px-3 py-2 rounded-lg uppercase tracking-widest shadow-lg">
+            Salvar no Zap
+        </button>
     </div>
 
     <script type="module" src="./tracker.js"></script>
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === LÓGICA DE TRIAGEM E SEGURANÇA ===
-        let riskFlag = false;
-
-        // PERGUNTAS ATUALIZADAS (Filtro Emocional + Comportamental)
-        const questions = [
-            // PERGUNTA 01: O FILTRO DE VULNERABILIDADE (CRÍTICA)
-            {
-                t: "Para começar, precisamos saber: Você se sente emocionalmente capaz de tomar decisões importantes sozinha hoje?",
-                a: [
-                    { txt: "Sim, sou responsável por mim.", risk: false },
-                    { txt: "Não, preciso de ajuda/permissão.", risk: true } // GATILHO DE BLOQUEIO
-                ]
-            },
-            {
-                t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?",
-                a: [
-                    { txt: "Acho que ele perdeu o interesse.", risk: false },
-                    { txt: "Penso que ele está ocupado.", risk: false },
-                    { txt: "Fico desesperada/Choro.", risk: false } // Ainda passa, mas vamos monitorar
-                ]
-            },
-            {
-                t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?",
-                a: [{ txt: "Eu (quase sempre)", risk: false }, { txt: "Ele (quase sempre)", risk: false }, { txt: "Equilibrado", risk: false }]
-            },
-            {
-                t: "O que você mais busca agora?",
-                a: [{ txt: "Entender o que houve (Clareza)", risk: false }, { txt: "Fazer ele voltar correndo", risk: false }, { txt: "Paz de espírito", risk: false }]
-            }
-        ];
-
-        const qText = document.getElementById('question-text');
-        const aBox = document.getElementById('answers-box');
-
-        // VIGIA DO LOGIN (MANTIDO)
+        // === VIGIA DO LOGIN E AUTO-PLAY (CORREÇÃO DA ÁREA DE MEMBROS) ===
         const targetNode = document.getElementById('protocolo');
         const observer = new MutationObserver((mutationsList) => {
             for(const mutation of mutationsList) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     if (!targetNode.classList.contains('hidden')) {
+                        // 1. Esconde o Funil
                         document.getElementById('quiz-flow').classList.add('hidden');
+                        // 2. FORÇA A ABERTURA DO MÓDULO 1 (Correção do "Conteúdo Vazio")
+                        setTimeout(() => showContent(1), 500); 
                     }
                 }
             }
         });
         observer.observe(targetNode, { attributes: true });
+
+        // === CONTEÚDO DO PRODUTO (COPY SEGURA) ===
+        window.showContent = function(module) {
+            const area = document.getElementById('main-content-area');
+            area.innerHTML = ''; 
+            let html = '';
+            
+            if(module === 1) {
+                html = `
+                <div class="fade-in text-left">
+                    <span class="text-indigo-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 01: Postura</span>
+                    <h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Consciência</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-indigo-950/20 border border-indigo-500/20 rounded-xl">
+                            <strong class="text-indigo-400 text-[10px] block mb-1 uppercase">⛔ O QUE EVITAR:</strong>
+                            <p class="text-slate-300 text-xs">Ficar disponível 24h ou responder instantaneamente por ansiedade.</p>
+                        </div>
+                        <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
+                            <strong class="text-emerald-400 text-[10px] block mb-1 uppercase">✅ AÇÃO CORRETA:</strong>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Recupere seu tempo.<br><br>
+                                1. Retire a visualização de status.<br>
+                                2. Espelhe o tempo de resposta dele (com calma).<br>
+                                3. Foque em você, não nele.
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+            } 
+            else if(module === 2) {
+                html = `
+                <div class="fade-in text-left">
+                    <span class="text-indigo-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
+                    <h3 class="text-xl font-bold text-white mt-2 mb-4">Técnica da Retirada (Padrão)</h3>
+                    <p class="text-slate-400 text-xs mb-4">Use para retomar o controle quando sentir frieza do outro lado.</p>
+                    <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative group">
+                        <p class="text-white text-sm font-serif italic mb-6">"Vi algo que lembrou você hoje... mas pensando bem, deixa pra lá rs."</p>
+                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest shadow-lg">COPIAR TEXTO</button>
+                    </div>
+                </div>`;
+            } 
+            else if(module === 3) {
+                html = `
+                <div class="fade-in text-left">
+                    <h3 class="text-xl font-bold text-white mb-4">Respostas Rápidas</h3>
+                    <div class="bonus-scroll pr-2 space-y-3">
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700">
+                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Convite de última hora:</p>
+                            <p class="text-slate-200 text-xs italic">"Adoraria, mas já tenho compromisso. Quem sabe na próxima com antecedência?"</p>
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700">
+                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Sumiço:</p>
+                            <p class="text-slate-200 text-xs italic">"Nossa, a semana foi corrida, nem vi o tempo passar. Tudo bem?"</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            area.innerHTML = html;
+        }
+
+        window.copiarTexto = function() {
+            const texto = "Vi algo que lembrou você hoje... mas pensando bem, deixa pra lá rs.";
+            navigator.clipboard.writeText(texto).then(() => { alert('Copiado!'); });
+        }
+
+        // === QUIZ LOGIC ===
+        let riskFlag = false;
+        const questions = [
+            { t: "Para começar: Você se sente capaz de tomar decisões importantes sozinha hoje?", a: [{ txt: "Sim, sou responsável.", risk: false }, { txt: "Não, preciso de ajuda.", risk: true }] },
+            { t: "Quando ele demora a responder, o que você pensa?", a: [{ txt: "Acho que perdeu o interesse.", risk: false }, { txt: "Penso que está ocupado.", risk: false }, { txt: "Fico muito ansiosa.", risk: false }] },
+            { t: "Quem inicia as conversas?", a: [{ txt: "Eu (quase sempre)", risk: false }, { txt: "Ele (quase sempre)", risk: false }, { txt: "Equilibrado", risk: false }] },
+            { t: "O que você busca?", a: [{ txt: "Clareza", risk: false }, { txt: "Fazer ele voltar", risk: false }, { txt: "Paz", risk: false }] }
+        ];
+
+        const qText = document.getElementById('question-text');
+        const aBox = document.getElementById('answers-box');
 
         window.startQuiz = function() {
             document.getElementById('cover-screen').classList.add('hidden');
@@ -221,17 +323,10 @@
                 const btn = document.createElement('button');
                 btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 p-4 rounded-xl border border-slate-700 active:border-indigo-500 transition duration-150 text-sm font-medium text-slate-300 mb-2";
                 btn.innerText = ans.txt;
-                
                 btn.onclick = () => {
-                    // LÓGICA DE RISCO
                     if(ans.risk === true) {
                         riskFlag = true;
-                        if(window.fbq) fbq('trackCustom', 'RiskDetected', { reason: 'vulnerability_filter' });
-                        // Se caiu no risco crítico (pergunta 1), encerra agora.
-                        if(idx === 0) {
-                            showRiskExit();
-                            return;
-                        }
+                        if(idx === 0) { showRiskExit(); return; }
                     }
                     runQuiz(idx + 1); 
                 };
@@ -242,16 +337,9 @@
         function finishQuiz() {
             document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('processing-container').classList.remove('hidden');
-            
             setTimeout(() => {
                 document.getElementById('processing-container').classList.add('hidden');
-                
-                // DECISÃO FINAL: MOSTRAR OFERTA OU BLOQUEAR?
-                if(riskFlag) {
-                    showRiskExit();
-                } else {
-                    showOffer();
-                }
+                if(riskFlag) { showRiskExit(); } else { showOffer(); }
             }, 1500);
         }
 
@@ -264,16 +352,35 @@
 
         function showOffer() {
             document.getElementById('result-container').classList.remove('hidden');
-            
-            // Texto de Clareza (Sem ataque)
             document.getElementById('result-title').innerText = "Doadora Excessiva";
-            document.getElementById('result-description').innerHTML = 
-                "Seu perfil indica que você entrega muita certeza na relação. Isso faz com que o outro lado não sinta necessidade de investir energia em você.<br><br>" +
-                "<strong>A boa notícia:</strong> Não é algo errado com você, é apenas uma dinâmica desequilibrada que pode ser corrigida com postura.";
-
+            document.getElementById('result-description').innerHTML = "Seu perfil indica que você entrega muita certeza na relação. O protocolo vai te ajudar a equilibrar isso.";
             if(window.fbq) fbq('track', 'Lead'); 
             if(window.fbq) fbq('trackCustom', 'ViewOffer_Safe');
+            if(window.customTrack) window.customTrack("view_offer", { offer: "protocolo_24h", price: 27 });
         }
+
+        // Back Redirect e Salvar no Zap
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.pushState(null, null, location.href);
+            document.getElementById('exit-modal').classList.remove('hidden');
+        };
+
+        window.salvarNoZap = function() {
+            const link = window.location.href;
+            const text = `Oi! Aqui está o link do meu Diagnóstico: ${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('btn-checkout');
+            if(btn) {
+                btn.addEventListener('click', () => {
+                    if(window.customTrack) window.customTrack("click", { id: "btn-checkout", label: "Checkout", value: 27.00 });
+                    if(window.fbq) fbq('track', 'InitiateCheckout', { value: 27.00, currency: 'BRL' });
+                });
+            }
+        });
     </script>
 </body>
 </html>
