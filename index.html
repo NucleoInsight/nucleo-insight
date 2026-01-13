@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Núcleo Insight | Diagnóstico & Acesso</title>
+    <title>Núcleo Insight | Clareza & Decisão</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,215 +25,167 @@
     /></noscript>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f0c29; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
-        .bg-tech { background-color: #0b0c15; background-image: radial-gradient(at 50% 0%, #1e1b4b 0px, transparent 50%), radial-gradient(at 100% 0%, #312e81 0px, transparent 50%); }
-        .solid-card { background-color: #1e293b; border: 1px solid #334155; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5); }
-        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
+        /* Fundo mais sóbrio e profissional (Azul Profundo, sem vermelhos agressivos) */
+        .bg-tech { background-color: #0f172a; background-image: radial-gradient(at 50% 0%, #1e293b 0px, transparent 50%); }
+        .solid-card { background-color: #1e293b; border: 1px solid #334155; box-shadow: 0 4px 20px -5px rgba(0,0,0,0.3); }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-soft { animation: pulse-soft 2s infinite; }
-        @keyframes pulse-soft { 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); } 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); } }
         .hidden { display: none !important; }
-        .bonus-scroll { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #8b5cf6 #1e1b4b; }
         
-        .module-btn { text-align: left; padding: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 8px; transition: all 0.2s; }
-        .module-btn:hover { border-color: #8b5cf6; background: #2d3748; }
-        
-        #save-app-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; padding: 12px; display: flex; justify-content: space-between; items-center; z-index: 50; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
-        
-        #exit-modal { backdrop-filter: blur(5px); }
+        /* Botões mais suaves */
+        .btn-soft { transition: all 0.2s; }
+        .btn-soft:active { transform: scale(0.98); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-tech pb-20 text-slate-200 font-sans antialiased">
+<body class="min-h-screen flex flex-col bg-tech pb-10 text-slate-200 font-sans antialiased">
 
     <div id="quiz-flow" class="p-4 flex flex-col items-center justify-center min-h-screen">
         
         <div id="cover-screen" class="w-full max-w-md solid-card p-8 rounded-2xl fade-in text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-purple-500 to-red-500"></div>
             
-            <div class="mb-6 inline-block p-3 bg-red-500/10 rounded-full border border-red-500/20">
-                <span class="text-4xl">🤡</span>
-            </div>
+            <div class="mb-6 inline-block p-4 bg-slate-800 rounded-full border border-slate-700">
+                <span class="text-4xl">🧠</span> </div>
 
-            <h1 class="text-2xl font-black text-white mb-2 leading-none uppercase">
-                Chega de ser<br><span class="text-red-500">feita de Boba</span>
+            <h1 class="text-2xl font-bold text-white mb-3 leading-tight">
+                Chega de se sentir<br><span class="text-indigo-400">perdida e sem resposta</span>
             </h1>
             
-            <p class="text-slate-400 text-xs mb-6 px-2">
-                Você sente que ele joga com você? Que você manda mensagem e ele ignora?
+            <p class="text-slate-400 text-sm mb-8 px-2 leading-relaxed">
+                Muitas mulheres entram em um ciclo de confusão sem perceber. O silêncio e o afastamento dele não são aleatórios.
                 <br><br>
-                Existe um <strong>Padrão Oculto</strong> nas suas mensagens que está ativando o afastamento dele.
+                Faça uma análise racional do comportamento dele e retome sua clareza.
             </p>
 
-            <button onclick="startQuiz()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-red-900/20 text-sm uppercase tracking-widest transition transform active:scale-95 pulse-soft">
-                INICIAR ANÁLISE SIGILOSA
+            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg text-sm uppercase tracking-wide btn-soft">
+                INICIAR DIAGNÓSTICO
             </button>
             
-            <p class="text-[9px] text-slate-600 mt-4">🔒 Seus dados estão 100% protegidos e anônimos.</p>
+            <p class="text-[10px] text-slate-600 mt-4">🔒 Análise comportamental sigilosa.</p>
             
-            <button id="btn-login-manual" class="mt-6 text-[10px] text-slate-500 hover:text-slate-300 underline uppercase tracking-widest">
-                Já sou aluna? Entrar
+            <button id="btn-login-manual" class="mt-6 text-[11px] text-slate-500 hover:text-slate-300 underline">
+                Já tenho acesso? Entrar
             </button>
         </div>
 
         <div id="quiz-container" class="hidden w-full max-w-md solid-card p-6 rounded-2xl fade-in relative overflow-hidden">
-            <div class="mb-5 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                    <span class="text-[10px] font-bold tracking-[0.15em] text-red-400 uppercase">Sistema Online</span>
+            <div class="mb-8">
+                <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-indigo-500 transition-all duration-500" style="width: 0%"></div>
                 </div>
-                <div class="h-1 w-20 bg-slate-700 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-red-500 transition-all duration-300" style="width: 10%"></div>
-                </div>
+                <p class="text-[10px] text-slate-500 text-right mt-2 font-medium">ANÁLISE EM ANDAMENTO</p>
             </div>
 
-            <div class="mb-6 border-l-4 border-red-600 bg-red-950/30 pl-4 py-3 rounded-r">
-                <p class="text-[10px] text-red-500 font-black uppercase tracking-widest mb-1 flex items-center gap-2">⚠️ SEJA HONESTA</p>
-                <p class="text-xs text-red-200 leading-relaxed font-medium">Detectamos um <strong>Padrão de Afastamento</strong>. Responda com honestidade para o algoritmo funcionar.</p>
-            </div>
-
-            <h2 id="question-text" class="text-xl font-bold mb-6 text-white leading-snug min-h-[60px]">...</h2>
+            <h2 id="question-text" class="text-lg font-semibold mb-6 text-white leading-relaxed min-h-[60px]">...</h2>
             <div id="answers-box" class="space-y-3"></div>
         </div>
 
         <div id="processing-container" class="hidden w-full max-w-md text-center fade-in">
-            <div class="relative w-20 h-20 mx-auto mb-6">
-                <div class="absolute inset-0 rounded-full border-4 border-slate-700"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-t-red-500 border-r-transparent border-b-red-500 border-l-transparent animate-spin"></div>
-                <div class="absolute inset-0 flex items-center justify-center font-bold text-red-400 text-xs" id="process-pct">0%</div>
+            <div class="relative w-16 h-16 mx-auto mb-6">
+                <div class="absolute inset-0 rounded-full border-2 border-slate-700"></div>
+                <div class="absolute inset-0 rounded-full border-2 border-t-indigo-500 border-r-transparent border-b-indigo-500 border-l-transparent animate-spin"></div>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Processando Padrões...</h3>
-            <p id="process-text" class="text-xs text-slate-400">Cruzando dados comportamentais...</p>
+            <h3 class="text-md font-medium text-white mb-2">Organizando as informações...</h3>
+            <p class="text-xs text-slate-500">Gerando seu relatório de perfil.</p>
         </div>
 
-        <div id="result-container" class="hidden w-full max-w-md solid-card p-0 rounded-2xl text-center fade-in overflow-hidden border-t border-purple-500/30">
-            <div class="bg-black/20 p-6 border-b border-white/5">
-                <p class="text-[9px] text-purple-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
-                <h2 class="text-xl font-bold text-white leading-tight">Seu Padrão é: <br><span id="result-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">...</span></h2>
+        <div id="result-container" class="hidden w-full max-w-md solid-card p-0 rounded-2xl text-center fade-in overflow-hidden border-t border-indigo-500/20">
+            <div class="bg-slate-900/50 p-6 border-b border-white/5">
+                <p class="text-[10px] text-indigo-400 uppercase tracking-widest font-bold mb-2">DIAGNÓSTICO CONCLUÍDO</p>
+                <h2 class="text-xl font-bold text-white leading-tight">Seu Padrão: <br><span id="result-title" class="text-indigo-300">...</span></h2>
             </div>
+            
             <div class="p-6">
-                <p id="result-description" class="text-slate-300 text-xs leading-relaxed mb-6">...</p>
-                <div class="bg-slate-800/50 p-4 rounded-xl border border-purple-500/20 mb-4">
-                    <div class="flex justify-center items-center gap-2 mb-3">
-                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                        <p class="text-[9px] text-red-300 font-bold uppercase tracking-widest">Oferta Expira: <span id="countdown-timer" class="font-mono text-white">10:00</span></p>
-                    </div>
+                <p id="result-description" class="text-slate-300 text-sm leading-relaxed mb-6 text-left">...</p>
+                
+                <div id="offer-box" class="bg-slate-800/30 p-5 rounded-xl border border-indigo-500/10 mb-4">
+                    <p class="text-xs text-slate-200 mb-4 text-left"><strong>O próximo passo é opcional:</strong> Se você quiser interromper esse ciclo hoje, preparamos um plano prático.</p>
                     
-                    <p class="text-[11px] text-slate-300 mb-4">O padrão foi identificado. Aplique a <strong>Técnica de Reversão</strong> agora para quebrar o gelo hoje.</p>
-                    
-                    <ul class="text-[10px] text-slate-300 space-y-1 mb-4 text-left pl-4 border-l border-white/10">
-                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> PDF Prático (Guia Passo a Passo)</li>
-                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Scripts Prontos para Copiar e Colar</li>
-                        <li class="flex items-center gap-2"><span class="text-emerald-400">✔</span> Acesso Imediato e Vitalício</li>
+                    <ul class="text-[11px] text-slate-400 space-y-2 mb-5 text-left pl-2">
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> Entenda o que ele pensa (Sem perguntar)</li>
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> Scripts para retomar sua postura</li>
+                        <li class="flex items-center gap-2"><span class="text-indigo-400">●</span> PDF Prático + Acesso Vitalício</li>
                     </ul>
 
-                    <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition active:scale-[0.98] pulse-soft">
-                        <span>🔓 DESBLOQUEAR PROTOCOLO 24H</span>
+                    <a href="https://pay.kiwify.com.br/cAMh7az" id="btn-checkout" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 btn-soft">
+                        <span>🔓 DESTRAVAR PROTOCOLO (R$ 27)</span>
                     </a>
-
-                    <p class="text-[9px] text-slate-500 mt-3">De <span class="line-through">R$ 97</span> por <strong class="text-emerald-400">R$ 27</strong></p>
-                    
-                    <p class="text-[9px] text-slate-600 mt-2 italic">"Esse método já ajudou mais de 800 mulheres a retomarem o controle."</p>
                 </div>
                 
-                <button onclick="document.getElementById('btn-login-manual').click()" class="text-[9px] text-slate-600 uppercase tracking-widest hover:text-slate-400">
+                <button onclick="document.getElementById('btn-login-manual').click()" class="text-[10px] text-slate-600 hover:text-slate-400 mt-2">
                     Já sou aluna? Entrar
                 </button>
             </div>
         </div>
+
+        <div id="risk-exit-container" class="hidden w-full max-w-md solid-card p-8 rounded-2xl fade-in text-center">
+            <div class="mb-4 text-4xl">🍃</div>
+            <h2 class="text-xl font-bold text-white mb-4">Um conselho importante</h2>
+            <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                Identificamos que este pode não ser o melhor momento para você tomar decisões financeiras ou emocionais complexas sozinha.
+                <br><br>
+                <strong>Nossa recomendação:</strong> Foque em você agora. Respire fundo e não tome nenhuma atitude impulsiva em relação a ele hoje. Sua tranquilidade vale mais que qualquer resposta.
+            </p>
+            <a href="https://www.google.com" class="text-indigo-400 text-xs underline">Sair e fechar</a>
+        </div>
+
     </div>
 
     <div id="protocolo" class="hidden w-full max-w-4xl px-4 py-8 fade-in text-center mx-auto min-h-screen">
-        
         <div class="flex justify-between items-start mb-6">
             <div class="text-left">
                 <h2 class="text-2xl font-bold text-white leading-none">Portal de Resgate</h2>
-                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura • Acesso Vitalício</p>
+                <p class="text-slate-500 uppercase text-[9px] tracking-[0.2em] mt-1">Área Segura</p>
             </div>
-            <button onclick="window.location.reload()" class="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase border border-red-900/30 bg-red-950/20 px-3 py-2 rounded-lg transition flex items-center gap-1">
-                Sair ✕
-            </button>
+            <button onclick="window.location.reload()" class="text-[10px] text-indigo-400 border border-indigo-900/30 bg-indigo-950/20 px-3 py-2 rounded-lg">Sair ✕</button>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div class="space-y-4">
-                <div class="solid-card p-5 rounded-2xl">
-                    <h3 class="text-white font-bold mb-4 text-[10px] uppercase tracking-widest">Status da Aluna</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Progresso</span><span class="text-purple-400">15%</span></div>
-                            <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-purple-500 w-[15%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-[9px] text-slate-400 mb-1 uppercase"><span>Risco</span><span class="text-emerald-400">Controlado</span></div>
-                            <div class="h-1 bg-slate-700 rounded-full"><div class="h-full bg-emerald-500 w-[100%]"></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="solid-card p-4 rounded-2xl">
-                    <h4 class="text-slate-400 text-[9px] font-bold mb-3 uppercase tracking-widest">Módulos</h4>
-                    <div class="space-y-2">
-                        <button onclick="showContent(1)" class="w-full module-btn group">
-                            <p class="text-[9px] text-purple-400 font-bold group-hover:text-white">MÓDULO 01</p>
-                            <p class="text-xs text-white group-hover:text-purple-300">O Despertar da Escassez</p>
-                        </button>
-                        <button onclick="showContent(2)" class="w-full module-btn group">
-                            <p class="text-[9px] text-purple-400 font-bold group-hover:text-white">MÓDULO 02</p>
-                            <p class="text-xs text-white group-hover:text-purple-300">A Técnica do Vácuo</p>
-                        </button>
-                        <button onclick="showContent(3)" class="w-full module-btn border-pink-500/30 bg-pink-900/10 hover:bg-pink-900/20">
-                            <p class="text-[9px] text-pink-400 font-bold">BÔNUS</p>
-                            <p class="text-xs text-white">Gatilhos Mentais</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="md:col-span-2 space-y-6">
-                <div class="solid-card p-6 rounded-2xl min-h-[400px] flex flex-col justify-center" id="main-content-area">
-                    <div id="content-placeholder" class="text-center">
-                        <div class="p-4 bg-black/20 rounded-xl inline-block">
-                             <p class="text-purple-300 font-bold text-xs animate-pulse">👈 Selecione uma lição ao lado para começar</p>
-                        </div>
-                    </div>
-                </div>
-                <div id="upsell-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="exit-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4">
-        <div class="bg-red-950/90 border-2 border-red-500 rounded-2xl p-6 max-w-sm text-center shadow-[0_0_50px_rgba(220,38,38,0.5)] fade-in">
-            <h2 class="text-2xl font-black text-white mb-2 uppercase">⛔ ESPERE!</h2>
-            <p class="text-sm text-slate-200 mb-4">Se você sair agora, seu diagnóstico será perdido e o preço voltará ao normal.</p>
-            <button onclick="document.getElementById('exit-modal').classList.add('hidden')" class="w-full bg-white text-red-900 font-bold py-3 rounded-lg uppercase tracking-widest hover:bg-slate-200 shadow-lg">
-                QUERO MEU ACESSO
-            </button>
-        </div>
-    </div>
-
-    <div id="save-app-bar">
-        <div class="flex items-center gap-3">
-            <span class="text-xl">📲</span>
-            <div>
-                <p class="text-xs font-bold text-white">Salve seu Acesso</p>
-                <p class="text-[10px] text-slate-400">Não perca o link.</p>
-            </div>
-        </div>
-        <button onclick="salvarNoZap()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-3 py-2 rounded-lg uppercase tracking-widest shadow-lg animate-pulse">
-            Salvar no Zap
-        </button>
+        <div class="text-slate-400 text-sm">Carregando conteúdo seguro...</div>
+        <div id="main-content-area"></div>
+        <div id="upsell-container"></div>
     </div>
 
     <script type="module" src="./tracker.js"></script>
     <script type="module" src="./enhancements.js"></script>
 
     <script>
-        // === VIGIA DO LOGIN (CORREÇÃO DE CONFLITO) ===
-        // Monitora se o login foi feito e esconde a capa
+        // === LÓGICA DE TRIAGEM E SEGURANÇA ===
+        let riskFlag = false;
+
+        // PERGUNTAS ATUALIZADAS (Filtro Emocional + Comportamental)
+        const questions = [
+            // PERGUNTA 01: O FILTRO DE VULNERABILIDADE (CRÍTICA)
+            {
+                t: "Para começar, precisamos saber: Você se sente emocionalmente capaz de tomar decisões importantes sozinha hoje?",
+                a: [
+                    { txt: "Sim, sou responsável por mim.", risk: false },
+                    { txt: "Não, preciso de ajuda/permissão.", risk: true } // GATILHO DE BLOQUEIO
+                ]
+            },
+            {
+                t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?",
+                a: [
+                    { txt: "Acho que ele perdeu o interesse.", risk: false },
+                    { txt: "Penso que ele está ocupado.", risk: false },
+                    { txt: "Fico desesperada/Choro.", risk: false } // Ainda passa, mas vamos monitorar
+                ]
+            },
+            {
+                t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?",
+                a: [{ txt: "Eu (quase sempre)", risk: false }, { txt: "Ele (quase sempre)", risk: false }, { txt: "Equilibrado", risk: false }]
+            },
+            {
+                t: "O que você mais busca agora?",
+                a: [{ txt: "Entender o que houve (Clareza)", risk: false }, { txt: "Fazer ele voltar correndo", risk: false }, { txt: "Paz de espírito", risk: false }]
+            }
+        ];
+
+        const qText = document.getElementById('question-text');
+        const aBox = document.getElementById('answers-box');
+
+        // VIGIA DO LOGIN (MANTIDO)
         const targetNode = document.getElementById('protocolo');
         const observer = new MutationObserver((mutationsList) => {
             for(const mutation of mutationsList) {
@@ -246,137 +198,40 @@
         });
         observer.observe(targetNode, { attributes: true });
 
-        // === BACK REDIRECT ===
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.pushState(null, null, location.href);
-            document.getElementById('exit-modal').classList.remove('hidden');
-        };
-
-        // === SALVAR NO ZAP ===
-        function salvarNoZap() {
-            const link = window.location.href;
-            const text = `Oi! Aqui está o link do meu Diagnóstico: ${link}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-        }
-
-        // === CONTEÚDO DO PRODUTO ===
-        function showContent(module) {
-            const area = document.getElementById('main-content-area');
-            area.innerHTML = ''; 
-            let html = '';
-            
-            if(module === 1) {
-                html = `
-                <div class="fade-in">
-                    <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 01: Postura</span>
-                    <h3 class="text-xl font-bold text-white mt-2 mb-4">O Despertar da Escassez</h3>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-red-950/20 border border-red-500/20 rounded-xl">
-                            <strong class="text-red-400 text-[10px] block mb-1 uppercase">⛔ ERRO COMUM (Pare Agora):</strong>
-                            <p class="text-slate-300 text-xs">"Ficar online assim que ele manda mensagem ou visualizar os stories dele nos primeiros 5 minutos."</p>
-                        </div>
-                        <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl">
-                            <strong class="text-emerald-400 text-[10px] block mb-1 uppercase">✅ AÇÃO RECOMENDADA:</strong>
-                            <p class="text-slate-300 text-xs leading-relaxed">
-                                Instale a <strong>Incerteza Neural</strong>.<br><br>
-                                1. Desative o "Visto por Último".<br>
-                                2. Se ele mandar mensagem, aguarde exatamente <strong>o triplo do tempo</strong> que ele demorou.<br>
-                                3. Nunca termine a conversa com uma pergunta.
-                            </p>
-                        </div>
-                    </div>
-                </div>`;
-            } 
-            else if(module === 2) {
-                html = `
-                <div class="fade-in">
-                    <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Protocolo 02: Reativação</span>
-                    <h3 class="text-xl font-bold text-white mt-2 mb-4">A Técnica do Vácuo (Quebra de Padrão)</h3>
-                    <p class="text-slate-400 text-xs mb-4">Use este script APENAS se ele estiver frio ou sumido há mais de 24h.</p>
-                    <div class="p-5 bg-slate-800 border border-slate-700 rounded-xl relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] px-2 py-1 font-bold uppercase">⚡ GATILHO DE ALTO IMPACTO</div>
-                        <p class="text-white text-sm font-serif italic mb-6 mt-2">"Nossa... acabei de ver uma coisa aqui que me lembrou muito você... mas pensando bem, melhor nem te contar kkk deixa pra lá."</p>
-                        <button onclick="copiarTexto()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest transition shadow-lg">COPIAR SCRIPT PARA O WHATSAPP</button>
-                    </div>
-                    <p class="text-slate-500 text-[10px] mt-4 text-center">⚠️ Atenção: Quando ele perguntar "O que foi?", NÃO responda por pelo menos 3 horas.</p>
-                </div>`;
-            } 
-            else if(module === 3) {
-                html = `
-                <div class="fade-in">
-                    <h3 class="text-xl font-bold text-white mb-4">Dicionário de Respostas Rápidas</h3>
-                    <div class="bonus-scroll pr-2 space-y-3">
-                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
-                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele te convidar de última hora (23h):</p>
-                            <p class="text-slate-200 text-xs italic">"Humm, adoraria! Mas já tenho planos pra agora. Se tivesse avisado antes..."</p>
-                        </div>
-                        <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500 transition cursor-pointer">
-                            <p class="text-pink-400 text-[9px] font-bold uppercase mb-1">Se ele perguntar por que você sumiu:</p>
-                            <p class="text-slate-200 text-xs italic">"Eu sumi? Nossa, a semana foi tão corrida que nem percebi. Tudo bem por aí?"</p>
-                        </div>
-                    </div>
-                </div>`;
-            }
-            area.innerHTML = html;
-        }
-
-        function copiarTexto() {
-            const texto = "Nossa, acabei de ver algo aqui que me lembrou muito de você... Mas deixa pra lá, melhor não.";
-            navigator.clipboard.writeText(texto).then(() => { alert('Script copiado!'); });
-        }
-
-        const realQuestions = [
-            { t: "Quando você envia uma mensagem e ele demora, qual seu primeiro pensamento?", a: ["'Ele perdeu o interesse.'", "'Talvez esteja ocupado.'", "'Vou apagar antes que ele leia.'", "'Melhor mandar outra pra garantir.'"] },
-            { t: "Nos últimos 3 meses, quem iniciou a maioria das conversas?", a: ["Eu (quase sempre)", "Ele (quase sempre)", "Equilibrado", "Ele inicia, mas some depois"] },
-            { t: "Se ele postar um story agora, quanto tempo você leva para ver?", a: ["Imediatamente (tenho notificação)", "Em alguns minutos", "Só quando abro o app", "Evito ver pra não dar moral"] },
-            { t: "Você sente que precisa 'pisar em ovos' para não irritá-lo?", a: ["Sim, tenho medo de falar errado", "Às vezes", "Não, sou espontânea", "Sinto que ele que pisa em ovos"] },
-            { t: "Como foi o fim (ou afastamento) da última vez?", a: ["Do nada (Ghosting)", "Briga explosiva", "Esfriou aos pouco", "Ainda estamos nos falando, mas mal"] },
-            { t: "O quanto você sabe da rotina dele?", a: ["Sei tudo (stalkei/pergunto)", "Sei o básico", "Sei só o que ele conta", "Não sei quase nada"] },
-            { t: "Quando vocês saem, a química é...", a: ["Incrível, parece alma gêmea", "Boa, mas ele é fechado", "Normal", "Sinto ele distante pessoalmente"] },
-            { t: "Você já deixou de fazer algo seu para ficar disponível pra ele?", a: ["Várias vezes", "Raramente", "Nunca", "Sim, cancelei compromissos"] },
-            { t: "Ele já disse que você é 'intensa demais' ou 'dramática'?", a: ["Sim, já ouvi isso", "Disse que sou fechada", "Nunca disse", "Disse que sou a mulher da vida dele"] },
-            { t: "O quanto você MAIS quer agora?", a: ["Entender por que ele mudou", "Fazer ele correr atrás", "Ter paz de espírito", "Uma resposta definitiva"] }
-        ];
-
-        const qText = document.getElementById('question-text');
-        const aBox = document.getElementById('answers-box');
-        window.userAnswers = []; 
-
         window.startQuiz = function() {
             document.getElementById('cover-screen').classList.add('hidden');
             document.getElementById('quiz-container').classList.remove('hidden');
-            
-            if(window.customTrack) window.customTrack("start_quiz");
-            if(window.fbq) fbq('trackCustom', 'StartQuiz');
-            
+            if(window.fbq) fbq('trackCustom', 'StartQuiz_Safe');
             runQuiz(0);
         }
 
         function runQuiz(idx) {
             const bar = document.getElementById('progress-bar');
-            if(bar) bar.style.width = `${((idx + 1) / realQuestions.length) * 100}%`;
-            
-            if(idx >= realQuestions.length) {
-                if(window.finishQuizFlow) window.finishQuizFlow(window.userAnswers);
-                
-                document.getElementById('quiz-container').classList.add('hidden');
-                document.getElementById('processing-container').classList.remove('hidden');
-                simulateProcessing();
+            bar.style.width = `${((idx + 1) / questions.length) * 100}%`;
+
+            if(idx >= questions.length) {
+                finishQuiz();
                 return;
             }
 
-            qText.innerText = realQuestions[idx].t;
+            qText.innerText = questions[idx].t;
             aBox.innerHTML = '';
             
-            realQuestions[idx].a.forEach(ans => {
+            questions[idx].a.forEach(ans => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 p-4 rounded-xl border border-slate-700 active:border-purple-500 transition duration-150 text-sm font-medium text-slate-300";
-                btn.innerText = ans;
-                btn.onclick = () => { 
-                    window.userAnswers.push(ans);
-                    if(window.customTrack) {
-                        window.customTrack("quiz_answer", { question_number: idx + 1, answer: ans });
+                btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 p-4 rounded-xl border border-slate-700 active:border-indigo-500 transition duration-150 text-sm font-medium text-slate-300 mb-2";
+                btn.innerText = ans.txt;
+                
+                btn.onclick = () => {
+                    // LÓGICA DE RISCO
+                    if(ans.risk === true) {
+                        riskFlag = true;
+                        if(window.fbq) fbq('trackCustom', 'RiskDetected', { reason: 'vulnerability_filter' });
+                        // Se caiu no risco crítico (pergunta 1), encerra agora.
+                        if(idx === 0) {
+                            showRiskExit();
+                            return;
+                        }
                     }
                     runQuiz(idx + 1); 
                 };
@@ -384,74 +239,41 @@
             });
         }
 
-        function simulateProcessing() {
-            let pct = 0;
-            const pctEl = document.getElementById('process-pct');
-            const txtEl = document.getElementById('process-text');
-            const interval = setInterval(() => {
-                pct += Math.floor(Math.random() * 5) + 2;
-                if(pct > 100) pct = 100;
-                pctEl.innerText = pct + '%';
-                if(pct > 30) txtEl.innerText = "Identificando gatilhos...";
-                if(pct > 70) txtEl.innerText = "Gerando perfil...";
-                if(pct === 100) {
-                    clearInterval(interval);
-                    setTimeout(showResult, 500);
+        function finishQuiz() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('processing-container').classList.remove('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('processing-container').classList.add('hidden');
+                
+                // DECISÃO FINAL: MOSTRAR OFERTA OU BLOQUEAR?
+                if(riskFlag) {
+                    showRiskExit();
+                } else {
+                    showOffer();
                 }
-            }, 100);
+            }, 1500);
         }
 
-        function showResult() {
+        function showRiskExit() {
+            document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('processing-container').classList.add('hidden');
+            document.getElementById('risk-exit-container').classList.remove('hidden');
+            if(window.fbq) fbq('trackCustom', 'SaleBlocked_Ethical');
+        }
+
+        function showOffer() {
             document.getElementById('result-container').classList.remove('hidden');
             
-            const title = document.getElementById('result-title');
-            const desc = document.getElementById('result-description');
-            
-            title.innerText = "A Dependência Invisível";
-            // TEXTO SUAVIZADO PARA META
-            desc.innerHTML = "Você tem o perfil de <strong>Doadora Excessiva</strong>. Isso significa que você entrega tanta certeza para ele, que o cérebro dele perde o interesse. O protocolo vai reverter isso instalando a dúvida.";
+            // Texto de Clareza (Sem ataque)
+            document.getElementById('result-title').innerText = "Doadora Excessiva";
+            document.getElementById('result-description').innerHTML = 
+                "Seu perfil indica que você entrega muita certeza na relação. Isso faz com que o outro lado não sinta necessidade de investir energia em você.<br><br>" +
+                "<strong>A boa notícia:</strong> Não é algo errado com você, é apenas uma dinâmica desequilibrada que pode ser corrigida com postura.";
 
             if(window.fbq) fbq('track', 'Lead'); 
-            
-            // TRACKING: VIEW OFFER (IMPORTANTE)
-            if(window.customTrack) window.customTrack("view_offer", { offer: "protocolo_24h", price: 27 });
-            if(window.fbq) fbq('trackCustom', 'ViewOffer');
-
-            startTimer();
+            if(window.fbq) fbq('trackCustom', 'ViewOffer_Safe');
         }
-
-        function startTimer() {
-            let duration = 600; 
-            const display = document.querySelector('#countdown-timer');
-            setInterval(function () {
-                let minutes = parseInt(duration / 60, 10);
-                let seconds = parseInt(duration % 60, 10);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                display.textContent = minutes + ":" + seconds;
-                if (--duration < 0) duration = 600;
-            }, 1000);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.getElementById('btn-checkout');
-            let checkoutTracked = false;
-
-            if(btn) {
-                btn.addEventListener('click', (e) => {
-                    if(checkoutTracked) return; 
-                    checkoutTracked = true;     
-
-                    if(window.customTrack) {
-                        window.customTrack("click", { id: "btn-checkout", label: "Checkout", value: 27.00 });
-                    }
-                    if(window.fbq) {
-                        fbq('track', 'InitiateCheckout', { value: 27.00, currency: 'BRL' });
-                    }
-                });
-            }
-        });
     </script>
 </body>
 </html>
